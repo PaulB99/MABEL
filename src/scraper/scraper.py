@@ -29,14 +29,14 @@ for s in sources:
         headline_soup = soup.find_all('h3', class_='media__title')
         tagline_soup = soup.find_all('p', class_='media__summary')
     elif(s[0] == 'Daily Mail'):
-        headline_soup = soup.find_all('h3', class_='media__title')
-        tagline_soup = soup.find_all('p', class_='media__summary')
+        headline_soup = soup.find_all('h2', class_='linkro-darkred')
+        tagline_soup = soup.find_all('p')
     elif(s[0] == 'Fox News'):
-        headline_soup = soup.find_all('h3', class_='media__title')
-        tagline_soup = soup.find_all('p', class_='media__summary')
+        headline_soup = soup.find_all('h2', class_='title title-color-default')
+        tagline_soup = soup.find_all('p', class_='media__summary') # THERE AREN'T ANY!
     elif(s[0] == 'New York Times'):
-        headline_soup = soup.find_all('h3', class_='media__title')
-        tagline_soup = soup.find_all('p', class_='media__summary')
+        headline_soup = soup.find_all('h3')
+        tagline_soup = soup.find_all('p')
     elif(s[0] == 'Xinhua'):
         headline_soup = soup.find_all('h3', class_='media__title')
         tagline_soup = soup.find_all('p', class_='media__summary')
