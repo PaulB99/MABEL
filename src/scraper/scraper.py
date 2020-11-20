@@ -126,9 +126,10 @@ for s in sources:
         head_num = len(headlines)
         if(tag_num == 15):
             tag_num+=diff
-        else:
+        if(tag_num > len(taglines)):
+            tag_num = len(taglines)
             print("Warning - Only " + str(head_num) + " headlines and " + str(tag_num) + " taglines available for " + s[0])
-            
+        
     if head_num > 0:   
         for h in range(head_num):
             f.write(headlines[h] + '\n')
