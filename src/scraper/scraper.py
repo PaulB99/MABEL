@@ -108,33 +108,33 @@ for s in sources:
     if os.path.exists(filename):
         os.remove(filename)
     
-    f= open(filename,"w+")
-    head_num = 15
-    tag_num = 15
-    
-    print(s[0])
-    print(len(headlines))
-    print(len(taglines))
-    
-    if(len(taglines) < tag_num): # If there's not enough taglines, use more headlines
-        diff = tag_num - len(taglines)
-        tag_num = len(taglines)
-        head_num+=diff
-    
-    if(len(headlines) < head_num): # If there's not enough headlines, use more taglines
-        diff = head_num - len(headlines)
-        head_num = len(headlines)
-        if(tag_num == 15):
-            tag_num+=diff
-        if(tag_num > len(taglines)):
-            tag_num = len(taglines)
-            print("Warning - Only " + str(head_num) + " headlines and " + str(tag_num) + " taglines available for " + s[0])
+    with open(filename, "w", encoding="utf-8") as f:
+        head_num = 15
+        tag_num = 15
         
-    if head_num > 0:   
-        for h in range(head_num):
-            f.write(headlines[h] + '\n')
-    if tag_num > 0:
-        for t in range(tag_num):
-            f.write(taglines[t] + '\n')
+        print(s[0])
+        print(len(headlines))
+        print(len(taglines))
+        
+        if(len(taglines) < tag_num): # If there's not enough taglines, use more headlines
+            diff = tag_num - len(taglines)
+            tag_num = len(taglines)
+            head_num+=diff
+        
+        if(len(headlines) < head_num): # If there's not enough headlines, use more taglines
+            diff = head_num - len(headlines)
+            head_num = len(headlines)
+            if(tag_num == 15):
+                tag_num+=diff
+            if(tag_num > len(taglines)):
+                tag_num = len(taglines)
+                print("Warning - Only " + str(head_num) + " headlines and " + str(tag_num) + " taglines available for " + s[0])
+            
+        if head_num > 0:   
+            for h in range(head_num):
+                f.write(headlines[h] + '\n')
+        if tag_num > 0:
+            for t in range(tag_num):
+                f.write(taglines[t] + '\n')
     f.close()
     
