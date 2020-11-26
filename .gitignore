@@ -1,3 +1,5 @@
 __pycache__/
 cache/
 src/scraper/geckodriver.log
+data/
+*.log
