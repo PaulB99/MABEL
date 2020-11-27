@@ -1,20 +1,15 @@
-import matplotlib.pyplot as plt
-import pandas as pd
 import torch
-
-from torchtext.data import Field, TabularDataset, BucketIterator, Iterator
+import model
+from torchtext.data import Field, TabularDataset, BucketIterator
 import torch.nn as nn
-from transformers import BertTokenizer, BertForSequenceClassification
-
+from transformers import BertTokenizer
 import torch.optim as optim
 
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-import seaborn as sns
 
 data_path = '../../data/'
 
 # Tokeniser
-tokeniser = BertTokenizer.from_pretrained('bert-base-uncased')
+tokeniser = BertTokenizer.from_pretrained('bert-base-uncased') # Would rather use smaller for testing but this is the smallest Transformers offers
 
 # Check if GPU is available
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -32,7 +27,7 @@ fields = [('label', label_field), ('title', text_field), ('text', text_field), (
 
 # Dataset TODO: Work out how the data is coming in
 train, valid = TabularDataset.splits(path=data_path, train='datasets/mini/train.csv', validation='datasets/mini/validate.csv',
-                                           format='CSV', fields=fields, skip_header=True)
+                                           format='CSV', fields=fields, skip_header=False)
 
 # Iterators
 train_iter = BucketIterator(train, batch_size=16, sort_key=lambda x: len(x.text),
@@ -53,22 +48,25 @@ def train(model,
           best_valid_loss = float("Inf")):
     
     # Initialise running values
-    running_loss = 0.0
-    valid_running_loss = 0.0
+    training_loss = 0.0
+    valid_loss = 0.0
     global_step = 0
-    train_loss_list = []
+    # Arrays to store outputs
+    training_loss_list = []
     valid_loss_list = []
     global_steps_list = []
+    
+    print("Initialised")
 
     # Training loop
     model.train()
     for epoch in range(num_epochs):
-        for (labels, title, text, titletext), _ in train_loader:
-            labels = labels.type(torch.LongTensor)           
+        for (labels, text), _ in train_loader:
+            labels = labels.type(torch.LongTensor) # Biased or not    
             labels = labels.to(device)
-            titletext = titletext.type(torch.LongTensor)  
-            titletext = titletext.to(device)
-            output = model(titletext, labels)
+            text = text.type(torch.LongTensor) # The text
+            text = text.to(device)
+            output = model(labels, text)
             loss, _ = output
 
             optimiser.zero_grad()
@@ -76,7 +74,7 @@ def train(model,
             optimiser.step()
 
             # update running values
-            running_loss += loss.item()
+            training_loss += loss.item()
             global_step += 1
 
             # Evaluation step
@@ -85,26 +83,26 @@ def train(model,
                 with torch.no_grad():                    
 
                     # Validation loop
-                    for (labels, title, text, titletext), _ in valid_loader:
+                    for (labels, text), _ in valid_loader:
                         labels = labels.type(torch.LongTensor)           
                         labels = labels.to(device)
-                        titletext = titletext.type(torch.LongTensor)  
-                        titletext = titletext.to(device)
-                        output = model(titletext, labels)
+                        text = text.type(torch.LongTensor)  
+                        text = text.to(device)
+                        output = model(labels, text)
                         loss, _ = output
                         
-                        valid_running_loss += loss.item()
+                        valid_loss += loss.item()
 
                 # Evaluate
-                average_train_loss = running_loss / eval_every
-                average_valid_loss = valid_running_loss / len(valid_loader)
-                train_loss_list.append(average_train_loss)
+                average_train_loss = training_loss / eval_every
+                average_valid_loss = valid_loss / len(valid_loader)
+                training_loss_list.append(average_train_loss)
                 valid_loss_list.append(average_valid_loss)
                 global_steps_list.append(global_step)
 
                 # Reset running values
-                running_loss = 0.0                
-                valid_running_loss = 0.0
+                testing_loss = 0.0                
+                valid_loss = 0.0
                 model.train()
 
                 # Print progress
@@ -112,4 +110,18 @@ def train(model,
                       .format(epoch+1, num_epochs, global_step, num_epochs*len(train_loader),
                               average_train_loss, average_valid_loss))
                 
-                # TODO: Save output!
+    # TODO: Save output!
+    state = {'training_loss': train_loss_list,
+                  'validation_loss': valid_loss_list,
+                  'steps': global_steps_list}
+    
+    torch.save(state, (data_path + 'output/training_output.pt'))
+    print('Done!')
+    
+# Run the training
+if __name__ == "__main__":
+    mymodel = model.BERT().to(device)
+    optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
+    train(model=mymodel, optimizer=optimiser)
+    
+    

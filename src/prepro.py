@@ -43,6 +43,9 @@ def minidataset(name, size):
         x = b.split('	')
         dataset.append((1,x[-4])) 
         
+    # Shuffle dataset
+    random.shuffle(dataset)
+    
     # Write to file
     if os.path.exists("../data/datasets/mini/" + name + ".csv"):
         os.remove("../data/datasets/mini/" + name + ".csv")
