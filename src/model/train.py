@@ -111,17 +111,17 @@ def train(model,
                               average_train_loss, average_valid_loss))
                 
     # TODO: Save output!
-    state = {'training_loss': train_loss_list,
+    state = {'training_loss': training_loss_list,
                   'validation_loss': valid_loss_list,
                   'steps': global_steps_list}
     
-    torch.save(state, (data_path + 'output/training_output.pt'))
+    torch.save(state, ('../output/training_output.pt'))
     print('Done!')
     
 # Run the training
 if __name__ == "__main__":
     mymodel = model.BERT().to(device)
     optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
-    train(model=mymodel, optimizer=optimiser)
+    train(model=mymodel, optimiser=optimiser)
     
     
