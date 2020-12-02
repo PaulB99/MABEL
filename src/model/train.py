@@ -23,11 +23,11 @@ UNK_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.unk_token)
 label_field = Field(sequential=False, use_vocab=False, batch_first=True, dtype=torch.float)
 text_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, include_lengths=False, batch_first=True,
                    fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
-fields = [('label', label_field), ('title', text_field), ('text', text_field), ('titletext', text_field)]
+fields = [('label', label_field), ('text', text_field)]
 
 # Dataset TODO: Work out how the data is coming in
 train, valid = TabularDataset.splits(path=data_path, train='datasets/mini/train.csv', validation='datasets/mini/validate.csv',
-                                           format='CSV', fields=fields, skip_header=False)
+                                           format='CSV', fields=fields, skip_header=True)
 
 # Iterators
 train_iter = BucketIterator(train, batch_size=16, sort_key=lambda x: len(x.text),
