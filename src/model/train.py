@@ -5,7 +5,6 @@ import torch.nn as nn
 from transformers import BertTokenizer
 import torch.optim as optim
 
-
 data_path = '../../data/'
 
 # Tokeniser
@@ -42,7 +41,7 @@ def train(model,
           criterion = nn.BCELoss(),
           train_loader = train_iter,
           valid_loader = valid_iter,
-          num_epochs = 1,
+          num_epochs = 5,
           eval_every = len(train_iter) // 2,
           path = data_path,
           best_valid_loss = float("Inf")):
@@ -73,7 +72,7 @@ def train(model,
             loss.backward()
             optimiser.step()
 
-            # update running values
+            # Update running values
             training_loss += loss.item()
             global_step += 1
 
@@ -115,7 +114,9 @@ def train(model,
                   'validation_loss': valid_loss_list,
                   'steps': global_steps_list}
     
-    torch.save(state, ('../output/training_output.pt'))
+    torch.save(state, ('../../output/training_output.pt'))
+    # Save model
+    torch.save(model.state_dict(), '../../cache/minimodel.pt')
     print('Done!')
     
 # Run the training

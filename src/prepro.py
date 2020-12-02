@@ -60,4 +60,5 @@ def minidataset(name, size):
     
 minidataset('train', 3000)
 minidataset('validate', 1000)
+minidataset('test', 3000)
     
