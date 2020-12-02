@@ -51,6 +51,8 @@ def minidataset(name, size):
         os.remove("../data/datasets/mini/" + name + ".csv")
     with open("../data/datasets/mini/" + name + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
+        # Write column titles
+        writer.writerow(('label', 'text'))
         for d in dataset:
             writer.writerow(d)
             
