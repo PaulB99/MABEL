@@ -3,7 +3,7 @@ import torch
 import model
 from torchtext.data import Field, TabularDataset, Iterator
 from transformers import BertTokenizer
-import Seaborn as sns
+import seaborn as sns
 import matplotlib as plt
 from sklearn.metrics import classification_report, confusion_matrix
 
