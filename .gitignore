@@ -3,3 +3,4 @@ cache/
 src/scraper/geckodriver.log
 data/
 *.log
+output/
