@@ -45,6 +45,8 @@ def test(model, test_loader):
     ax.xaxis.set_ticklabels(['0', '1'])
     ax.yaxis.set_ticklabels(['0', '1'])
     
+    plt.savefig('confusion.png')
+    
 data_path = '../../data/'
 
 # Tokeniser
@@ -67,7 +69,7 @@ fields = [('label', label_field), ('text', text_field)]
 test_data = TabularDataset.splits(path=data_path, test='datasets/mini/test.csv', format='CSV', fields=fields, skip_header=True)
 
 # Test data iterator
-test_iter = Iterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False)
+test_iter = Iterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
 
 # Test model
 mymodel = model.BERT().to(device)
