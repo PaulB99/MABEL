@@ -4,3 +4,5 @@ src/scraper/geckodriver.log
 data/
 *.log
 output/
+src/model/__pycache__
+src/scraper/geckodriver.txt
