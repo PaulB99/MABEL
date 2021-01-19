@@ -1,7 +1,7 @@
 # Test the basic model
 import torch
 import model
-from torchtext.data import Field, TabularDataset, Iterator
+from torchtext.data import Field, TabularDataset, BucketIterator
 from transformers import BertTokenizer
 import seaborn as sns
 import matplotlib as plt
@@ -22,14 +22,14 @@ def test(model, test_loader):
     model.eval()
     with torch.no_grad():
         for (labels, text), _ in test_loader:
-                labels = labels.type(torch.LongTensor)           
-                labels = labels.to(device)
-                text = text.type(torch.LongTensor)  
-                text = text.to(device)
-                output = model(labels, text)
-                _, output = output
-                y_pred.extend(torch.argmax(output, 1).tolist())
-                y_target.extend(labels.tolist())
+            labels = labels.type(torch.LongTensor)           
+            labels = labels.to(device)
+            text = text.type(torch.LongTensor)  
+            text = text.to(device)
+            output = model(labels, text)
+            _, output = output
+            y_pred.extend(torch.argmax(output, 1).tolist())
+            y_target.extend(labels.tolist())
     
     # Print report
     print('Classification Report:\n')
@@ -70,10 +70,10 @@ if __name__ == "__main__":
     fields = [('label', label_field), ('text', text_field)]
     
     # Load in data 
-    test_data = TabularDataset.splits(path=data_path, test='datasets/mini/test.csv', format='CSV', fields=fields, skip_header=True)
+    test_data, train = TabularDataset.splits(path=data_path, test='datasets/mini/test.csv', train='datasets/mini/train.csv',format='CSV', fields=fields, skip_header=True)
     
     # Test data iterator
-    test_iter = Iterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
+    test_iter = BucketIterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
     
     # Test model
     mymodel = model.BERT().to(device)

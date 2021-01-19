@@ -50,6 +50,7 @@ def train(model,
     training_loss = 0.0
     valid_loss = 0.0
     global_step = 0
+    
     # Arrays to store outputs
     training_loss_list = []
     valid_loss_list = []
