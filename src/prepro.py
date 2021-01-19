@@ -47,9 +47,9 @@ def minidataset(name, size):
     random.shuffle(dataset)
     
     # Write to file
-    if os.path.exists("../data/datasets/mini/" + name + ".csv"):
-        os.remove("../data/datasets/mini/" + name + ".csv")
-    with open("../data/datasets/mini/" + name + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+    if os.path.exists("../data/datasets/main/" + name + ".csv"):
+        os.remove("../data/datasets/main/" + name + ".csv")
+    with open("../data/datasets/main/" + name + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
         writer.writerow(('label', 'text'))
@@ -58,7 +58,7 @@ def minidataset(name, size):
             
     print("Done!")
     
-minidataset('train', 3000)
-minidataset('validate', 1000)
-minidataset('test', 3000)
+minidataset('train', 100000)
+minidataset('validate', 20000)
+minidataset('test', 100000)
     

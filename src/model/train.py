@@ -25,7 +25,7 @@ text_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, incl
 fields = [('label', label_field), ('text', text_field)]
 
 # Dataset TODO: Work out how the data is coming in
-train, valid = TabularDataset.splits(path=data_path, train='datasets/mini/train.csv', validation='datasets/mini/validate.csv',
+train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train.csv', validation='datasets/main/validate.csv',
                                            format='CSV', fields=fields, skip_header=True)
 
 # Iterators
@@ -41,7 +41,7 @@ def train(model,
           criterion = nn.BCELoss(),
           train_loader = train_iter,
           valid_loader = valid_iter,
-          num_epochs = 5,
+          num_epochs = 11,
           eval_every = len(train_iter) // 2,
           path = data_path,
           best_valid_loss = float("Inf")):
@@ -117,7 +117,7 @@ def train(model,
     
     torch.save(state, ('../../output/training_output.pt'))
     # Save model
-    torch.save(model.state_dict(), '../../cache/minimodel.pt')
+    torch.save(model.state_dict(), '../../cache/model.pt')
     print('Done!')
     
 # Run the training
