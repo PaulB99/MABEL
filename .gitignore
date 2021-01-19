@@ -5,4 +5,4 @@ data/
 *.log
 output/
 src/model/__pycache__
-src/scraper/geckodriver.txt
+src/scraper/geckodriver.log

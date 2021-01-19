@@ -9,9 +9,10 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 # Probably wants to go into a nice util file
 def load_ckpt(load_path, model):
-    state_dict = torch.load(load_path, map_location=device)
+    #state_dict = torch.load(load_path, map_location=device)
+    #model.load_state_dict(state_dict['model_state_dict'])
+    model.load_state_dict(torch.load(load_path))
     print(f'Trained model loaded from <== {load_path}')
-    model.load_state_dict(state_dict['model_state_dict'])
     #return state_dict['valid_loss']
 
 # Test given model using dataset
@@ -47,32 +48,35 @@ def test(model, test_loader):
     
     plt.savefig('confusion.png')
     
-data_path = '../../data/'
-
-# Tokeniser
-tokeniser = BertTokenizer.from_pretrained('bert-base-uncased')
-
-# Check if GPU is available
-device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
-# Model parameters
-MAX_SEQ_LEN = 128
-PAD_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.pad_token)
-UNK_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.unk_token)
-
-# Fields
-label_field = Field(sequential=False, use_vocab=False, batch_first=True, dtype=torch.float)
-text_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
-fields = [('label', label_field), ('text', text_field)]
-
-# Load in data 
-test_data = TabularDataset.splits(path=data_path, test='datasets/mini/test.csv', format='CSV', fields=fields, skip_header=True)
-
-# Test data iterator
-test_iter = Iterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
-
-# Test model
-mymodel = model.BERT().to(device)
-load_ckpt('../../cache/minimodel.pt', mymodel)
-test(mymodel, test_iter)
-
+# Run the test
+if __name__ == "__main__":
+    
+    data_path = '../../data/'
+    
+    # Tokeniser
+    tokeniser = BertTokenizer.from_pretrained('bert-base-uncased')
+    
+    # Check if GPU is available
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    
+    # Model parameters
+    MAX_SEQ_LEN = 128
+    PAD_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.pad_token)
+    UNK_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.unk_token)
+    
+    # Fields
+    label_field = Field(sequential=False, use_vocab=False, batch_first=True, dtype=torch.float)
+    text_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
+    fields = [('label', label_field), ('text', text_field)]
+    
+    # Load in data 
+    test_data = TabularDataset.splits(path=data_path, test='datasets/mini/test.csv', format='CSV', fields=fields, skip_header=True)
+    
+    # Test data iterator
+    test_iter = Iterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
+    
+    # Test model
+    mymodel = model.BERT().to(device)
+    load_ckpt('../../cache/minimodel.pt', mymodel)
+    test(mymodel, test_iter)
+    
