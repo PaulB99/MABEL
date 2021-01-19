@@ -4,7 +4,7 @@ import model
 from torchtext.data import Field, TabularDataset, BucketIterator
 from transformers import BertTokenizer
 import seaborn as sns
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
 
 # Probably wants to go into a nice util file
@@ -37,7 +37,8 @@ def test(model, test_loader):
     
     # Create confusion matrix
     cm = confusion_matrix(y_target, y_pred, labels=[1,0])
-    fig,ax= plt.subplots()
+    fig, ax = plt.subplots()
+
     sns.heatmap(cm, annot=True, ax = ax, cmap='Blues', fmt="d")
     ax.set_title('Confusion Matrix')
     ax.set_xlabel('Predicted')
