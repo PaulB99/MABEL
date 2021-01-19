@@ -37,14 +37,14 @@ def test(model, test_loader):
     
     # Create confusion matrix
     cm = confusion_matrix(y_target, y_pred, labels=[1,0])
-    #ax= plt.subplot()
-    sns.heatmap(cm, annot=True, ax = plt, cmap='Blues', fmt="d")
-    plt.set_title('Confusion Matrix')
-    plt.set_xlabel('Predicted')
-    plt.set_ylabel('Target')
+    fig,ax= plt.subplot()
+    sns.heatmap(cm, annot=True, ax = ax, cmap='Blues', fmt="d")
+    ax.set_title('Confusion Matrix')
+    ax.set_xlabel('Predicted')
+    ax.set_ylabel('Target')
 
-    plt.xaxis.set_ticklabels(['0', '1'])
-    plt.yaxis.set_ticklabels(['0', '1'])
+    ax.xaxis.set_ticklabels(['0', '1'])
+    ax.yaxis.set_ticklabels(['0', '1'])
     
     plt.savefig('confusion.png')
     
