@@ -37,7 +37,7 @@ def test(model, test_loader):
     
     # Create confusion matrix
     cm = confusion_matrix(y_target, y_pred, labels=[1,0])
-    fig,ax= plt.subplot()
+    fig,ax= plt.subplots()
     sns.heatmap(cm, annot=True, ax = ax, cmap='Blues', fmt="d")
     ax.set_title('Confusion Matrix')
     ax.set_xlabel('Predicted')
