@@ -117,7 +117,7 @@ def train(model,
     
     torch.save(state, ('../../../output/training_output.pt'))
     # Save model
-    torch.save(model.state_dict(), '../../../cache/model.pt')
+    torch.save(model.state_dict(), '../../../cache/large_model.pt')
     print('Done!')
     
 # Run the training
