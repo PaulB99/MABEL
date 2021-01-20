@@ -52,10 +52,10 @@ def test(model, test_loader):
 # Run the test
 if __name__ == "__main__":
     
-    data_path = '../../data/'
+    data_path = '../../../data/'
     
     # Tokeniser
-    tokeniser = BertTokenizer.from_pretrained('bert-base-uncased')
+    tokeniser = BertTokenizer.from_pretrained('bert-large-uncased')
     
     # Check if GPU is available
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -78,6 +78,6 @@ if __name__ == "__main__":
     
     # Test model
     mymodel = model.BERT().to(device)
-    load_ckpt('../../cache/model.pt', mymodel)
+    load_ckpt('../../../cache/model.pt', mymodel)
     test(mymodel, test_iter)
     

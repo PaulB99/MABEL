@@ -5,10 +5,10 @@ import torch.nn as nn
 from transformers import BertTokenizer
 import torch.optim as optim
 
-data_path = '../../data/'
+data_path = '../../../data/'
 
 # Tokeniser
-tokeniser = BertTokenizer.from_pretrained('bert-base-uncased') # Would rather use smaller for testing but this is the smallest Transformers offers
+tokeniser = BertTokenizer.from_pretrained('bert-large-uncased') # Would rather use smaller for testing but this is the smallest Transformers offers
 
 # Check if GPU is available
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -115,9 +115,9 @@ def train(model,
                   'validation_loss': valid_loss_list,
                   'steps': global_steps_list}
     
-    torch.save(state, ('../../output/training_output.pt'))
+    torch.save(state, ('../../../output/training_output.pt'))
     # Save model
-    torch.save(model.state_dict(), '../../cache/model.pt')
+    torch.save(model.state_dict(), '../../../cache/model.pt')
     print('Done!')
     
 # Run the training
