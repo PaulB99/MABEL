@@ -59,7 +59,7 @@ for s in sources:
         tagline_soup = soup.find_all('p')
         filename += '_nyt.txt'
     elif(s[0] == 'Xinhua'):
-        headline_soup = soup.find_all('h2') # TODO: Remove single words
+        headline_soup = soup.find_all('div', class_='tit') # TODO: Remove single words
         tagline_soup = soup.find_all('p')
         filename += '_xin.txt'
     elif(s[0] == 'Reuters'):
