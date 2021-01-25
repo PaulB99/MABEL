@@ -71,7 +71,7 @@ if __name__ == "__main__":
     fields = [('label', label_field), ('text', text_field)]
     
     # Load in data 
-    test_data, train = TabularDataset.splits(path=data_path, test='datasets/main/test.csv', train='datasets/main/train.csv',format='CSV', fields=fields, skip_header=True)
+    test_data, train = TabularDataset.splits(path=data_path, test='datasets/main/test_detection.csv', train='datasets/main/train_detection.csv',format='CSV', fields=fields, skip_header=True)
     
     # Test data iterator
     test_iter = BucketIterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))

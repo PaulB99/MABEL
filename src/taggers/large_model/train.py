@@ -25,7 +25,7 @@ text_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, incl
 fields = [('label', label_field), ('text', text_field)]
 
 # Dataset TODO: Work out how the data is coming in
-train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train.csv', validation='datasets/main/validate.csv',
+train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_detection.csv', validation='datasets/main/validate_detection.csv',
                                            format='CSV', fields=fields, skip_header=True)
 
 # Iterators

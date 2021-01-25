@@ -7,7 +7,7 @@ class BERT(nn.Module):
     def __init__(self):
         super(BERT, self).__init__()
 
-        options_name = "bert-large-uncased"   # I'd rather use a smaller one for testing, but this is the smallest that Transformers offers
+        options_name = "bert-large-uncased"
         self.encoder = BertForSequenceClassification.from_pretrained(options_name)
 
     def forward(self, label, text):
