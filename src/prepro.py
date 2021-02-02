@@ -102,7 +102,6 @@ def create_dataset(size, mode='detection'):
         biased2.append(biased[i])
         
     # Process data 
-    dataset = []
     for n in range(len(neutral2)):
         x = neutral2[n].split('	')
         if n < int(train_size/2):
@@ -158,6 +157,6 @@ def create_dataset(size, mode='detection'):
             
     print("Done!")
     
-create_dataset(100000)
+create_dataset(200000)
     
     
