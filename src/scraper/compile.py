@@ -11,7 +11,7 @@ if os.path.exists(data_path+'scraper/dataset.csv'):
 
 with open(data_path+'scraper/dataset.csv', 'w+', newline='', encoding="utf-8") as csvfile:
     
-    writer = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    writer = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL)
     
     for filename in os.listdir(data_path+'scraper/scraped_data/'):
         
@@ -22,8 +22,9 @@ with open(data_path+'scraper/dataset.csv', 'w+', newline='', encoding="utf-8") a
         if int(x[0])<=22 and x[1] == '11':
             with open(data_path + 'scraper/scraped_data/' + filename, 'r') as f:
                 data = f.read()
-                writer.writerow(data)
+                print(data[0])
+                writer.writerow([data])
         else:
             with open(data_path + 'scraper/scraped_data/' + filename, 'r', encoding="utf-8") as f:
                 data = f.read()
-                writer.writerow(data)
+                writer.writerow([data]) 
