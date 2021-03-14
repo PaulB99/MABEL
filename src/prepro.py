@@ -157,6 +157,75 @@ def create_dataset(size, mode='detection'):
             
     print("Done!")
     
-create_dataset(200000)
+def create_seq2seq(size, mode='neutralisation'):
+    train = []
+    valid = []
+    test = []
+    
+    # The proportion to be assigned to each
+    train_frac = 0.7
+    valid_frac = 0.15
+    test_frac = 0.15
+    
+    # The size of each part
+    train_size = int(size*train_frac)
+    valid_size = int(size*valid_frac)
+    test_size = int(size*test_frac)
+    
+    biased = []
+    
+    # Read files
+    with open('../data/WNC/biased.full', encoding = 'utf8') as f:
+        for line in f:
+            biased.append(line)
+            
+    # Randomise 
+    random.shuffle(biased)
+    
+    for b in range(len(biased)):
+        x = biased[b].split('	')
+        if b < train_size:
+            train.append((x[3],x[4])) 
+        elif b < (train_size+valid_size):
+            valid.append((x[3],x[4])) 
+        else:
+            test.append((x[3],x[4])) 
+            
+    random.shuffle(train)
+    random.shuffle(valid)
+    random.shuffle(test)
+    
+    # Write to file
+    if os.path.exists("../data/datasets/main/train_" + mode + ".csv"):
+        os.remove("../data/datasets/main/train_" + mode + ".csv")
+        
+    if os.path.exists("../data/datasets/main/test_" + mode + ".csv"):
+        os.remove("../data/datasets/main/test_" + mode + ".csv")
+        
+    if os.path.exists("../data/datasets/main/valid_" + mode +  ".csv"):
+        os.remove("../data/datasets/main/valid_" + mode + ".csv")
+        
+    with open("../data/datasets/main/train_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+        writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
+        # Write column titles
+        writer.writerow(('0', '1'))
+        for d in train:
+            writer.writerow(d)
+    with open("../data/datasets/main/test_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+        writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
+        # Write column titles
+        writer.writerow(('0', '1'))
+        for d in test:
+            writer.writerow(d)
+            
+    with open("../data/datasets/main/valid_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+        writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
+        # Write column titles
+        writer.writerow(('0', '1'))
+        for d in valid:
+            writer.writerow(d)
+    
+#create_dataset(200000)
+create_seq2seq(100, '')
     
     
