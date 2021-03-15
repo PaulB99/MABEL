@@ -226,6 +226,7 @@ def create_seq2seq(size, mode='neutralisation'):
             writer.writerow(d)
     
 #create_dataset(200000)
-create_seq2seq(100, '')
+
+create_seq2seq(200000)
     
     
