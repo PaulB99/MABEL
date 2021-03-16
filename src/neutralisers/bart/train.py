@@ -9,85 +9,132 @@ from transformers import (
     )
 from datasets import load_dataset
 import torch
-
-# Training script for bart based neutraliser
+import model
+from torchtext.data import Field, TabularDataset, BucketIterator
+import torch.nn as nn
+import torch.optim as optim
 
 data_path = '../../../data/'
 output_path = '../../../output'
 
-# Load datasets
-train_dataset = load_dataset('csv', data_files=data_path+'datasets/main/train_neutralisation.csv')
-valid_dataset = load_dataset('csv', data_files=data_path+'datasets/main/valid_neutralisation.csv')
-
-
 # Tokeniser
-#tokeniser = BartTokenizer.from_pretrained('facebook/bart-large') 
 tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
-
-# Label dataset
-#train_dataset = tokeniser.encode(train_dataset_unlabeled, add_special_tokens=True, return_tensors='pt')
-#valid_dataset = tokeniser.encode(valid_dataset_unlabeled, add_special_tokens=True, return_tensors='pt')
-
-# Preprocess dataset 
-train_in = train_dataset['train']['input']
-train_ta = train_dataset['train']['target']
-
-train_inputs = tokeniser(train_in, truncation=True)
-train_targets = tokeniser(train_ta, truncation=True)
-print(type(train_inputs))
-
-train_inputs['labels'] = train_targets["input_ids"]
-print(type(train_inputs))
-
-train_dataset = train_dataset.map(
-            train_inputs,
-            batched=True,
-            #num_proc=data_args.preprocessing_num_workers,
-            #remove_columns=column_names,
-            #load_from_cache_file=not data_args.overwrite_cache,
-        )
-
 
 # Check if GPU is available
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-# Model configuration
-config = BartConfig()
+# Model parameters
+MAX_SEQ_LEN = 128
+PAD_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.pad_token)
+UNK_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.unk_token)
 
-model = BartForConditionalGeneration(config=config)
+# Fields
+text_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, include_lengths=False, batch_first=True,
+                   fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
+target_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, include_lengths=False, batch_first=True,
+                   fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
+fields = [('text', text_field), ('target', target_field)]
 
-# Data collator
-data_collator = DataCollatorForSeq2Seq(tokenizer = tokeniser)
+# Dataset TODO: Work out how the data is coming in
+train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
+                                           format='CSV', fields=fields, skip_header=True)
 
-# Arguments for trainer
-train_args = TrainingArguments(
-    output_dir = output_path,
-    overwrite_output_dir = True,
-    num_train_epochs = 6,
-    per_device_train_batch_size = 64, 
-    save_steps = 10_000,
-    save_total_limit = 2
-    )
-
-# Huggingface trainer to train the model
-trainer = Trainer(
-    model = model,
-    args = train_args,
-    data_collator = data_collator,
-    train_dataset = train_dataset,
-    #train_dataset = train_inputs,
-    eval_dataset = valid_dataset,
-    tokenizer = tokeniser,
-    )
+# Iterators
+train_iter = BucketIterator(train, batch_size=16, sort_key=lambda x: len(x.text),
+                            device=device, train=True, sort=True, sort_within_batch=True)
+valid_iter = BucketIterator(valid, batch_size=16, sort_key=lambda x: len(x.text),
+                            device=device, train=True, sort=True, sort_within_batch=True)
 
 
-result = trainer.train()
-trainer.save_model('../../../cache/bart_neut')
+# Training Function
+def train(model,
+          optimiser,
+          criterion = nn.BCELoss(),
+          train_loader = train_iter,
+          valid_loader = valid_iter,
+          num_epochs = 11,
+          eval_every = len(train_iter) // 2,
+          path = data_path,
+          best_valid_loss = float("Inf")):
+    
+    # Initialise running values
+    training_loss = 0.0
+    valid_loss = 0.0
+    global_step = 0
+    
+    # Arrays to store outputs
+    training_loss_list = []
+    valid_loss_list = []
+    global_steps_list = []
+    
+    print("Initialised")
 
-metrics = result.metrics
-trainer.log_metrics('train', metrics)
-trainer.save_metrics('train', metrics)
-trainer.save_state()
+    # Training loop
+    model.train()
+    for epoch in range(num_epochs):
+        for (text, target), _ in train_loader:
+            text = text.type(torch.LongTensor) # Biased or not    
+            text = text.to(device)
+            target = target.type(torch.LongTensor) # The text
+            target = target.to(device)
+            output = model(text, target)
+            loss, _ = output
 
+            optimiser.zero_grad()
+            loss.backward()
+            optimiser.step()
 
+            # Update running values
+            training_loss += loss.item()
+            global_step += 1
 
+            # Evaluation step
+            if global_step % eval_every == 0:
+                model.eval()
+                with torch.no_grad():                    
+
+                    # Validation loop
+                    for (text, target), _ in valid_loader:
+                        text = text.type(torch.LongTensor)           
+                        text = text.to(device)
+                        target = target.type(torch.LongTensor)  
+                        target = target.to(device)
+                        output = model(text, target)
+                        loss, _ = output
+                        
+                        valid_loss += loss.item()
+
+                # Evaluate
+                average_train_loss = training_loss / eval_every
+                average_valid_loss = valid_loss / len(valid_loader)
+                training_loss_list.append(average_train_loss)
+                valid_loss_list.append(average_valid_loss)
+                global_steps_list.append(global_step)
+
+                # Reset running values
+                testing_loss = 0.0                
+                valid_loss = 0.0
+                model.train()
+
+                # Print progress
+                print('Epoch [{}/{}], Step [{}/{}], Train Loss: {:.4f}, Valid Loss: {:.4f}'
+                      .format(epoch+1, num_epochs, global_step, num_epochs*len(train_loader),
+                              average_train_loss, average_valid_loss))
+                
+    # TODO: Save output!
+    state = {'training_loss': training_loss_list,
+                  'validation_loss': valid_loss_list,
+                  'steps': global_steps_list}
+    
+    torch.save(state, ('../../../output/neu_training_output.pt'))
+    # Save model
+    torch.save(model.state_dict(), '../../../cache/neu_bart_model.pt')
+    print('Done!')
+    
+# Run the training
+if __name__ == "__main__":
+    mymodel = model.BART().to(device)
+    optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
+    train(model=mymodel, optimiser=optimiser)
+    
+    
