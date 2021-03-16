@@ -208,25 +208,25 @@ def create_seq2seq(size, mode='neutralisation'):
     with open("../data/datasets/main/train_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
-        writer.writerow(('0', '1'))
+        writer.writerow(('input', 'target'))
         for d in train:
             writer.writerow(d)
     with open("../data/datasets/main/test_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
-        writer.writerow(('0', '1'))
+        writer.writerow(('input', 'target'))
         for d in test:
             writer.writerow(d)
             
     with open("../data/datasets/main/valid_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
-        writer.writerow(('0', '1'))
+        writer.writerow(('input', 'target'))
         for d in valid:
             writer.writerow(d)
     
 #create_dataset(200000)
 
-create_seq2seq(200000)
+create_seq2seq(50)
     
     
