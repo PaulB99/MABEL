@@ -7,7 +7,6 @@ from transformers import (
     DataCollatorForSeq2Seq,
     AutoTokenizer,
     )
-from datasets import load_dataset
 import torch
 import model
 from torchtext.data import Field, TabularDataset, BucketIterator
