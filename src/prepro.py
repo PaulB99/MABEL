@@ -227,6 +227,6 @@ def create_seq2seq(size, mode='neutralisation'):
     
 #create_dataset(200000)
 
-create_seq2seq(50)
+create_seq2seq(200000)
     
     
