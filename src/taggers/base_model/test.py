@@ -78,6 +78,6 @@ if __name__ == "__main__":
     
     # Test model
     mymodel = model.BERT().to(device)
-    load_ckpt('../../../cache/model.pt', mymodel)
+    load_ckpt('../../../cache/taggers/base_model.pt', mymodel)
     test(mymodel, test_iter)
     

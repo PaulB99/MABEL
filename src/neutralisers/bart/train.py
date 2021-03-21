@@ -125,9 +125,9 @@ def train(model,
                   'validation_loss': valid_loss_list,
                   'steps': global_steps_list}
     
-    torch.save(state, ('../../../output/neu_training_output.pt'))
+    torch.save(state, ('../../../output/neutralisers/bart_training.pt'))
     # Save model
-    torch.save(model.state_dict(), '../../../cache/neu_bart_model.pt')
+    torch.save(model.state_dict(), '../../../cache/neutralisers/bart.pt')
     print('Done!')
     
 # Run the training
