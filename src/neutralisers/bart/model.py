@@ -4,15 +4,22 @@ from transformers import (
     BartConfig,
     )
 
-# A basic BART model for neutralisation on the WNC dataset
+# A small BART model for neutralisation on the WNC dataset
+# Half the number of layers, heads and ffn size
 class BART(nn.Module):
 
     def __init__(self):
         super(BART, self).__init__()
         
-        options_name = "bert-large-uncased"
-        
-        config = BartConfig()
+        config = BartConfig(d_model=512,
+                            encoder_layers=6,
+                            decoder_layers=6,
+                            encoder_attention_heads=8,
+                            decoder_attention_heads=8,
+                            encoder_ffn_dim=2048,
+                            decoder_ffn_dim=2048,
+                            activation_function='gelu'
+                            )
         self.encoder = BartForConditionalGeneration(config=config)
 
     def forward(self, label, text):
