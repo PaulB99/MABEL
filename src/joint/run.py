@@ -1,7 +1,7 @@
 import torch 
 import sys
 sys.path.insert(0, '../')
-from taggers.large_model import model as t_model
+from taggers.base_model import model as t_model
 from neutralisers.bart import model as n_model
 
 
@@ -13,7 +13,7 @@ def load_ckpt(load_path, model):
     print(f'Trained model loaded from <== {load_path}')
 
 # 
-def pipeline(sentence, tagger='large_model', neutraliser='bart'):
+def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     
     # Load models
