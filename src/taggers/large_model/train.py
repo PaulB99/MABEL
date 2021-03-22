@@ -1,5 +1,6 @@
 import torch
 import model
+import time
 from torchtext.data import Field, TabularDataset, BucketIterator
 import torch.nn as nn
 from transformers import BertTokenizer
@@ -59,6 +60,7 @@ def train(model,
     print("Initialised")
 
     # Training loop
+    start_time = time.clock()
     model.train()
     for epoch in range(num_epochs):
         for (labels, text), _ in train_loader:
@@ -118,6 +120,9 @@ def train(model,
     torch.save(state, ('../../../output/taggers/training_output.pt'))
     # Save model
     torch.save(model.state_dict(), '../../../cache/taggers/large_model.pt')
+    end_time = time.clock()
+    train_time = end_time - start_time
+    print('Large BERT model training complete in {} seconds'.format(train_time))
     print('Done!')
     
 # Run the training

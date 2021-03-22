@@ -8,6 +8,7 @@ from transformers import (
     AutoTokenizer,
     )
 import torch
+import time
 import model
 from torchtext.data import Field, TabularDataset, BucketIterator
 import torch.nn as nn
@@ -69,6 +70,7 @@ def train(model,
     print("Initialised")
 
     # Training loop
+    start_time = time.clock()
     model.train()
     for epoch in range(num_epochs):
         for (text, target), _ in train_loader:
@@ -128,6 +130,9 @@ def train(model,
     torch.save(state, ('../../../output/neutralisers/bart_training.pt'))
     # Save model
     torch.save(model.state_dict(), '../../../cache/neutralisers/bart.pt')
+    end_time = time.clock()
+    train_time = end_time - start_time
+    print('Bart training complete in {} seconds'.format(train_time))
     print('Done!')
     
 # Run the training

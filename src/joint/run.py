@@ -1,16 +1,19 @@
 import torch 
-import _ as t_model
-import _ as n_model
+import sys
+sys.path.insert(0, '../')
+from taggers.large_model import model as t_model
+from neutralisers.bart import model as n_model
 
 
 # Program to load pretrained models and run the full pipeline
 
-
+# Helper function to load model checkpoint
 def load_ckpt(load_path, model):
     model.load_state_dict(torch.load(load_path))
     print(f'Trained model loaded from <== {load_path}')
 
-def pipeline(sentence, tagger, neutraliser):
+# 
+def pipeline(sentence, tagger='large_model', neutraliser='bart'):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     
     # Load models
@@ -24,5 +27,7 @@ def pipeline(sentence, tagger, neutraliser):
     load_ckpt(neutraliser_path, neutraliser_model)
     print('Neutraliser loaded!')
     
-    
+
+# Run
+pipeline()
     
