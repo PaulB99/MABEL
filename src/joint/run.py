@@ -29,5 +29,5 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     
 
 # Run
-pipeline()
+pipeline('Example')
     
