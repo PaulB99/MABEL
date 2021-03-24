@@ -36,7 +36,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     print('Neutraliser loaded in {}s!'.format(t2-t1))
     
     t_tok = t_tokeniser(sentence)
-    biased = t_model(t_tok)
+    biased = tagger_model(t_tok)
     
     if biased == 1:
         print('Good')
