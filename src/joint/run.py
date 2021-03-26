@@ -35,10 +35,8 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     t2 = time.clock()
     print('Neutraliser loaded in {}s!'.format(t2-t1))
     
-    print(sentence)
-    t_tok = t_tokeniser(sentence)
-    print(t_tok)
-    biased = tagger_model(0,t_tok)
+    t_tok = t_tokeniser(sentence, return_tensors='pt')['input_ids']
+    biased = tagger_model(input_ids=t_tok)
     
     if biased == 1:
         print('Good')
