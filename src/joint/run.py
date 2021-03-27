@@ -40,7 +40,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
         t_tok = t_tokeniser(sentence, return_tensors='pt')['input_ids']
         t_tok = t_tok.type(torch.LongTensor)  
         t_tok = t_tok.to(device)
-        dummy = torch.float(0)
+        dummy = 0.0
         dummy = dummy.type(torch.LongTensor)           
         dummy = dummy.to(device)
         biased = tagger_model(dummy,t_tok)
