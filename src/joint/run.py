@@ -41,7 +41,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     # Fields
     label_field = Field(sequential=False, use_vocab=False, batch_first=True, dtype=torch.float)
     text_field = Field(use_vocab=False, tokenize=t_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
-    fields = [('label', label_field), ('text', text_field)]
+    fields = [('labels', label_field), ('text', text_field)]
     sent_data = Dataset(prov_data, fields)
     print('Data initialised')
     
