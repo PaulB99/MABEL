@@ -22,7 +22,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     split_sent = sentence.split('.')
     
     # Populate dataset
-    prov_data = []
+    prov_data = [('labels','text')]
     for x in split_sent:
         prov_data.append(('0', x))
     
