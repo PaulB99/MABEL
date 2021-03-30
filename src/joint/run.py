@@ -22,7 +22,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     split_sent = sentence.split('.')
     
     # Populate dataset
-    prov_data = [('labels','text')]
+    prov_data = []
     for x in split_sent:
         prov_data.append(('0', x))
     
@@ -43,6 +43,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     text_field = Field(use_vocab=False, tokenize=t_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
     fields = [('labels', label_field), ('text', text_field)]
     sent_data = Dataset(prov_data, fields)
+    print(sent_data)
     print('Data initialised')
     
     iterator = BucketIterator(sent_data, batch_size=1, device=device, train=False, shuffle=False, sort=False)
