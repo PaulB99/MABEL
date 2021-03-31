@@ -44,10 +44,11 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     #sent_data = Dataset(prov_data, fields)
     
     # Populate dataset
-    sent_data = []
+    prov_data = []
     for x in split_sent:
         ex = Example.fromlist([0,x], fields)
-        sent_data.append(ex)
+        prov_data.append(ex)
+    sent_data = Dataset(prov_data, fields)
         
     print('Data initialised')
     
