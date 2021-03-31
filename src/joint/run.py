@@ -79,12 +79,14 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
             tagger_output = tagger_model(labels, text)
             _,tagger_output = tagger_output
             biased = torch.argmax(tagger_output, 1)
-            print(biased)
+            #print(biased)
             if biased == 1:
                 print('Biased!')
             elif biased == 0:
                 print('Unbiased!')
 
 # Run
-pipeline('Example')
+if __name__ == "__main__":
+    args = str(sys.argv)
+    pipeline(args)
     
