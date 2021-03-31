@@ -115,7 +115,8 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
             text = text.type(torch.LongTensor)  
             text = text.to(device)
             neutraliser_output = neutraliser_model.generate(text)
-            output_array.insert(ticker, neutraliser_output)
+            decoded = n_tokeniser.decode(neutraliser_output[0], skip_special_tokens=True)
+            output_array.insert(ticker, decoded)
 
     return output_array
 
