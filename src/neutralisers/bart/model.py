@@ -22,6 +22,6 @@ class BART(nn.Module):
                             )
         self.encoder = BartForConditionalGeneration(config=config)
 
-    def forward(self, label, text):
-        loss, f = self.encoder(text, labels=label)[:2]
+    def forward(self, text):
+        loss, f = self.encoder(text)[:2]
         return loss, f
