@@ -123,5 +123,5 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
 # Run
 if __name__ == "__main__":
     args = str(sys.argv)
-    print(pipeline("Rushden is the worst town"))
+    print(pipeline("Pepper is a very ugly cat. Paul is a very cool dude"))
     
