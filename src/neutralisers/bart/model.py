@@ -28,3 +28,4 @@ class BART(nn.Module):
     
     def generate(self, text):
         output = self.encoder.generate(text)
+        return output
