@@ -77,6 +77,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
             text = text.type(torch.LongTensor)  
             text = text.to(device)
             tagger_output = tagger_model(labels, text)
+            _,tagger_output = tagger_output
             biased = torch.argmax(tagger_output, 1)
             print(biased)
             if biased == 1:
