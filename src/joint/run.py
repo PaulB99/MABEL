@@ -5,7 +5,7 @@ sys.path.insert(0, '../')
 from taggers.base_model import model as t_model
 from neutralisers.bart import model as n_model
 from transformers import BertTokenizer, BartTokenizer
-from torchtext.data import Field, Dataset, BucketIterator
+from torchtext.data import Field, Dataset, BucketIterator, Example
 
 
 # Program to load pretrained models and run the full pipeline
@@ -21,10 +21,9 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     # Split sentences
     split_sent = sentence.split('.')
     
-    # Populate dataset
-    prov_data = []
-    for x in split_sent:
-        prov_data.append(('0', x))
+    #prov_data = []
+    #for x in split_sent:
+     #   prov_data.append(('0', x))
     
     # Device to run on
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -42,8 +41,14 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     label_field = Field(sequential=False, use_vocab=False, batch_first=True, dtype=torch.float)
     text_field = Field(use_vocab=False, tokenize=t_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
     fields = [('labels', label_field), ('text', text_field)]
-    sent_data = Dataset(prov_data, fields)
-    print(sent_data)
+    #sent_data = Dataset(prov_data, fields)
+    
+    # Populate dataset
+    sent_data = []
+    for x in split_sent:
+        ex = Example.fromlist([0,x], fields)
+        sent_data.append(ex)
+        
     print('Data initialised')
     
     iterator = BucketIterator(sent_data, batch_size=1, device=device, train=False, shuffle=False, sort=False)
