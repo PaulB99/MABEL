@@ -51,7 +51,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
         
     print('Data initialised')
     
-    iterator = BucketIterator(sent_data, batch_size=1, device=device, train=False, shuffle=False, sort=False)
+    iterator = BucketIterator(sent_data, batch_size=1, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
     print('Iterator initialised')
     
     # Load models
