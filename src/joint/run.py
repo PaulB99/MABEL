@@ -70,8 +70,15 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     t2 = time.clock()
     print('Neutraliser loaded in {}s!'.format(t2-t1))
     
+    # Output vals
+    output_array = []
+    biased_indices = []
+    ticker = -1
+    
+    # Check for bias
     with torch.no_grad():
         for (labels, text), _ in iterator:
+            ticker+=1
             labels = labels.type(torch.LongTensor)           
             labels = labels.to(device)
             text = text.type(torch.LongTensor)  
@@ -82,13 +89,49 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
             #print(biased)
             if biased == 1:
                 print('Biased!')
-                neutraliser_output = neutraliser_model.generate(text)
-                print(neutraliser_output)
+                biased_indices.append(ticker)
+                #neutraliser_output = neutraliser_model.generate(text)
+                #print(neutraliser_output)
             elif biased == 0:
                 print('Unbiased!')
+                output_array.insert(ticker, split_sent[ticker])
+                
+                
+    # Prepare data for neutralisation
+    # Padding
+    MAX_SEQ_LEN = 128
+    PAD_INDEX = n_tokeniser.convert_tokens_to_ids(n_tokeniser.pad_token)
+    UNK_INDEX = n_tokeniser.convert_tokens_to_ids(n_tokeniser.unk_token)
+    
+    # Fields
+    text_field = Field(use_vocab=False, tokenize=n_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
+    fields = [('text', text_field)]
+    #sent_data = Dataset(prov_data, fields)
+    
+    # Populate dataset
+    prov_data = []
+    for x in split_sent:
+        ex = Example.fromlist([x], fields)
+        prov_data.append(ex)
+    sent_data = Dataset(prov_data, fields)
+    
+    iterator = BucketIterator(sent_data, batch_size=1, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
+    print('Ready for neutralisation')
+    
+    # Neutralise sentences tagged as biased
+    # Check for bias
+    ticker=-1
+    with torch.no_grad():
+        for (text), _ in iterator:
+            ticker+=1
+            text = text.type(torch.LongTensor)  
+            text = text.to(device)
+            neutraliser_output = neutraliser_model.generate(text)
+            output_array.insert(ticker, neutraliser_output)
 
+    return output_array
 # Run
 if __name__ == "__main__":
     args = str(sys.argv)
-    pipeline(args)
+    print(pipeline(args))
     
