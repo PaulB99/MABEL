@@ -82,7 +82,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
             #print(biased)
             if biased == 1:
                 print('Biased!')
-                neutraliser_output = neutraliser_model(labels,text)
+                neutraliser_output = neutraliser_model(text)
                 print(neutraliser_output)
             elif biased == 0:
                 print('Unbiased!')
