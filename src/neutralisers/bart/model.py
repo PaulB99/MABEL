@@ -25,3 +25,6 @@ class BART(nn.Module):
     def forward(self, text):
         loss, f = self.encoder(text)[:2]
         return loss, f
+    
+    def generate(self, text):
+        output = self.encoder.generate(text)
