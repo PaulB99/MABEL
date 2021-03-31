@@ -7,23 +7,17 @@ from neutralisers.bart import model as n_model
 from transformers import BertTokenizer, BartTokenizer
 from torchtext.data import Field, Dataset, BucketIterator, Example
 
-
 # Program to load pretrained models and run the full pipeline
 
 # Helper function to load model checkpoint
 def load_ckpt(load_path, model):
     model.load_state_dict(torch.load(load_path))
-    #print(f'Trained model loaded from <== {load_path}')
 
-# 
+# The full detection and neutralisation pipeline
 def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     
     # Split sentences
     split_sent = sentence.split('.')
-    
-    #prov_data = []
-    #for x in split_sent:
-     #   prov_data.append(('0', x))
     
     # Device to run on
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -41,7 +35,6 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     label_field = Field(sequential=False, use_vocab=False, batch_first=True, dtype=torch.float)
     text_field = Field(use_vocab=False, tokenize=t_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
     fields = [('labels', label_field), ('text', text_field)]
-    #sent_data = Dataset(prov_data, fields)
     
     # Populate dataset
     prov_data = []
@@ -86,12 +79,9 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
             tagger_output = tagger_model(labels, text)
             _,tagger_output = tagger_output
             biased = torch.argmax(tagger_output, 1)
-            #print(biased)
             if biased == 1:
                 print('Biased!')
                 biased_indices.append(ticker)
-                #neutraliser_output = neutraliser_model.generate(text)
-                #print(neutraliser_output)
             elif biased == 0:
                 print('Unbiased!')
                 output_array.insert(ticker, split_sent[ticker])
@@ -106,7 +96,6 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     # Fields
     text_field = Field(use_vocab=False, tokenize=n_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
     fields = [('text', text_field)]
-    #sent_data = Dataset(prov_data, fields)
     
     # Populate dataset
     prov_data = []
@@ -119,7 +108,6 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
     print('Ready for neutralisation')
     
     # Neutralise sentences tagged as biased
-    # Check for bias
     ticker=-1
     with torch.no_grad():
         for (text), _ in iterator:
@@ -130,6 +118,7 @@ def pipeline(sentence, tagger='base_model', neutraliser='bart'):
             output_array.insert(ticker, neutraliser_output)
 
     return output_array
+
 # Run
 if __name__ == "__main__":
     args = str(sys.argv)
