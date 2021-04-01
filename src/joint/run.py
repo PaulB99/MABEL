@@ -50,7 +50,7 @@ def pipeline(tagger='base_model', neutraliser='bart'):
     print('Neutraliser loaded in {}s!'.format(t2-t1))
     
     # Take input
-    sentence = str(input('Enter the phrase to be neutralised, or Exit to quit'))
+    sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
     while not sentence == 'Exit':
         
          # Split sentences
@@ -124,7 +124,7 @@ def pipeline(tagger='base_model', neutraliser='bart'):
 
         #return output_array
         print(output_array)
-        sentence = str(input('Enter new phrase, or type Exit to quit'))
+        sentence = str(input('Enter new phrase, or type Exit to quit\n'))
 
 # Run
 if __name__ == "__main__":
