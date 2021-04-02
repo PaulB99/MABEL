@@ -59,7 +59,7 @@ def minidataset(name, size):
     print("Done!")
     
 # Create a dataset of a given size
-def create_dataset(size, mode='detection'):
+def create_dataset(size, path_name, add_npov = False ,mode='detection'):
     
     train = []
     valid = []
@@ -125,30 +125,61 @@ def create_dataset(size, mode='detection'):
     random.shuffle(valid)
     random.shuffle(test)
     
+    # Add NPOV dataset examples if requested
+    if add_npov:
+    
+        with open('../data/NPOV/5gram-edits-train.tsv', encoding='utf8') as f:
+            train_tsv = csv.reader(f, delimiter="\t")
+            for row in train_tsv:
+                if row[2] == 'true' or row[3] == 'true':
+                    train.append((1,row[-2]))
+                else:
+                    train.append((0,row[-2]))
+         
+        with open('../data/NPOV/5gram-edits-dev.tsv', encoding='utf8') as f:    
+            valid_tsv = csv.reader(f, delimiter="\t")
+            for row in valid_tsv:
+                if row[2] == 'true' or row[3] == 'true':
+                    valid.append((1,row[-2]))
+                else:
+                    valid.append((0,row[-2]))
+        
+        with open('../data/NPOV/5gram-edits-test.tsv', encoding='utf8') as f:
+            test_tsv = csv.reader(f, delimiter="\t")
+            for row in test_tsv:
+                if row[2] == 'true' or row[3] == 'true':
+                    test.append((1,row[-2]))
+                else:
+                    test.append((0,row[-2]))
+            
+        random.shuffle(train)
+        random.shuffle(valid)
+        random.shuffle(test)
+    
     # Write to file
-    if os.path.exists("../data/datasets/main/train_" + mode + ".csv"):
-        os.remove("../data/datasets/main/train_" + mode + ".csv")
+    if os.path.exists("../data/datasets/"+path_name+"/train_" + mode + ".csv"):
+        os.remove("../data/datasets/"+path_name+"/train_" + mode + ".csv")
         
-    if os.path.exists("../data/datasets/main/test_" + mode + ".csv"):
-        os.remove("../data/datasets/main/test_" + mode + ".csv")
+    if os.path.exists("../data/datasets/"+path_name+"/test_" + mode + ".csv"):
+        os.remove("../data/datasets/"+path_name+"/test_" + mode + ".csv")
         
-    if os.path.exists("../data/datasets/main/valid_" + mode +  ".csv"):
-        os.remove("../data/datasets/main/valid_" + mode + ".csv")
+    if os.path.exists("../data/datasets/"+path_name+"/valid_" + mode +  ".csv"):
+        os.remove("../data/datasets/"+path_name+"/valid_" + mode + ".csv")
         
-    with open("../data/datasets/main/train_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+    with open("../data/datasets/"+path_name+"/train_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
         writer.writerow(('label', 'text'))
         for d in train:
             writer.writerow(d)
-    with open("../data/datasets/main/test_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+    with open("../data/datasets/"+path_name+"/test_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
         writer.writerow(('label', 'text'))
         for d in test:
             writer.writerow(d)
             
-    with open("../data/datasets/main/valid_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+    with open("../data/datasets/"+path_name+"/valid_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
         writer.writerow(('label', 'text'))
@@ -157,7 +188,7 @@ def create_dataset(size, mode='detection'):
             
     print("Done!")
     
-def create_seq2seq(size, mode='neutralisation'):
+def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
     train = []
     valid = []
     test = []
@@ -195,38 +226,64 @@ def create_seq2seq(size, mode='neutralisation'):
     random.shuffle(valid)
     random.shuffle(test)
     
+    # Add NPOV dataset examples if requested
+    if add_npov:
+    
+        with open('../data/NPOV/5gram-edits-train.tsv', encoding='utf8') as f:
+            train_tsv = csv.reader(f, delimiter="\t")
+            for row in train_tsv:
+                if row[2] == 'true' or row[3] == 'true':
+                    train.append((row[-2],row[-1]))
+         
+        with open('../data/NPOV/5gram-edits-dev.tsv', encoding='utf8') as f:    
+            valid_tsv = csv.reader(f, delimiter="\t")
+            for row in valid_tsv:
+                if row[2] == 'true' or row[3] == 'true':
+                    valid.append((row[-2],row[-1]))
+        
+        with open('../data/NPOV/5gram-edits-test.tsv', encoding='utf8') as f:
+            test_tsv = csv.reader(f, delimiter="\t")
+            for row in test_tsv:
+                if row[2] == 'true' or row[3] == 'true':
+                    test.append((row[-2],row[-1]))
+            
+        random.shuffle(train)
+        random.shuffle(valid)
+        random.shuffle(test)
+    
+    
     # Write to file
-    if os.path.exists("../data/datasets/main/train_" + mode + ".csv"):
-        os.remove("../data/datasets/main/train_" + mode + ".csv")
+    if os.path.exists("../data/datasets/"+path_name+ "/train_" + mode + ".csv"):
+        os.remove("../data/datasets/"+path_name+"/train_" + mode + ".csv")
         
-    if os.path.exists("../data/datasets/main/test_" + mode + ".csv"):
-        os.remove("../data/datasets/main/test_" + mode + ".csv")
+    if os.path.exists("../data/datasets/"+path_name+"/test_" + mode + ".csv"):
+        os.remove("../data/datasets/"+path_name+"/test_" + mode + ".csv")
         
-    if os.path.exists("../data/datasets/main/valid_" + mode +  ".csv"):
-        os.remove("../data/datasets/main/valid_" + mode + ".csv")
+    if os.path.exists("../data/datasets/"+path_name+"/valid_" + mode +  ".csv"):
+        os.remove("../data/datasets/"+path_name+"/valid_" + mode + ".csv")
         
-    with open("../data/datasets/main/train_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+    with open("../data/datasets/"+path_name+"/train_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
         writer.writerow(('text', 'target'))
         for d in train:
             writer.writerow(d)
-    with open("../data/datasets/main/test_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+    with open("../data/datasets/"+path_name+"/test_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
         writer.writerow(('text', 'target'))
         for d in test:
             writer.writerow(d)
             
-    with open("../data/datasets/main/valid_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
+    with open("../data/datasets/"+path_name+"/valid_" + mode + ".csv", 'w', newline='', encoding='utf8') as csvfile:
         writer = csv.writer(csvfile) # TODO: Might have to change delimiter to avoid issues
         # Write column titles
         writer.writerow(('text', 'target'))
         for d in valid:
             writer.writerow(d)
     
-#create_dataset(200000)
+create_dataset(300000, 'big')
 
-create_seq2seq(200000)
+#create_seq2seq(300000, 'big', add_npov=True)
     
     
