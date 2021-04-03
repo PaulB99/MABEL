@@ -22,9 +22,14 @@ with open(data_path+'scraper/dataset.csv', 'w+', newline='', encoding="utf-8") a
         if int(x[0])<=22 and x[1] == '11':
             with open(data_path + 'scraper/scraped_data/' + filename, 'r') as f:
                 data = f.read()
-                print(data[0])
-                writer.writerow([data])
+                split_data = data.split('\n')
+                for d in split_data:
+                    if any(c.isalnum() for c in d):
+                        writer.writerow(['0', d.split(), x[3].split('.')[0]])
         else:
             with open(data_path + 'scraper/scraped_data/' + filename, 'r', encoding="utf-8") as f:
                 data = f.read()
-                writer.writerow([data]) 
+                split_data = data.split('\n')
+                for d in split_data:
+                    if any(c.isalnum() for c in d):
+                        writer.writerow(['0', d.strip(), x[3].split('.')[0]])

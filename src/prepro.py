@@ -282,7 +282,7 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
         for d in valid:
             writer.writerow(d)
     
-create_dataset(300000, 'big')
+#create_dataset(300000, 'big')
 
 #create_seq2seq(300000, 'big', add_npov=True)
     
