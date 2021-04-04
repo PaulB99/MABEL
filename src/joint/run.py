@@ -5,10 +5,10 @@ sys.path.insert(0, '../')
 from taggers.base_model import model as t_model
 from neutralisers.bart import model as n_model
 from transformers import BertTokenizer, BartTokenizer
+import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
-import logging
 
-logging.getLogger("pytorch_transformers.tokenization_utils").setLevel(logging.ERROR)
+transformers.logging.set_verbosity_error()
 
 # Program to load pretrained models and run the full pipeline
 
