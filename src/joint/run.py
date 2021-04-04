@@ -9,7 +9,7 @@ from torchtext.data import Field, Dataset, BucketIterator, Example
 
 # Program to load pretrained models and run the full pipeline
 
-class runner(tagger='base_model', neutraliser='bart'):
+class runner():
     
     # Helper function to load model checkpoint
     def load_ckpt(load_path, model):
@@ -51,7 +51,9 @@ class runner(tagger='base_model', neutraliser='bart'):
     
     
     def __init__(self):
-        runner.initialise()
+        self.initialise()
+        self.tagger = 'base_model'
+        self.neutraliser = 'bart'
     
     # The full detection and neutralisation pipeline
     def pipeline(self):
