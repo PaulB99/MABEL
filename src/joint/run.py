@@ -50,10 +50,10 @@ class runner():
         print('Neutraliser loaded in {}s!'.format(t2-t1))
     
     
-    def __init__(self):
+    def __init__(self, tagger, neutraliser):
         self.initialise()
-        self.tagger = 'base_model'
-        self.neutraliser = 'bart'
+        self.tagger = tagger
+        self.neutraliser = neutraliser
     
     # The full detection and neutralisation pipeline
     def pipeline(self):
@@ -138,6 +138,6 @@ class runner():
 # Run
 if __name__ == "__main__":
     args = str(sys.argv)
-    r = runner()
+    r = runner('base_model', 'bart')
     r.pipeline()
     
