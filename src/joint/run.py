@@ -12,7 +12,7 @@ from torchtext.data import Field, Dataset, BucketIterator, Example
 class runner():
     
     # Helper function to load model checkpoint
-    def load_ckpt(load_path, model):
+    def load_ckpt(self,load_path, model):
         model.load_state_dict(torch.load(load_path))
     
     def initialise(self):
