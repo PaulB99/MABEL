@@ -49,95 +49,97 @@ class runner():
         t2 = time.clock()
         print('Neutraliser loaded in {}s!'.format(t2-t1))
     
-    
     def __init__(self, tagger, neutraliser):
         self.tagger = tagger
         self.neutraliser = neutraliser
         self.initialise()
     
     # The full detection and neutralisation pipeline
-    def pipeline(self):
+    def pipeline(self, sentence):
         
-        # Take input
-        sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
-        while not sentence == 'Exit':
+        # Split sentences
+        split_sent = sentence.split('.')
             
-             # Split sentences
-            split_sent = sentence.split('.')
+        # Populate dataset
+        prov_data = []
+        for x in split_sent:
+            ex = Example.fromlist([0,x], self.fields)
+            prov_data.append(ex)
+        sent_data = Dataset(prov_data, self.fields)    
+        print('Data initialised')
             
-            # Populate dataset
-            prov_data = []
-            for x in split_sent:
-                ex = Example.fromlist([0,x], self.fields)
-                prov_data.append(ex)
-            sent_data = Dataset(prov_data, self.fields)    
-            print('Data initialised')
+        iterator = BucketIterator(sent_data, batch_size=1, device=self.device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
+        print('Iterator initialised')
             
-            iterator = BucketIterator(sent_data, batch_size=1, device=self.device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
-            print('Iterator initialised')
+        # Output vals
+        output_array = []
+        biased_indices = []
+        ticker = -1
             
-            # Output vals
-            output_array = []
-            biased_indices = []
-            ticker = -1
-            
-            # Check for bias
-            with torch.no_grad():
-                for (labels, text), _ in iterator:
-                    ticker+=1
-                    labels = labels.type(torch.LongTensor)           
-                    labels = labels.to(self.device)
-                    text = text.type(torch.LongTensor)  
-                    text = text.to(self.device)
-                    tagger_output = self.tagger_model(labels, text)
-                    _,tagger_output = tagger_output
-                    biased = torch.argmax(tagger_output, 1)
-                    if biased == 1:
-                        print('Biased!')
-                        biased_indices.append(ticker)
-                    elif biased == 0:
-                        print('Unbiased!')
-                        output_array.insert(ticker, split_sent[ticker])
+        # Check for bias
+        with torch.no_grad():
+            for (labels, text), _ in iterator:
+                ticker+=1
+                labels = labels.type(torch.LongTensor)           
+                labels = labels.to(self.device)
+                text = text.type(torch.LongTensor)  
+                text = text.to(self.device)
+                tagger_output = self.tagger_model(labels, text)
+                _,tagger_output = tagger_output
+                biased = torch.argmax(tagger_output, 1)
+                if biased == 1:
+                    print('Biased!')
+                    biased_indices.append(ticker)
+                elif biased == 0:
+                    print('Unbiased!')
+                    output_array.insert(ticker, split_sent[ticker])
                         
                         
-            # Prepare data for neutralisation
-            # Padding
-            MAX_SEQ_LEN = 128
-            PAD_INDEX = self.n_tokeniser.convert_tokens_to_ids(self.n_tokeniser.pad_token)
-            UNK_INDEX = self.n_tokeniser.convert_tokens_to_ids(self.n_tokeniser.unk_token)
+        # Prepare data for neutralisation
+        # Padding
+        MAX_SEQ_LEN = 128
+        PAD_INDEX = self.n_tokeniser.convert_tokens_to_ids(self.n_tokeniser.pad_token)
+        UNK_INDEX = self.n_tokeniser.convert_tokens_to_ids(self.n_tokeniser.unk_token)
             
-            # Fields
-            text_field = Field(use_vocab=False, tokenize=self.n_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
-            fields = [('text', text_field)]
+        # Fields
+        text_field = Field(use_vocab=False, tokenize=self.n_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
+        fields = [('text', text_field)]
             
-            # Populate dataset
-            prov_data = []
-            for x in split_sent:
-                ex = Example.fromlist([x], fields)
-                prov_data.append(ex)
-            sent_data = Dataset(prov_data, fields)
+        # Populate dataset
+        prov_data = []
+        for x in split_sent:
+            ex = Example.fromlist([x], fields)
+            prov_data.append(ex)
+        sent_data = Dataset(prov_data, fields)
             
-            iterator = BucketIterator(sent_data, batch_size=1, device=self.device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
-            print('Ready for neutralisation')
+        iterator = BucketIterator(sent_data, batch_size=1, device=self.device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
+        print('Ready for neutralisation')
             
-            # Neutralise sentences tagged as biased
-            ticker=-1
-            with torch.no_grad():
-                for (text), _ in iterator:
-                    ticker+=1
+        # Neutralise sentences tagged as biased
+        ticker=-1
+        with torch.no_grad():
+            for (text), _ in iterator:
+                ticker+=1
+                if ticker in biased_indices:
                     text = text.type(torch.LongTensor)  
                     text = text.to(self.device)
                     neutraliser_output = self.neutraliser_model.generate(text)
                     decoded = self.n_tokeniser.decode(neutraliser_output[0], skip_special_tokens=True)
                     output_array.insert(ticker, decoded)
     
-            #return output_array
-            print(output_array)
-            sentence = str(input('Enter new phrase, or type Exit to quit\n'))
-
+        output_string = ''
+        for s in output_array:
+            output_string+=(s+'. ')
+        return output_string
+           
+            
 # Run
 if __name__ == "__main__":
     args = str(sys.argv)
     r = runner('base_model', 'bart')
-    r.pipeline()
+    sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
+    while not sentence == 'Exit':
+        print(r.pipeline(sentence))
+        sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
+
     
