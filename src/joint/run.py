@@ -51,9 +51,9 @@ class runner():
     
     
     def __init__(self, tagger, neutraliser):
-        self.initialise()
         self.tagger = tagger
         self.neutraliser = neutraliser
+        self.initialise()
     
     # The full detection and neutralisation pipeline
     def pipeline(self):
