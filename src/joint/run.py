@@ -44,8 +44,8 @@ class runner():
         
         t1 = time.clock()
         neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
-        neutraliser_model = n_model.BART().to(self.device)
-        self.load_ckpt(neutraliser_path, neutraliser_model)
+        self.neutraliser_model = n_model.BART().to(self.device)
+        self.load_ckpt(neutraliser_path, self.neutraliser_model)
         t2 = time.clock()
         print('Neutraliser loaded in {}s!'.format(t2-t1))
     
