@@ -281,9 +281,11 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
         writer.writerow(('text', 'target'))
         for d in valid:
             writer.writerow(d)
+            
+    print('Done!')
     
-#create_dataset(300000, 'big')
+create_dataset(300000, 'big', add_npov=True)
 
-#create_seq2seq(300000, 'big', add_npov=True)
+create_seq2seq(300000, 'big', add_npov=True)
     
     

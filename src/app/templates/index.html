@@ -1,4 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bias Neutraliser</title>
+</head>
+<body>
+<select name= taggers method="GET" action="/">
+    {% for tagger in taggers %}
+    <option value= "{{tagger}}" SELECTED>{{tagger}}</option>"
+    {% endfor %}
+</select>
+
+<select name= neutralisers method="GET" action="/">
+    {% for neutraliser in neutralisers %}
+    <option value= "{{neutraliser}}" SELECTED>{{neutraliser}}</option>"
+    {% endfor %}
+</select>
+
 <form method="POST">
     <input name="variable">
     <input type="submit">
 </form>
+</body>
+</html>
