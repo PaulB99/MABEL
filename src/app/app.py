@@ -20,7 +20,7 @@ def get_models():
         tagger = request.form.get('taggers')
         neutraliser = request.form.get('neutralisers')
         if tagger is not None and neutraliser is not None:
-            x = 1
+            return render_template('runner.html', tagger=tagger, neutraliser=neutraliser)
         else:
             error="Error! Please select a tagger and neutraliser"
     return render_template('index.html', taggers=taggers,neutralisers=neutralisers)
