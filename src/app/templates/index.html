@@ -5,8 +5,11 @@
     <title>Bias Neutraliser</title>
 </head>
 <body>
+    <strong>
+        {{error}}
+    </strong>
     <form action="{{ url_for('get_models') }}" method='post'>
-        
+
     <select name= taggers method="GET" action="/">
         {% for tagger in taggers %}
         <option value= "{{tagger}}" SELECTED>{{tagger}}</option>"
