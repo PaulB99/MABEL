@@ -5,21 +5,30 @@
     <title>Bias Neutraliser</title>
 </head>
 <body>
-<select name= taggers method="GET" action="/">
-    {% for tagger in taggers %}
-    <option value= "{{tagger}}" SELECTED>{{tagger}}</option>"
-    {% endfor %}
-</select>
+    <form action="{{ url_for('get_models') }}" method='post'>
+        
+    <select name= taggers method="GET" action="/">
+        {% for tagger in taggers %}
+        <option value= "{{tagger}}" SELECTED>{{tagger}}</option>"
+        {% endfor %}
+    </select>
 
-<select name= neutralisers method="GET" action="/">
-    {% for neutraliser in neutralisers %}
-    <option value= "{{neutraliser}}" SELECTED>{{neutraliser}}</option>"
-    {% endfor %}
-</select>
+    <select name= neutralisers method="GET" action="/">
+        {% for neutraliser in neutralisers %}
+        <option value= "{{neutraliser}}" SELECTED>{{neutraliser}}</option>"
+        {% endfor %}
+    </select>
 
+    <input type='submit' value='Load models'>
+</form>
+</body>
+
+
+<!--
 <form method="POST">
     <input name="variable">
     <input type="submit">
 </form>
+-->
 </body>
 </html>

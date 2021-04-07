@@ -6,27 +6,29 @@ import time
 sys.path.insert(0, '../')
 from joint.run import runner
 app = Flask(__name__)
+taggers = ['base_model', 'large_model']
+neutralisers = ['bart']
 
 @app.route('/', methods=['GET'])
-def my_form():
-    taggers = ['base_model', 'large_model']
-    neutralisers = ['bart']
+def main():
     return render_template('index.html', taggers=taggers,neutralisers=neutralisers)
 
-@app.route('/', methods=['POST'])
-def my_form_post():
-    variable = request.form['variable']
-    return variable
-
-#@app.route('/', methods=['GET'])
-#def dropdown_1():
-    #taggers = ['base_model', 'Large_model']
-    #return render_template('index.html', taggers=taggers)
-
-#@app.route('/', methods=['GET'])
-#def dropdown_2():
-    #neutralisers = ['bart']
-    #return render_template('index.html', neutralisers=neutralisers)
+@app.route('/', methods=['GET','POST'])
+def get_models():
+    error=""
+    if request.method == 'POST':   
+        tagger = request.form.get('taggers')
+        neutraliser = request.form.get('neutralisers')
+        if tagger is not None and neutraliser is not None:
+            x = 1
+        else:
+            error="Error! Please select a tagger and neutraliser"
+    return render_template('index.html', taggers=taggers,neutralisers=neutralisers)
+    
+#@app.route('/', methods=['POST'])
+#def my_form_post():
+  #  variable = request.form['variable']
+   # return variable
 
 if __name__ == '__main__':
     # app.run(port=5002, threaded=False)
