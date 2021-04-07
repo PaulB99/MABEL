@@ -22,9 +22,9 @@ def get_models():
         neutraliser = request.form.get('neutralisers')
         if tagger is not None and neutraliser is not None:
             if not os.path.exists('../../cache/taggers/' + tagger +'.pt'):
-                error+="{} has not been trained yet! Please run the relevant testing script and try again.\n".format(tagger)
+                error+="{} has not been trained yet! Please run the relevant testing script and try again.<br>".format(tagger)
             if not os.path.exists('../../cache/neutralisers/' + neutraliser + '.pt'):
-                error+="{} has not been trained yet! Please run the relevant testing script and try again.\n".format(neutraliser)      
+                error+="{} has not been trained yet! Please run the relevant testing script and try again.<br>".format(neutraliser)      
             if error != "":
                 return render_template('index.html', taggers=taggers,neutralisers=neutralisers, error=error)
             else:
