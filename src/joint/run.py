@@ -23,8 +23,18 @@ class runner():
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         
         # Tokenisers
-        self.t_tokeniser = BertTokenizer.from_pretrained('bert-base-uncased')
-        self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
+        # Select right tokenisers
+        if self.tagger=='base_model':   
+            self.t_tokeniser = BertTokenizer.from_pretrained('bert-base-uncased')
+        elif self.tagger=='large_model':
+            self.t_tokeniser = BertTokenizer.from_pretrained('bert-large-uncased')
+        else:
+            raise ValueError('Model {} not recognised'.format(self.tagger))
+        
+        if self.neutraliser=='bart':
+            self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
+        else:
+            raise ValueError('Model {} not recognised'.format(self.tagger))
         
         # Padding
         MAX_SEQ_LEN = 128
