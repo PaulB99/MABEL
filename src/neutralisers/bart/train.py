@@ -82,7 +82,7 @@ def train(model,
             loss, _ = output
 
             optimiser.zero_grad()
-            loss.backward()
+            loss.mean().backward()
             optimiser.step()
 
             # Update running values
