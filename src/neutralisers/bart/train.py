@@ -86,7 +86,7 @@ def train(model,
             optimiser.step()
 
             # Update running values
-            training_loss += loss.item()
+            training_loss += loss.mean().item()
             global_step += 1
 
             # Evaluation step
