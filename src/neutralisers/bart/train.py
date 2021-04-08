@@ -36,7 +36,7 @@ target_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, in
 fields = [('text', text_field), ('target', target_field)]
 
 # Dataset TODO: Work out how the data is coming in
-train, valid = TabularDataset.splits(path=data_path, train='datasets/big/train_neutralisation.csv', validation='datasets/big/valid_neutralisation.csv',
+train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
                                            format='CSV', fields=fields, skip_header=True)
 
 # Iterators
