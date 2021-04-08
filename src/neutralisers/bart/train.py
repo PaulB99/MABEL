@@ -103,7 +103,7 @@ def train(model,
                         output = model(text, target)
                         loss, _ = output
                         
-                        valid_loss += loss.mean()item()
+                        valid_loss += loss.mean().item()
 
                 # Evaluate
                 average_train_loss = training_loss / eval_every
