@@ -80,9 +80,8 @@ def train(model,
             target = target.to(device)
             output = model(text, target)
             loss, _ = output
-
             optimiser.zero_grad()
-            loss.backward()
+            loss.mean().backward()
             optimiser.step()
 
             # Update running values
