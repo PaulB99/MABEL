@@ -79,10 +79,8 @@ class runner():
             ex = Example.fromlist([0,x], self.fields)
             prov_data.append(ex)
         sent_data = Dataset(prov_data, self.fields)    
-        print('Data initialised')
             
         iterator = BucketIterator(sent_data, batch_size=1, device=self.device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
-        print('Iterator initialised')
             
         # Output vals
         output_array = []
@@ -126,7 +124,6 @@ class runner():
         sent_data = Dataset(prov_data, fields)
             
         iterator = BucketIterator(sent_data, batch_size=1, device=self.device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
-        print('Ready for neutralisation')
             
         # Neutralise sentences tagged as biased
         ticker=-1
