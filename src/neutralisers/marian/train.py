@@ -1,4 +1,4 @@
-from transformers import MarianMTModel, MarianTokenizer, Seq2SeqTrainer, Seq2SeqTrainingArguments
+from simpletransformers.seq2seq import Seq2SeqModel
 
 # A neutraliser using the marian framework
 
