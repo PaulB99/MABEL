@@ -25,8 +25,7 @@ model_args.save_optimizer_and_scheduler = False
 model_args.save_steps = -1
 model_args.use_multiprocessing = False
 model_args.best_model_dir = '../../../cache/neutralisers/roberta'
-model_args.use_cuda = False
 
 mymodel = roberta(model_args)
 
-mymodel.model.train_model(train_data, eval_data=valid_data, use_cuda=True, verbose=False)
+mymodel.model.train_model(train_data, eval_data=valid_data, use_cuda=False, verbose=False)

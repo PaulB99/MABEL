@@ -6,6 +6,7 @@ from taggers.base_model import model as base_model
 from taggers.large_model import model as large_model
 from neutralisers.bart import model as bart_model
 from neutralisers.roberta import model as roberta_model
+from neutralisers.parrot import model as parrot_model
 from transformers import BertTokenizer, BartTokenizer
 import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
@@ -58,6 +59,10 @@ class runner():
         # Neutralisers
         if self.neutraliser=='bart':
             self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
+            
+        elif self.neutraliser=='parrot':
+            self.neutraliser_model = parrot_model.parrot()
+            return
             
         # Roberta is loaded in a different way
         elif self.neutraliser=='roberta':
@@ -130,10 +135,21 @@ class runner():
                 elif biased == 0:
                     print('Unbiased!')
                     output_array.insert(ticker, split_sent[ticker])
-                        
-         
+                    
+        # TIME TO NEUTRALISE!
+        
+        # The parrot pipeline is greatly simplified
+        if self.neutraliser=='parrot':
+            ticker = -1
+            output_array=[]
+            for s in split_sent:
+                ticker+=1
+                if ticker in biased_indices:
+                    pred=self.neutraliser_model.generate(s)
+                    output_array.insert(ticker, pred)
+                    
         # Using the roberta neutraliser has a different pipeline
-        if self.neutraliser=='roberta':
+        elif self.neutraliser=='roberta':
             ticker = -1
             output_array=[]
             for s in split_sent:
