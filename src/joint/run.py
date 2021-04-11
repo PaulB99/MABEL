@@ -177,14 +177,3 @@ class runner():
             output_string+=(s+'. ')
         return output_string
            
-            
-# Run
-if __name__ == "__main__":
-    args = str(sys.argv)
-    r = runner('base_model', 'bart')
-    sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
-    while not sentence == 'Exit':
-        print(r.pipeline(sentence))
-        sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
-
-    
