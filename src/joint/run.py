@@ -195,6 +195,6 @@ class runner():
     
         output_string = ''
         for s in output_array:
-            output_string+=(s+'. ')
+            output_string+=(s+'.')
         return output_string
            
