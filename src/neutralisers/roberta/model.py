@@ -12,7 +12,7 @@ class roberta():
         
         self.model = Seq2SeqModel(
             "roberta",
-            "roberta-base-uncased",
+            "roberta-base",
             "bert-base-uncased",
             use_cuda=cuda_available,
             args=model_args
