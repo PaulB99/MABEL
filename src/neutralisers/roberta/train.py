@@ -17,8 +17,8 @@ model_args = Seq2SeqArgs()
 model_args.num_train_epochs = 11
 model_args.evaluate_generated_text = True
 model_args.evaluate_during_training = True
-model_args.train_batch_size = 4
-model_args.eval_batch_size = 4
+model_args.train_batch_size = 1
+model_args.eval_batch_size = 1
 model_args.save_eval_checkpoints = False
 model_args.save_model_every_epoch = False
 model_args.save_optimizer_and_scheduler = False
@@ -28,4 +28,4 @@ model_args.best_model_dir = '../../../cache/neutralisers/roberta'
 
 mymodel = roberta(model_args)
 
-mymodel.model.train_model(train_data, eval_data=valid_data, use_cuda=False, verbose=False)
+mymodel.model.train_model(train_data, eval_data=valid_data, verbose=False)

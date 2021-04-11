@@ -61,7 +61,10 @@ class runner():
             self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
             
         elif self.neutraliser=='parrot':
+            t1 = time.clock()
             self.neutraliser_model = parrot_model.parrot()
+            t2 = time.clock()
+            print('Neutraliser loaded in {}s!'.format(t2-t1))
             return
             
         # Roberta is loaded in a different way
