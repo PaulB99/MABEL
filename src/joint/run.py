@@ -58,6 +58,8 @@ class runner():
         # Neutralisers
         if self.neutraliser=='bart':
             self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
+            
+        # Roberta is loaded in a different way
         elif self.neutraliser=='roberta':
             t1 = time.clock()
             model_args = Seq2SeqArgs()
@@ -81,7 +83,7 @@ class runner():
          
         t1 = time.clock()
         neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
-        self.neutraliser_model = roberta_model.BART().to(self.device)
+        self.neutraliser_model = bart_model.BART().to(self.device)
         self.load_ckpt(neutraliser_path, self.neutraliser_model)
         t2 = time.clock()
         print('Neutraliser loaded in {}s!'.format(t2-t1))

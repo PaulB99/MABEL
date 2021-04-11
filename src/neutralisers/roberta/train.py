@@ -10,6 +10,9 @@ output_path = '../../../output'
 train_data = pd.read_csv(data_path+'datasets/main/train_neutralisation.csv')
 valid_data = pd.read_csv(data_path+'datasets/main/valid_neutralisation.csv')
 
+train_data.columns = ['input_text','target_text']
+valid_data.columns = ['input_text','target_text']
+
 model_args = Seq2SeqArgs()
 model_args.num_train_epochs = 11
 model_args.evaluate_generated_text = True
