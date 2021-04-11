@@ -1,8 +1,11 @@
 from simpletransformers.seq2seq import Seq2SeqModel, Seq2SeqArgs
 import pandas as pd
 from model import roberta
+import torch.multiprocessing
 
 # Training script for roberta model
+
+#torch.multiprocessing.set_sharing_strategy('file_system')
 
 data_path = '../../../data/'
 output_path = '../../../output'
@@ -24,6 +27,7 @@ model_args.save_model_every_epoch = False
 model_args.save_optimizer_and_scheduler = False
 model_args.save_steps = -1
 model_args.use_multiprocessing = False
+model_args.dataloader_num_workers = 0
 model_args.best_model_dir = '../../../cache/neutralisers/roberta'
 
 mymodel = roberta(model_args)
