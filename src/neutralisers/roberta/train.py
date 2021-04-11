@@ -26,6 +26,11 @@ save_steps = -1
 use_multiprocessing = False
 best_model_dir = '../../../cache/neutralisers/roberta'
 
-mymodel = roberta(model_args)
+mymodel = Seq2SeqModel(
+            "roberta",
+            "roberta-base",
+            "bert-base-cased",
+            args=model_args
+            )
 
-mymodel.model.train_model(train_data, eval_data=valid_data, use_cuda=True, verbose=False)
+mymodel.train_model(train_data, eval_data=valid_data, use_cuda=True, verbose=False)
