@@ -17,6 +17,8 @@ model_args = Seq2SeqArgs()
 model_args.num_train_epochs = 11
 model_args.evaluate_generated_text = True
 model_args.evaluate_during_training = True
+model_args.train_batch_size = 16
+model_args.eval_batch_size = 8
 best_model_dir = '../../../cache/neutralisers/roberta'
 
 mymodel = roberta(model_args)
