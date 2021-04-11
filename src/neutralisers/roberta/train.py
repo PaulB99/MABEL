@@ -21,4 +21,4 @@ best_model_dir = '../../../cache/neutralisers/roberta'
 
 mymodel = roberta(model_args)
 
-mymodel.model.train_model(train_data, eval_data=valid_data, use_cuda=True)
+mymodel.model.train_model(train_data, eval_data=valid_data, use_cuda=True, verbose=False)
