@@ -19,12 +19,12 @@ model_args.evaluate_generated_text = True
 model_args.evaluate_during_training = True
 model_args.train_batch_size = 4
 model_args.eval_batch_size = 4
-save_eval_checkpoints = False
-save_model_every_epoch = False
-save_optimizer_and_scheduler = False
-save_steps = -1
-use_multiprocessing = False
-best_model_dir = '../../../cache/neutralisers/roberta'
+model_args.save_eval_checkpoints = False
+model_args.save_model_every_epoch = False
+model_args.save_optimizer_and_scheduler = False
+model_args.save_steps = -1
+model_args.use_multiprocessing = False
+model_args.best_model_dir = '../../../cache/neutralisers/roberta'
 
 mymodel = Seq2SeqModel(
             "roberta",
