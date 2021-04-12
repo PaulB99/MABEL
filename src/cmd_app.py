@@ -4,7 +4,7 @@ import sys
 
 if __name__ == "__main__":
     args = sys.argv
-    acceptable_taggers = ['base_model','large_model']
+    acceptable_taggers = ['base_model','large_model', 'lexi']
     acceptable_neutralisers = ['bart','roberta','parrot']
     if not len(args) == 2:
         raise ValueError('Arguments must be 2 valid models')
