@@ -10,8 +10,8 @@ import torch.multiprocessing
 data_path = '../../../data/'
 output_path = '../../../output'
 
-train_data = pd.read_csv(data_path+'datasets/main/train_neutralisation.csv')
-valid_data = pd.read_csv(data_path+'datasets/main/valid_neutralisation.csv')
+train_data = pd.read_csv(data_path+'datasets/big/train_neutralisation.csv')
+valid_data = pd.read_csv(data_path+'datasets/big/valid_neutralisation.csv')
 
 train_data.columns = ['input_text','target_text']
 valid_data.columns = ['input_text','target_text']
