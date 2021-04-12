@@ -156,6 +156,19 @@ def create_dataset(size, path_name, add_npov = False ,mode='detection'):
         random.shuffle(valid)
         random.shuffle(test)
     
+    # Make sure sequences aren't too long
+    limit = 512
+    for x in train:
+        if len(x) >limit:
+            train.remove(x)
+    for x in valid:
+        if len(x) >limit:
+            valid.remove(x)
+    for x in test:
+        if len(x) >limit:
+            test.remove(x)
+        
+    
     # Write to file
     if os.path.exists("../data/datasets/"+path_name+"/train_" + mode + ".csv"):
         os.remove("../data/datasets/"+path_name+"/train_" + mode + ".csv")
