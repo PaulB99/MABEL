@@ -9,18 +9,22 @@ from joint.run import runner
 app = Flask(__name__)
 taggers = ['base_model', 'large_model', 'lexi']
 neutralisers = ['bart', 'roberta', 'parrot']
-tagger=''
-neutraliser=''
+tagger=None
+neutraliser=None
 
 @app.route('/', methods=['GET'])
 def main():
     return render_template('index.html', taggers=taggers,neutralisers=neutralisers, error="")
 
+
 @app.route('/', methods=['GET','POST'])
 def get_models():
     error=""
-    if request.method == 'POST':   
+    if request.method == 'POST':  
+        # Update tagger and neutraliser names
+        global tagger
         tagger = request.form.get('taggers')
+        global neutraliser
         neutraliser = request.form.get('neutralisers')
         if tagger is not None and neutraliser is not None:
             if not os.path.exists('../../cache/taggers/' + tagger +'.pt') and tagger!='lexi':
@@ -36,18 +40,23 @@ def get_models():
         else:
             error="Error! Please select a tagger and neutraliser"
     return render_template('index.html', taggers=taggers,neutralisers=neutralisers, error=error)
+
     
 @app.route('/run', methods=['GET'])
 def get_text():
     return render_template('runner.html', tagger=tagger, neutraliser=neutraliser, out_text='')
 
+
 @app.route('/run', methods=['GET', 'POST'])
 def run_model():
     if request.method == 'POST':
-        text = request.form.get('textinput')
-        processed_text = app_runner.pipeline(text)
-        print('Processed text: ' + processed_text)
-        return render_template('runner.html', tagger=tagger,neutraliser=neutraliser,out_text=processed_text)
+        if 'run' in request.form:
+            text = request.form.get('textinput')
+            processed_text = app_runner.pipeline(text)
+            print('Processed text: ' + processed_text)
+            return render_template('runner.html', tagger=tagger,neutraliser=neutraliser,out_text=processed_text)
+        elif 'return' in request.form:
+            return redirect(url_for('main'))
     
     
 #@app.route('/', methods=['POST'])

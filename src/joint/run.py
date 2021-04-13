@@ -43,7 +43,10 @@ class runner():
             self.tagger_model = large_model.BERT().to(self.device)
             self.bert = True
         elif self.tagger=='lexi':
-            self.tagger_model = lexi_model.lexi()    
+            self.tagger_model = lexi_model.lexi()
+            t2 = time.perf_counter()
+            print('Tagger loaded in {}s!'.format(t2-t1))
+            
         else:
             raise ValueError('Model {} not recognised'.format(self.tagger))
     
@@ -62,13 +65,14 @@ class runner():
             self.load_ckpt(tagger_path, self.tagger_model)
             t2 = time.perf_counter()
             print('Tagger loaded in {}s!'.format(t2-t1))
+            
         
         # Neutralisers
+        t1 = time.perf_counter()
         if self.neutraliser=='bart':
             self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
             
         elif self.neutraliser=='parrot':
-            t1 = time.perf_counter()
             self.neutraliser_model = parrot_model.parrot()
             t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
@@ -76,7 +80,6 @@ class runner():
             
         # Roberta is loaded in a different way
         elif self.neutraliser=='roberta':
-            t1 = time.perf_counter()
             model_args = Seq2SeqArgs()
             model_args.num_train_epochs = 11
             model_args.evaluate_generated_text = True
@@ -96,7 +99,6 @@ class runner():
         else:
             raise ValueError('Model {} not recognised'.format(self.tagger))
          
-        t1 = time.perf_counter()
         neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
         self.neutraliser_model = bart_model.BART().to(self.device)
         self.load_ckpt(neutraliser_path, self.neutraliser_model)

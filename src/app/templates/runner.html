@@ -23,12 +23,13 @@
     <br>
     <textarea rows="4" cols="50" name="textinput" form="inputform"></textarea>
     <form method="POST" id="inputform" action="{{ url_for('run_model') }}">
-        <input type="submit">
+        <input type="submit" name="run" value="Run">
+        <input type="submit" name="return" value="Return">
     </form>
     <br>
-    <strong>
+    <textarea readonly rows="4" cols="50" name="textoutput">
         {{out_text}}
-    </strong>
+    </textarea>
 
 
 </body>
