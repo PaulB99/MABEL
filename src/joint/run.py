@@ -171,7 +171,6 @@ class runner():
         # The parrot pipeline is greatly simplified
         if self.neutraliser=='parrot':
             ticker = -1
-            output_array=[]
             for s in split_sent:
                 ticker+=1
                 if ticker in biased_indices:
@@ -181,7 +180,6 @@ class runner():
         # Using the roberta neutraliser has a different pipeline
         elif self.neutraliser=='roberta':
             ticker = -1
-            output_array=[]
             for s in split_sent:
                 ticker+=1
                 if ticker in biased_indices:
