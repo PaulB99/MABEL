@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Bias Neutraliser</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>
@@ -31,8 +32,6 @@
         {% endfor %}
     </select>
 
-    <br>
-
     <select name= neutralisers method="GET" action="/">
         {% for neutraliser in neutralisers %}
         <option value= "{{neutraliser}}" SELECTED>{{neutraliser}}</option>"
@@ -41,8 +40,9 @@
 
     <br>
 
-    <input type='submit' value='Load models'>
+    <input type='submit' value='Load models' onclick="$('#loading').show();">
 </form>
+<div class="loader" id="loading"></div>
 </body>
 
 

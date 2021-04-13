@@ -7,8 +7,8 @@ import os
 sys.path.insert(0, '../')
 from joint.run import runner
 app = Flask(__name__)
-taggers = ['base_model', 'large_model']
-neutralisers = ['bart']
+taggers = ['base_model', 'large_model', 'lexi']
+neutralisers = ['bart', 'roberta', 'parrot']
 
 @app.route('/', methods=['GET'])
 def main():
@@ -21,13 +21,14 @@ def get_models():
         tagger = request.form.get('taggers')
         neutraliser = request.form.get('neutralisers')
         if tagger is not None and neutraliser is not None:
-            if not os.path.exists('../../cache/taggers/' + tagger +'.pt'):
+            if not os.path.exists('../../cache/taggers/' + tagger +'.pt') and tagger!='lexi':
                 error+="{} has not been trained yet! Please run the relevant testing script and try again.<br>".format(tagger)
-            if not os.path.exists('../../cache/neutralisers/' + neutraliser + '.pt'):
+            if not os.path.exists('../../cache/neutralisers/' + neutraliser + '.pt') and neutraliser!='parrot':
                 error+="{} has not been trained yet! Please run the relevant testing script and try again.<br>".format(neutraliser)      
             if error != "":
                 return render_template('index.html', taggers=taggers,neutralisers=neutralisers, error=error)
             else:
+                app_runner = runner(tagger, neutraliser)
                 return render_template('runner.html', tagger=tagger, neutraliser=neutraliser)
         else:
             error="Error! Please select a tagger and neutraliser"

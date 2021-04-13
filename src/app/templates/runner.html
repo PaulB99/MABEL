@@ -12,13 +12,17 @@
     </h1>
     <br>
     <strong>
-        Tagger: {{tagger}}        Neutraliser: {{neutraliser}}
+        Tagger: {{tagger}}
+        <br>
+        Neutraliser: {{neutraliser}}
     </strong>
+    <br>
     <strong>
         Please write your text below:
     </strong>
-    <form method="POST">
-        <input name="variable">
+    <br>
+    <textarea rows="4" cols="50" name="textinput" form="inputform"></textarea>
+    <form method="POST" id="inputform">
         <input type="submit">
     </form>
 </body>

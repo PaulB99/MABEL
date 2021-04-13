@@ -29,7 +29,7 @@ class runner():
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         
         # Start loading
-        t1 = time.clock()
+        t1 = time.perf_counter()
         tagger_path = '../../cache/taggers/' + self.tagger + '.pt'
         
         self.bert = False
@@ -60,7 +60,7 @@ class runner():
             
             # Load tagger model
             self.load_ckpt(tagger_path, self.tagger_model)
-            t2 = time.clock()
+            t2 = time.perf_counter()
             print('Tagger loaded in {}s!'.format(t2-t1))
         
         # Neutralisers
@@ -68,15 +68,15 @@ class runner():
             self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
             
         elif self.neutraliser=='parrot':
-            t1 = time.clock()
+            t1 = time.perf_counter()
             self.neutraliser_model = parrot_model.parrot()
-            t2 = time.clock()
+            t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
             return
             
         # Roberta is loaded in a different way
         elif self.neutraliser=='roberta':
-            t1 = time.clock()
+            t1 = time.perf_counter()
             model_args = Seq2SeqArgs()
             model_args.num_train_epochs = 11
             model_args.evaluate_generated_text = True
@@ -88,7 +88,7 @@ class runner():
                 args=model_args,
                 )
             
-            t2 = time.clock()
+            t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
             
             # Break out early - we don't need a tokeniser and stuff for this one
@@ -96,11 +96,11 @@ class runner():
         else:
             raise ValueError('Model {} not recognised'.format(self.tagger))
          
-        t1 = time.clock()
+        t1 = time.perf_counter()
         neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
         self.neutraliser_model = bart_model.BART().to(self.device)
         self.load_ckpt(neutraliser_path, self.neutraliser_model)
-        t2 = time.clock()
+        t2 = time.perf_counter()
         print('Neutraliser loaded in {}s!'.format(t2-t1))
     
     def __init__(self, tagger, neutraliser):
