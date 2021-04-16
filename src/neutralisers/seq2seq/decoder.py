@@ -24,11 +24,13 @@ class DecoderRNN(nn.Module):
     # Forward function
     def forward(self, input, hidden):
         # Apply layers in order
-        output = self.embedding(input).view(1, 1, -1)
+        output = self.embedding(input).view(1,1, -1) #1,1,-1
         output = f.relu(output)
         output, hidden = self.gru(output, hidden)
+        #print(self.out(output[0]).size())
         output = self.softmax(self.out(output[0]))
         return output, hidden
+    
 
     # Initialise hidden layers
     def initHidden(self):

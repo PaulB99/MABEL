@@ -17,22 +17,22 @@ def train_step(model, input_tensor, target_tensor, optimiser, criterion):
     epoch_loss = 0
 
     output = model(input_tensor, target_tensor)
-
-    num_iter = output.size(0)
-
+    
+    # Remove spurious 1 dimension
+    output = torch.squeeze(output)
+    
     # Calculate the loss from prediction and target
-    for x in range(num_iter):
-        loss += criterion(output[x], target_tensor[x])
+    loss += criterion(output, target_tensor)
 
     loss.backward()
     optimiser.step()
-    epoch_loss = loss.item() / num_iter
+    epoch_loss = loss.item()
 
     return epoch_loss
 
 # Load in data
 data_path = '../../../data/datasets/main/train_neutralisation.csv'
-data_df = pd.read_csv(data_path, header=None, names=['text', 'target'])
+data_df = pd.read_csv(data_path, header=None, skiprows=1, names=['text', 'target'])
 
 #tok = tokeniser.tokeniser(device, data_path)
 tok = BertTokenizer.from_pretrained('bert-base-uncased') 
@@ -40,6 +40,7 @@ lang_size = 30522
 
 print('Tokeniser initialised of size {}'.format(lang_size))
 model = md.seq2seq(device, lang_size).to(device)
+model.train()
 print('Model initialised')
 
 optimiser = optim.SGD(model.parameters(), lr=0.01)
@@ -50,8 +51,8 @@ num_epochs = 11
 for i in range(num_epochs):
     j=0
     for index, row in data_df.iterrows():
-        input_tensor = tok(row['text'], return_tensors="pt")
-        target_tensor = tok(row['target'], return_tensors="pt")
+        input_tensor = tok.encode(row['text'], return_tensors="pt")[0]
+        target_tensor = tok.encode(row['target'], return_tensors="pt")[0]
         #input_tensor = tok.tensorise(row['text'])
         #target_tensor = tok.tensorise(row['target'])
     
