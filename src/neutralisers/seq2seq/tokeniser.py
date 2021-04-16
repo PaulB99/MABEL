@@ -80,9 +80,9 @@ class tokeniser():
     # Turn sentence into tensors
     def tensorise(self,sentence): 
         toks = self.tokenise(sentence)
-        indices = [self.lang[word] for word in toks]
-        indices.append(self.EOS_token)
-        return torch.tensor(indices, dtype=torch.long, device=self.device).view(-1, 1)
+        #indices = [self.lang[word] for word in toks]
+        toks.append(self.EOS_token)
+        return torch.tensor(toks, dtype=torch.long, device=self.device).view(-1, 1)
     
     
     
