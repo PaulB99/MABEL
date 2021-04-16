@@ -18,11 +18,11 @@ class EncoderRNN(nn.Module):
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
     # Forward function
-    def forward(self, input, hidden):
+    def forward(self, input):
         embed = self.embedding(input).view(1, 1, -1)
         output = embed
         # Apply GRU
-        output, hidden = self.gru(output, hidden)
+        output, hidden = self.gru(output)
         return output, hidden
 
     # Initialise hidden layer
