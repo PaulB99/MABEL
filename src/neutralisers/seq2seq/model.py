@@ -10,7 +10,7 @@ import random
 SOS_token = 0
 EOS_token = 1
 
-class seq2seq():
+class seq2seq(nn.Module):
     
     def __init__(self, device, input_size):
         

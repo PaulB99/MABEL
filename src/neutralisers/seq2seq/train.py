@@ -34,7 +34,7 @@ data_path = '../../../data/datasets/main/train_neutralisation.csv'
 data_df = pd.read_csv(data_path, header=None, names=['text', 'target'])
 
 tok = tokeniser.tokeniser(device, data_path)
-print('Tokeniser initialised')
+print('Tokeniser initialised of size {}'.format(tok.lang_size))
 model = md.seq2seq(device, tok.lang_size)
 print('Model initialised')
 
