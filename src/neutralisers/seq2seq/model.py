@@ -7,8 +7,8 @@ import random
 # The seq2seq model
 
 # Start and end of sequence tokens
-SOS_token = 0
-EOS_token = 1
+#SOS_token = 0
+#EOS_token = 1
 
 class seq2seq(nn.Module):
     
@@ -23,7 +23,7 @@ class seq2seq(nn.Module):
        self.device = device       
       
      # Forward function
-    def forward(self, text, target, teacher_forcing_ratio=0.5):
+    def forward(self, text, target, teacher_forcing_ratio=1):
 
         # Get input size
         input_length = text.size(0)
@@ -41,7 +41,8 @@ class seq2seq(nn.Module):
         decoder_hidden = encoder_hidden.to(self.device)
       
         # Add start of sequence token
-        decoder_input = torch.tensor([SOS_token], device=self.device)
+        #decoder_input = torch.tensor([SOS_token], device=self.device)
+        decoder_input= torch.tensor(device=self.device)
     
         # For each word, run decoder and make predictions
         for t in range(target_length):   
@@ -53,7 +54,7 @@ class seq2seq(nn.Module):
             teacher_force = random.random() < teacher_forcing_ratio
             topv, topi = decoder_output.topk(1)
             input = (target[t] if teacher_force else topi)
-            if(teacher_force == False and input.item() == EOS_token):
-                break
+            #if(teacher_force == False and input.item() == EOS_token):
+             #   break
     
         return outputs
