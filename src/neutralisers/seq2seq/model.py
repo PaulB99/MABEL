@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
-import encoder
-import decoder
+import encoder as en
+import decoder as de
 import random
 
 # The seq2seq model
@@ -12,13 +12,13 @@ EOS_token = 1
 
 class seq2seq():
     
-    def __init__(self, encoder, decoder, device):
+    def __init__(self, device, input_size):
         
        super().__init__()
       
         # Initialise the encoder and decoder
-       self.encoder = encoder
-       self.decoder = decoder
+       self.encoder = en.EncoderRNN(input_size, 512)
+       self.decoder = de.DecoderRNN(input_size, 512)
        self.device = device       
       
      # Forward function

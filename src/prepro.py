@@ -307,8 +307,8 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
             
     print('Done!')
     
-create_dataset(300000, 'big', add_npov=True)
+create_dataset(200000, 'main', add_npov=False)
 
-create_seq2seq(300000, 'big', add_npov=True)
+create_seq2seq(200000, 'main', add_npov=False)
     
     
