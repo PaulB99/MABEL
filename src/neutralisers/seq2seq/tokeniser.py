@@ -1,5 +1,6 @@
 import torch
 import pandas as pd
+import unicodedata as ud
 
 # A tokeniser for the seq2seq model
 
@@ -64,16 +65,15 @@ class tokeniser():
         sentence = sentence.str.lower()
         
         # Remove punctuation and encode as ascii
-        sentence = sentence.str.replace('[^A-Za-z\s]+', '')
-        sentence = sentence.str.normalize('NFD')
-        sentence = sentence.str.encode('ascii', errors='ignore').str.decode('utf-8')
+        sentence = sentence.replace('[^A-Za-z\s]+', '')
+        sentence = ud.normalize('NFD', sentence)
+        sentence = sentence.encode('ascii', errors='ignore').decode('utf-8')
         words = sentence.split(' ')
         
         tokenised = []
         for word in words:
             tok = self.lang.get(word)
             tokenised.append(tok)
-        
         
         return tokenised
     
