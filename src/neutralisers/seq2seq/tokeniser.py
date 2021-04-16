@@ -62,7 +62,7 @@ class tokeniser():
         
     def tokenise(self, sentence):
         # Make lower case
-        sentence = sentence.str.lower()
+        sentence = sentence.lower()
         
         # Remove punctuation and encode as ascii
         sentence = sentence.replace('[^A-Za-z\s]+', '')
