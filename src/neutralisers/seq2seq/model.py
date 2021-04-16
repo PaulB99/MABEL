@@ -19,6 +19,7 @@ class seq2seq(nn.Module):
         # Initialise the encoder and decoder
        self.encoder = en.EncoderRNN(input_size, 512)
        self.decoder = de.DecoderRNN(input_size, 512)
+       self.vocab_size = input_size
        self.device = device       
       
      # Forward function
@@ -28,10 +29,9 @@ class seq2seq(nn.Module):
         input_length = text.size(0)
         batch_size = target.shape[1] 
         target_length = target.shape[0]
-        vocab_size = self.decoder.output_dim
           
         # Initialise variable for predictions
-        outputs = torch.zeros(target_length, batch_size, vocab_size).to(self.device)
+        outputs = torch.zeros(target_length, batch_size, self.vocab_size).to(self.device)
     
         # Encode each word
         for i in range(input_length):
