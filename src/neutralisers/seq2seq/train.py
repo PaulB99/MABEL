@@ -4,6 +4,7 @@ import model as md
 import torch.optim as optim
 import pandas as pd
 import tokeniser
+from transformers import BertTokenizer
 
 # Device
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -33,9 +34,12 @@ def train_step(model, input_tensor, target_tensor, optimiser, criterion):
 data_path = '../../../data/datasets/main/train_neutralisation.csv'
 data_df = pd.read_csv(data_path, header=None, names=['text', 'target'])
 
-tok = tokeniser.tokeniser(device, data_path)
-print('Tokeniser initialised of size {}'.format(tok.lang_size))
-model = md.seq2seq(device, tok.lang_size).to(device)
+#tok = tokeniser.tokeniser(device, data_path)
+tok = BertTokenizer.from_pretrained('bert-base-uncased') 
+lang_size = 30522
+
+print('Tokeniser initialised of size {}'.format(lang_size))
+model = md.seq2seq(device, lang_size).to(device)
 print('Model initialised')
 
 optimiser = optim.SGD(model.parameters(), lr=0.01)
@@ -46,8 +50,10 @@ num_epochs = 11
 for i in range(num_epochs):
     j=0
     for index, row in data_df.iterrows():
-        input_tensor = tok.tensorise(row['text'])
-        target_tensor = tok.tensorise(row['target'])
+        input_tensor = tok(row['text'], return_tensors="pt")
+        target_tensor = tok(row['target'], return_tensors="pt")
+        #input_tensor = tok.tensorise(row['text'])
+        #target_tensor = tok.tensorise(row['target'])
     
         loss = train_step(model, input_tensor, target_tensor, optimiser, criterion)
     
