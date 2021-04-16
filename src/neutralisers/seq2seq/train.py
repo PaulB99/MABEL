@@ -44,10 +44,10 @@ total_loss_iterations = 0
 num_epochs = 11
 
 for i in range(num_epochs):
-    for j in range(len(data_df)):
-        training_pair = data_df[j]
-        input_tensor = tok.tensorise(training_pair[0])
-        target_tensor = tok.tensorise(training_pair[1])
+    j=0
+    for index, row in data_df.iterrows():
+        input_tensor = tok.tensorise(row['text'])
+        target_tensor = tok.tensorise(row['target'])
     
         loss = train_step(model, input_tensor, target_tensor, optimiser, criterion)
     
@@ -57,5 +57,6 @@ for i in range(num_epochs):
             average_loss= total_loss_iterations / 5000
             total_loss_iterations = 0
             print('%d %.4f' % (j, average_loss))
+        j+=1
           
 torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
