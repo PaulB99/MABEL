@@ -12,7 +12,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 def train_step(model, input_tensor, target_tensor, optimiser, criterion):
     optimiser.zero_grad()
 
-    input_length = input_tensor.size(0)
+    #input_length = input_tensor.size(0)
     loss = 0
     epoch_loss = 0
 
