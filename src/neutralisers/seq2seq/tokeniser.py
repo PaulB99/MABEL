@@ -78,7 +78,7 @@ class tokeniser():
         return tokenised
     
     # Turn sentence into tensors
-    def tensorise(self,sentence, lang): 
+    def tensorise(self,sentence): 
         toks = self.tokenise(sentence)
         indices = [self.lang[word] for word in toks]
         indices.append(self.EOS_token)
