@@ -35,7 +35,7 @@ data_df = pd.read_csv(data_path, header=None, names=['text', 'target'])
 
 tok = tokeniser.tokeniser(device, data_path)
 print('Tokeniser initialised of size {}'.format(tok.lang_size))
-model = md.seq2seq(device, tok.lang_size)
+model = md.seq2seq(device, tok.lang_size).to(device)
 print('Model initialised')
 
 optimiser = optim.SGD(model.parameters(), lr=0.01)
