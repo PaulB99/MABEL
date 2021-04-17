@@ -8,6 +8,7 @@ from taggers.lexi import model as lexi_model
 from neutralisers.bart import model as bart_model
 from neutralisers.roberta import model as roberta_model
 from neutralisers.parrot import model as parrot_model
+from neutralisers.seq2seq import model as seq2seq_model
 from transformers import BertTokenizer, BartTokenizer
 import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
@@ -72,6 +73,15 @@ class runner():
         if self.neutraliser=='bart':
             self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
             
+        elif self.neutraliser=='seq2seq':
+            self.n_tokeniser=BertTokenizer.from_pretrained('bert-base-uncased')
+            neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
+            self.neutraliser_model = seq2seq_model.seq2seq(self.device, 30522).to(self.device)
+            self.load_ckpt(neutraliser_path, self.neutraliser_model)
+            t2 = time.perf_counter()
+            print('Neutraliser loaded in {}s!'.format(t2-t1))
+            return
+        
         elif self.neutraliser=='parrot':
             self.neutraliser_model = parrot_model.parrot()
             t2 = time.perf_counter()
@@ -186,6 +196,14 @@ class runner():
                 ticker+=1
                 if ticker in biased_indices:
                     pred=self.neutraliser_model.predict(s)
+                    output_array.insert(ticker, pred)
+                    
+        elif self.neutraliser=='seq2seq':
+            ticker = -1
+            for s in split_sent:
+                ticker+=1
+                if ticker in biased_indices:
+                    pred=self.neutraliser_model.generate(s)
                     output_array.insert(ticker, pred)
                 
         else:
