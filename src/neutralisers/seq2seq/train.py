@@ -6,7 +6,7 @@ import pandas as pd
 import tokeniser
 from transformers import BertTokenizer
 import time
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 # Device
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')

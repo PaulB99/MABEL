@@ -58,3 +58,26 @@ class seq2seq(nn.Module):
             #if(teacher_force == False and input.item() == EOS_token):
              #   break
         return outputs
+
+    
+    # Neutralise a given sequence
+    def generate(self, sentence):
+        with torch.no_grad():
+            input_tensor = tensorFromSentence(input_lang, sentences[0])
+            output_tensor = tensorFromSentence(output_lang, sentences[1])
+      
+            decoded_words = []
+      
+            output = model(input_tensor, output_tensor)
+            # print(output_tensor)
+      
+            for ot in range(output.size(0)):
+                topv, topi = output[ot].topk(1)
+                # print(topi)
+    
+                if topi[0].item() == EOS_token:
+                    decoded_words.append('<EOS>')
+                    break
+                else:
+                    decoded_words.append(output_lang.index2word[topi[0].item()])
+        return decoded_words
