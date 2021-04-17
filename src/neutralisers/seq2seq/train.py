@@ -51,8 +51,8 @@ num_epochs = 11
 for i in range(num_epochs):
     j=0
     for index, row in data_df.iterrows():
-        input_tensor = tok.encode(row['text'], return_tensors="pt")[0]
-        target_tensor = tok.encode(row['target'], return_tensors="pt")[0]
+        input_tensor = tok.encode(row['text'], return_tensors="pt")[0].to(device)
+        target_tensor = tok.encode(row['target'], return_tensors="pt")[0].to(device)
         #input_tensor = tok.tensorise(row['text'])
         #target_tensor = tok.tensorise(row['target'])
     
