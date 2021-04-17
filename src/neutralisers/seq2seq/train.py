@@ -5,6 +5,8 @@ import torch.optim as optim
 import pandas as pd
 import tokeniser
 from transformers import BertTokenizer
+import time
+import matplotlib as plt
 
 # Device
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -48,6 +50,10 @@ criterion = nn.NLLLoss()
 total_loss_iterations = 0
 num_epochs = 11
 
+start_time = time.perf_counter()
+loss_vals = []
+loss_points = []
+
 for i in range(num_epochs):
     j=0
     for index, row in data_df.iterrows():
@@ -62,8 +68,20 @@ for i in range(num_epochs):
     
         if j % 5000 == 0:
             average_loss= total_loss_iterations / 5000
+            if j != 0:
+                loss_vals.append(average_loss)
+                loss_points.append(j)
             total_loss_iterations = 0
             print('%d %.4f' % (j, average_loss))
         j+=1
-          
+  
+end_time = time.perf_counter()   
+print('Seq2seq model trained in {}'.format(end_time-start_time)) 
+
+# Save loss graph
+plt.plot(loss_points, loss_vals)
+plt.xlabel('Training steps')
+plt.ylabel('Training loss')
+plt.title('Training loss of seq2seq model')
+plt.savefig('loss_graph.png')    
 torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
