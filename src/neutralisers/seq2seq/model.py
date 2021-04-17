@@ -61,23 +61,41 @@ class seq2seq(nn.Module):
 
     
     # Neutralise a given sequence
-    def generate(self, sentence):
+    def generate(self, sentence, tokeniser):
         with torch.no_grad():
-            input_tensor = tensorFromSentence(input_lang, sentences[0])
-            output_tensor = tensorFromSentence(output_lang, sentences[1])
-      
+            
+            # Tokenise and make into tensor
+            input_tensor = tokeniser.encode(sentence, return_tensors="pt").to(self.device)
+
+            # Follow a path similar to forward
+            input_length = input_tensor.size(0)
+            target_length = input_length
+             # Initialise variable for predictions
+            outputs = torch.zeros(target_length, 1, self.vocab_size).to(self.device)
+            
+            # Encode each word
+            for i in range(input_length):
+                encoder_output, encoder_hidden = self.encoder(input_tensor[i])
+    
+            # Use the encoder’s hidden layer as the decoder's hidden
+            decoder_hidden = encoder_hidden.to(self.device)
+          
+            # Add start of sequence token
+            decoder_input = torch.tensor([SOS_token], device=self.device)
+            #decoder_input= torch.tensor(device=self.device)
+        
+            # For each word, run decoder and make predictions
+            for t in range(target_length):   
+                
+                decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden)
+                outputs[t] = decoder_output
+                
+                # If teacher forcing, next decoder input is the next word. If not, use the highest value from decoder
+            
             decoded_words = []
       
-            output = model(input_tensor, output_tensor)
-            # print(output_tensor)
       
-            for ot in range(output.size(0)):
-                topv, topi = output[ot].topk(1)
-                # print(topi)
-    
-                if topi[0].item() == EOS_token:
-                    decoded_words.append('<EOS>')
-                    break
-                else:
-                    decoded_words.append(output_lang.index2word[topi[0].item()])
+            for ot in range(outputs.size(0)):
+                topv, topi = outputs[ot].topk(1)
+                decoded_words.append(tokeniser.decode([topi[0].item()]))
         return decoded_words
