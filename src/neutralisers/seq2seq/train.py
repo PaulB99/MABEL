@@ -77,6 +77,8 @@ for i in range(num_epochs):
   
 end_time = time.perf_counter()   
 print('Seq2seq model trained in {}'.format(end_time-start_time)) 
+torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
+print('Model saved!')
 
 # Save loss graph
 plt.plot(loss_points, loss_vals)
@@ -84,4 +86,3 @@ plt.xlabel('Training steps')
 plt.ylabel('Training loss')
 plt.title('Training loss of seq2seq model')
 plt.savefig('loss_graph.png')    
-torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
