@@ -48,7 +48,7 @@ print('Model initialised')
 optimiser = optim.SGD(model.parameters(), lr=0.01)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
-num_epochs = 11
+num_epochs = 3
 
 start_time = time.perf_counter()
 loss_vals = []
