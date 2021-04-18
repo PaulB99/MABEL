@@ -45,7 +45,7 @@ model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.SGD(model.parameters(), lr=0.1)
+optimiser = optim.SGD(model.parameters(), lr=0.01)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
 num_epochs = 3
