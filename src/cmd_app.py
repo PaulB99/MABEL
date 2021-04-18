@@ -12,10 +12,10 @@ if __name__ == "__main__":
     tagger_menu = TerminalMenu(acceptable_taggers)
     neutraliser_menu = TerminalMenu(acceptable_neutralisers)
     
-    tagger = tagger_menu.show()
+    tagger = acceptable_taggers[tagger_menu.show()]
     
     print('Please select a neutraliser model')
-    neu = neutraliser_menu.show()
+    neu = acceptable_neutralisers[neutraliser_menu.show()]
         
     #try:
     r = run.runner(tagger, neu)
