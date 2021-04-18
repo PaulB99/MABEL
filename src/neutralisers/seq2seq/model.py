@@ -4,7 +4,7 @@ import os
 import re
 folder = re.split("\\\\|/",os.getcwd())[-1]
 print(folder)
-if folder=='miniseq2seq':
+if folder=='seq2seq':
     from encoder import EncoderRNN
     from decoder import DecoderRNN
 else:
@@ -73,7 +73,7 @@ class seq2seq(nn.Module):
         with torch.no_grad():
             
             # Tokenise and make into tensor
-            input_tensor = tokeniser.encode(sentence, return_tensors="pt").to(self.device)
+            input_tensor = tokeniser.encode(sentence, return_tensors="pt")[0].to(self.device)
 
             # Follow a path similar to forward
             input_length = input_tensor.size(0)
