@@ -67,6 +67,7 @@ class runner():
                 self.load_ckpt(tagger_path, self.tagger_model)
             except:
                 print('Pretrained {} model not found! Please train it and try again'.format(self.tagger))
+                sys.exit()
             t2 = time.perf_counter()
             print('Tagger loaded in {}s!'.format(t2-t1))
             
@@ -84,6 +85,7 @@ class runner():
                 self.load_ckpt(neutraliser_path, self.neutraliser_model)
             except:
                 print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
+                sys.exit()
             t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
             return
@@ -109,6 +111,7 @@ class runner():
                     )
             except:
                 print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
+                sys.exit()
             
             t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
@@ -124,6 +127,7 @@ class runner():
             self.load_ckpt(neutraliser_path, self.neutraliser_model)
         except:
             print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
+            sys.exit()
         t2 = time.perf_counter()
         print('Neutraliser loaded in {}s!'.format(t2-t1))
     
