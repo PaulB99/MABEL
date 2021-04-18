@@ -1,24 +1,33 @@
 import joint.run as run
 import sys
+from simple_term_menu import TerminalMenu
 # Run the command line app
 
 if __name__ == "__main__":
-    args = sys.argv
     acceptable_taggers = ['base_model','large_model', 'lexi']
-    acceptable_neutralisers = ['bart','roberta','parrot']
-    if not len(args) == 2:
-        raise ValueError('Arguments must be 2 valid models')
+    acceptable_neutralisers = ['bart','roberta','parrot', 'seq2seq']
+    
+    print('Welcome to the bias neutralisation program! Select a tagger model below')
+    
+    tagger_menu = TerminalMenu(acceptable_taggers)
+    neutraliser_menu = TerminalMenu(acceptable_neutralisers)
+    
+    tagger = tagger_menu.show()
+    
+    print('Please select a neutraliser model')
+    neu = neutraliser_menu.show()
         
-    tagger = str(args[0])
-    neu = str(args[1])
+    try:
+        r = run.runner(tagger, neu)
+    except:
+        print('There was a problem. Make sure you have trained the models you want to use!')
         
-    r = run.runner(tagger, neu)
     sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
     while not sentence == 'Exit':
         output, biased = r.pipeline(sentence)
-        if biased:
-            print('Biased!')
-        else:
-            print('Unbiased!')
+        #if biased:
+         #   print('Biased!')
+        #else:
+         #   print('Unbiased!')
         print(output)
         sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))

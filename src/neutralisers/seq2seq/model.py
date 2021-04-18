@@ -1,7 +1,15 @@
 import torch.nn as nn
 import torch
-from .encoder import EncoderRNN
-from .decoder import DecoderRNN
+import os
+import re
+folder = re.split("\\\\|/",os.getcwd())[-1]
+print(folder)
+if folder=='miniseq2seq':
+    from encoder import EncoderRNN
+    from decoder import DecoderRNN
+else:
+    from .encoder import EncoderRNN
+    from .decoder import DecoderRNN
 import random
 
 # The seq2seq model
