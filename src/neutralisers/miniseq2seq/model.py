@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
-import encoder as en
-import decoder as de
+from .encoder import EncoderRNN
+from .decoder import DecoderRNN
 import random
 
 # The seq2seq model
@@ -17,8 +17,8 @@ class seq2seq(nn.Module):
        super().__init__()
       
         # Initialise the encoder and decoder
-       self.encoder = en.EncoderRNN(input_size, 64)
-       self.decoder = de.DecoderRNN(input_size, 64)
+       self.encoder = EncoderRNN(input_size, 64)
+       self.decoder = DecoderRNN(input_size, 64)
        self.vocab_size = input_size
        self.device = device       
       

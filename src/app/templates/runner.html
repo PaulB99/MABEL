@@ -28,20 +28,14 @@
         Please write your text below:
     </strong>
     <br>
-    <textarea rows="4" cols="50" name="textinput" form="inputform"></textarea>
+    <textarea rows="4" cols="50" name="textinput" form="inputform">{{residual_text}}</textarea>
     <form method="POST" id="inputform" action="{{ url_for('run_model') }}">
         <input type="submit" name="run" value="Run">
         <input type="submit" name="return" value="Return">
     </form>
     <br>
 
-    {% if biased %}
-    Biased!
-    {% endif %}
-
-    {% if not biased %}
-    Unbiased!
-    {% endif %}
+    {{biased}}
 
     <br>
     <textarea readonly rows="4" cols="50" name="textoutput">

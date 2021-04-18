@@ -44,7 +44,7 @@ def get_models():
     
 @app.route('/run', methods=['GET'])
 def get_text():
-    return render_template('runner.html', tagger=tagger, neutraliser=neutraliser, out_text='')
+    return render_template('runner.html', tagger=tagger, neutraliser=neutraliser, out_text='', biased='')
 
 
 @app.route('/run', methods=['GET', 'POST'])
@@ -55,10 +55,17 @@ def run_model():
             processed_text, biased = app_runner.pipeline(text)
             if biased:
                 print('Biased!')
+                b_text = 'Biased!'
             else:
                 print('Unbiased!')
+                b_text = 'Unbiased!'
             print('Processed text: ' + processed_text)
-            return render_template('runner.html', tagger=tagger,neutraliser=neutraliser,out_text=processed_text, biased=biased)
+            return render_template('runner.html',
+                                   tagger=tagger,
+                                   neutraliser=neutraliser,
+                                   out_text=processed_text, 
+                                   biased=b_text,
+                                   residual_text=text)
         elif 'return' in request.form:
             return redirect(url_for('main'))
     

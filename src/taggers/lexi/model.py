@@ -1,4 +1,5 @@
 import os
+import string
 # A very simple lightweight tagger model, specifically for weaker machines
 
 class lexi():
@@ -8,7 +9,7 @@ class lexi():
         lines = file.readlines()
         self.words = []
         for line in lines:
-            line.strip()
+            line = line.strip()
             self.words.append(line)
 
 
@@ -16,15 +17,10 @@ class lexi():
     def predict(self,sentence):
         split_sent = sentence.split(' ')
         for s in split_sent:
+            # Lowercase and strip punctuation
+            s = s.lower()
+            s = s.translate(str.maketrans('', '', string.punctuation))
             if s in self.words:
                 return 1
         return 0
     
-
-    
-#x = lexi()
-#cwd = os.getcwd()  # Get the current working directory (cwd)
-#files = os.listdir(cwd)
-#print(files)
-
-                

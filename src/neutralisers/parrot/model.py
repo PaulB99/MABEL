@@ -2,5 +2,5 @@
 # This model will simply return the input sequence
 
 class parrot():
-        def generate(sentence):
+        def generate(self,sentence):
             return sentence
