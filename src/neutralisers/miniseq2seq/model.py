@@ -60,7 +60,7 @@ class seq2seq(nn.Module):
             # If teacher forcing, next decoder input is the next word. If not, use the highest value from decoder
             teacher_force = random.random() < teacher_forcing_ratio
             topv, topi = decoder_output.topk(1)
-            #input = topi
+            decoder_input = topi
             #input = (target[t] if teacher_force else topi)
             #if(teacher_force == False and input.item() == EOS_token):
              #   break
@@ -97,8 +97,9 @@ class seq2seq(nn.Module):
                 decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden)
                 outputs[t] = decoder_output
                 
-                # If teacher forcing, next decoder input is the next word. If not, use the highest value from decoder
-            
+                topv, topi = decoder_output.topk(1)
+                decoder_input = topi
+                
             decoded_words = []
       
       
