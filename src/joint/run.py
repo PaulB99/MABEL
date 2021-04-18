@@ -123,6 +123,8 @@ class runner():
     # The full detection and neutralisation pipeline
     def pipeline(self, sentence):
         
+        biased_bool=False
+        
         # Split sentences
         split_sent = sentence.split('.')
         
@@ -136,10 +138,11 @@ class runner():
                 ticker+=1
                 biased = self.tagger_model.predict(s)
                 if biased == 1:
-                    print('Biased!')
+                    biased_bool=True
+                    #print('Biased!')
                     biased_indices.append(ticker)
                 elif biased == 0:
-                    print('Unbiased!')
+                    #print('Unbiased!')
                     output_array.insert(ticker, split_sent[ticker])
                 
         
@@ -172,10 +175,11 @@ class runner():
                     _,tagger_output = tagger_output
                     biased = torch.argmax(tagger_output, 1)
                     if biased == 1:
-                        print('Biased!')
+                        biased_bool=True
+                        #print('Biased!')
                         biased_indices.append(ticker)
                     elif biased == 0:
-                        print('Unbiased!')
+                        #print('Unbiased!')
                         output_array.insert(ticker, split_sent[ticker])
                     
         # TIME TO NEUTRALISE!
@@ -241,5 +245,5 @@ class runner():
         output_string = ''
         for s in output_array:
             output_string+=(s+'.')
-        return output_string
+        return output_string, biased_bool
            

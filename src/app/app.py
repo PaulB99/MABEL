@@ -8,7 +8,7 @@ sys.path.insert(0, '../')
 from joint.run import runner
 app = Flask(__name__)
 taggers = ['base_model', 'large_model', 'lexi']
-neutralisers = ['bart', 'roberta', 'parrot']
+neutralisers = ['bart', 'roberta', 'seq2seq', 'parrot']
 tagger=None
 neutraliser=None
 
@@ -52,9 +52,13 @@ def run_model():
     if request.method == 'POST':
         if 'run' in request.form:
             text = request.form.get('textinput')
-            processed_text = app_runner.pipeline(text)
+            processed_text, biased = app_runner.pipeline(text)
+            if biased:
+                print('Biased!')
+            else:
+                print('Unbiased!')
             print('Processed text: ' + processed_text)
-            return render_template('runner.html', tagger=tagger,neutraliser=neutraliser,out_text=processed_text)
+            return render_template('runner.html', tagger=tagger,neutraliser=neutraliser,out_text=processed_text, biased=biased)
         elif 'return' in request.form:
             return redirect(url_for('main'))
     

@@ -15,5 +15,10 @@ if __name__ == "__main__":
     r = run.runner(tagger, neu)
     sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
     while not sentence == 'Exit':
-        print(r.pipeline(sentence))
+        output, biased = r.pipeline(sentence)
+        if biased:
+            print('Biased!')
+        else:
+            print('Unbiased!')
+        print(output)
         sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
