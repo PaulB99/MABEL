@@ -21,6 +21,7 @@ if __name__ == "__main__":
         r = run.runner(tagger, neu)
     except:
         print('There was a problem. Make sure you have trained the models you want to use!')
+        sys.exit()
         
     sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
     while not sentence == 'Exit':
