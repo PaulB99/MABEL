@@ -228,7 +228,7 @@ class runner():
             for s in split_sent:
                 ticker+=1
                 if ticker in biased_indices:
-                    pred=self.neutraliser_model.generate(s)
+                    pred=self.neutraliser_model.generate(s, self.n_tokeniser)
                     output_array.insert(ticker, pred)
                 
         else:
