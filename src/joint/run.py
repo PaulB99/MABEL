@@ -63,11 +63,11 @@ class runner():
             self.fields = [('labels', label_field), ('text', text_field)]
             
             # Load tagger model
-            try:
-                self.load_ckpt(tagger_path, self.tagger_model)
-            except:
-                print('Pretrained {} model not found! Please train it and try again'.format(self.tagger))
-                sys.exit()
+            #try:
+            self.load_ckpt(tagger_path, self.tagger_model)
+            #except:
+                #print('Pretrained {} model not found! Please train it and try again'.format(self.tagger))
+                #sys.exit()
             t2 = time.perf_counter()
             print('Tagger loaded in {}s!'.format(t2-t1))
             
