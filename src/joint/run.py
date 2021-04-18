@@ -2,13 +2,13 @@ import torch
 import sys
 import time
 sys.path.insert(0, '../')
-from .taggers.base_model import model as base_model
-from .taggers.large_model import model as large_model
-from .taggers.lexi import model as lexi_model
-from .neutralisers.bart import model as bart_model
-from .neutralisers.roberta import model as roberta_model
-from .neutralisers.parrot import model as parrot_model
-from .neutralisers.seq2seq import model as seq2seq_model
+from taggers.base_model import model as base_model
+from taggers.large_model import model as large_model
+from taggers.lexi import model as lexi_model
+from neutralisers.bart import model as bart_model
+from neutralisers.roberta import model as roberta_model
+from neutralisers.parrot import model as parrot_model
+from neutralisers.seq2seq import model as seq2seq_model
 from transformers import BertTokenizer, BartTokenizer
 import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example

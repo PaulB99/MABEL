@@ -1,3 +1,4 @@
+sys.path.insert(0, '../')
 import joint.run as run
 import sys
 from simple_term_menu import TerminalMenu
