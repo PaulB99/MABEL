@@ -45,10 +45,10 @@ model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.SGD(model.parameters(), lr=0.01)
+optimiser = optim.SGD(model.parameters(), lr=0.1)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
-num_epochs = 3
+num_epochs = 1
 
 start_time = time.perf_counter()
 loss_vals = []
@@ -76,13 +76,13 @@ for i in range(num_epochs):
         j+=1
   
 end_time = time.perf_counter()   
-print('Seq2seq model trained in {}'.format(end_time-start_time)) 
-torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
+print('Mini seq2seq model trained in {}'.format(end_time-start_time)) 
+torch.save(model.state_dict(), '../../../cache/neutralisers/miniseq2seq.pt')
 print('Model saved!')
 
 # Save loss graph
 plt.plot(loss_points, loss_vals)
 plt.xlabel('Training steps')
 plt.ylabel('Training loss')
-plt.title('Training loss of seq2seq model')
+plt.title('Training loss of miniseq2seq model')
 plt.savefig('loss_graph.png')    

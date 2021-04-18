@@ -63,7 +63,10 @@ class runner():
             self.fields = [('labels', label_field), ('text', text_field)]
             
             # Load tagger model
-            self.load_ckpt(tagger_path, self.tagger_model)
+            try:
+                self.load_ckpt(tagger_path, self.tagger_model)
+            except:
+                print('Pretrained {} model not found! Please train it and try again'.format(self.tagger))
             t2 = time.perf_counter()
             print('Tagger loaded in {}s!'.format(t2-t1))
             
@@ -77,7 +80,10 @@ class runner():
             self.n_tokeniser=BertTokenizer.from_pretrained('bert-base-uncased')
             neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
             self.neutraliser_model = seq2seq_model.seq2seq(self.device, 30522).to(self.device)
-            self.load_ckpt(neutraliser_path, self.neutraliser_model)
+            try:
+                self.load_ckpt(neutraliser_path, self.neutraliser_model)
+            except:
+                print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
             t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
             return
@@ -95,11 +101,14 @@ class runner():
             model_args.evaluate_generated_text = True
             model_args.evaluate_during_training = True
             
-            self.neutraliser_model = Seq2SeqModel(
-                "roberta",
-                encoder_decoder_name="../../cache/neutralisers/roberta",
-                args=model_args,
-                )
+            try:
+                self.neutraliser_model = Seq2SeqModel(
+                    "roberta",
+                    encoder_decoder_name="../../cache/neutralisers/roberta",
+                    args=model_args,
+                    )
+            except:
+                print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
             
             t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
@@ -111,7 +120,10 @@ class runner():
          
         neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
         self.neutraliser_model = bart_model.BART().to(self.device)
-        self.load_ckpt(neutraliser_path, self.neutraliser_model)
+        try:
+            self.load_ckpt(neutraliser_path, self.neutraliser_model)
+        except:
+            print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
         t2 = time.perf_counter()
         print('Neutraliser loaded in {}s!'.format(t2-t1))
     
@@ -181,7 +193,12 @@ class runner():
                     elif biased == 0:
                         #print('Unbiased!')
                         output_array.insert(ticker, split_sent[ticker])
-                    
+          
+        if biased_bool:
+            print('Biased!')
+        else:
+            print('Unbiased')
+            return sentence, biased_bool
         # TIME TO NEUTRALISE!
         
         # The parrot pipeline is greatly simplified
