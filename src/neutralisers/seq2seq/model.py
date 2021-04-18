@@ -106,4 +106,6 @@ class seq2seq(nn.Module):
             for ot in range(outputs.size(0)):
                 topv, topi = outputs[ot].topk(1)
                 decoded_words.append(tokeniser.decode([topi[0].item()]))
-        return decoded_words
+        
+        decoded_sentence = ' '.join(decoded_words)
+        return decoded_sentence
