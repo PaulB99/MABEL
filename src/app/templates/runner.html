@@ -7,8 +7,23 @@
 </head>
 <style>
     .content {
-      max-width: 500px;
-      margin: auto;
+        width: 50%;
+        margin: auto;
+    }
+    textarea {
+        border: 2px solid black;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    input[type=submit] {
+        padding: 12px 20px;
+        margin: 8px 0;
+        color: white;
+        font-size: 16px;
+        background-color: turquoise;
+        margin: auto;
+        width: 25%;
+        text-align: center;
     }
     </style>
 
@@ -18,7 +33,15 @@
         Bias Neutraliser
     </h1>
     <br>
+        Welcome to the bias neutraliser! This system hopes to identify and neutralise biased text. 
+        <br>
+        Please input the text you wish to investigate below and then press submit to run the models.
+        <br>
+        Alternatively, select return to load different models.
+        <br>
     <strong>
+        Models selected:
+        <br>
         Tagger: {{tagger}}
         <br>
         Neutraliser: {{neutraliser}}

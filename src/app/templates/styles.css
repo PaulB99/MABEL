@@ -27,3 +27,13 @@ p {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
+
+  input[type=submit] {
+    padding: 12px 20px;
+    margin: 8px 0;
+  }
+
+  textarea {
+    border: 2px solid red;
+    border-radius: 4px;
+  }

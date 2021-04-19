@@ -7,8 +7,22 @@
 </head>
 <style>
     .content {
-      max-width: 500px;
-      margin: auto;
+        margin: auto;
+        width: 50%;
+    }
+    input[type=submit] {
+        padding: 12px 20px;
+        margin: 8px 0;
+        color: white;
+        font-size: 16px;
+        background-color: turquoise;
+        margin: auto;
+        width: 25%;
+        text-align: center;
+    }
+    option{
+        font-size: 20px;
+        text-align: center;
     }
     </style>
 <body>
@@ -17,11 +31,14 @@
         Bias Neutraliser
     </h1>
     <br>
-    <strong>
-        Please select a tagger and neutraliser model
-    </strong>
-    <br>
-    Make sure you've trained the models you wish to use!
+        Welcome to the bias neutraliser! This system hopes to identify and neutralise biased text. 
+        <br>
+        Choose a tagger model to identify the bias, and a neutraliser to remove it.
+        <br>
+        You can see a brief overview of each model available on this page.
+        <br>
+        Please make sure you've trained the models you wish to use!
+    
     <br>
     <strong style="color:red;">
         {% autoescape false %}
