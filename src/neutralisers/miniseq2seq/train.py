@@ -4,7 +4,7 @@ import model as md
 import torch.optim as optim
 import pandas as pd
 import tokeniser
-from tokenizers import BertWordPieceTokenizer
+from transformers import BertTokenizer
 import time
 import matplotlib.pyplot as plt
 
@@ -37,7 +37,7 @@ data_path = '../../../data/datasets/main/train_neutralisation.csv'
 data_df = pd.read_csv(data_path, header=None, skiprows=1, names=['text', 'target'])
 
 #tok = tokeniser.tokeniser(device, data_path)
-tok = BertWordPieceTokenizer("bert-base-uncased-vocab-mini.txt", lowercase=True)
+tok = BertTokenizer("bert-base-uncased-vocab-mini.txt")
 lang_size = 30522
 
 print('Tokeniser initialised of size {}'.format(lang_size))
