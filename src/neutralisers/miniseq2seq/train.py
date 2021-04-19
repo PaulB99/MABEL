@@ -38,14 +38,14 @@ data_df = pd.read_csv(data_path, header=None, skiprows=1, names=['text', 'target
 
 #tok = tokeniser.tokeniser(device, data_path)
 tok = BertTokenizer("bert-base-uncased-vocab-mini.txt")
-lang_size = 30522
+lang_size = 7630
 
 print('Tokeniser initialised of size {}'.format(lang_size))
 model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.SGD(model.parameters(), lr=0.1)
+optimiser = optim.SGD(model.parameters(), lr=0.01)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
 num_epochs = 1
