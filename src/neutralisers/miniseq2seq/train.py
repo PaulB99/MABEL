@@ -4,7 +4,7 @@ import model as md
 import torch.optim as optim
 import pandas as pd
 import tokeniser
-from transformers import BertWordPieceTokenizer
+from tokenizers import BertWordPieceTokenizer
 import time
 import matplotlib.pyplot as plt
 
