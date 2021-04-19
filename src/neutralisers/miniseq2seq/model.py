@@ -40,12 +40,12 @@ class seq2seq(nn.Module):
         target_length = target.size(0) #0
           
         # Initialise variable for predictions
-        encoder_outputs = torch.zeros(max_length, self.encoder.hidden_size, device=self.device)
+        #encoder_outputs = torch.zeros(max_length, self.encoder.hidden_size, device=self.device)
     
         # Encode each word
         for i in range(input_length):
             encoder_output, encoder_hidden = self.encoder(text[i], encoder_hidden)
-            encoder_outputs[i] = encoder_output[0,0]
+            #encoder_outputs[i] = encoder_output[0,0]
     
         # Use the encoder’s hidden layer as the decoder's hidden
         decoder_hidden = encoder_hidden
