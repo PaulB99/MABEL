@@ -2,6 +2,9 @@ import sys
 sys.path.insert(0, '../')
 import joint.run as run
 from simple_term_menu import TerminalMenu
+import transformers
+transformers.logging.set_verbosity_error()
+
 # Run the command line app
 
 if __name__ == "__main__":

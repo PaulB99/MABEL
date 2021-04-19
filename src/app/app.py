@@ -6,6 +6,9 @@ import time
 import os
 sys.path.insert(0, '../')
 from joint.run import runner
+import transformers
+transformers.logging.set_verbosity_error()
+
 app = Flask(__name__)
 taggers = ['base_model', 'large_model', 'lexi']
 neutralisers = ['bart', 'roberta', 'seq2seq', 'miniseq2seq', 'parrot']
