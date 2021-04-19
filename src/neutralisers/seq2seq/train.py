@@ -77,11 +77,6 @@ for i in range(num_epochs): #num_epochs
       
 end_time = time.perf_counter()   
 print('Seq2seq model trained in {}'.format(end_time-start_time)) 
-print(model.generate('Apples are awful', tok))
-print(model.generate('I hate Birmingham', tok))
-print(model.generate('President Biden humiliated', tok))
-print(model.generate('Paul is the best student in the world'),tok)
-print(model.generate('The vice chancellor is spectacular'),tok)
 torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
 print('Model saved!')
 

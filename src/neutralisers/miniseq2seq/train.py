@@ -47,7 +47,7 @@ model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.SGD(model.parameters(), lr=0.1)
+optimiser = optim.SGD(model.parameters(), lr=0.01)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
 num_epochs = 1
@@ -83,6 +83,12 @@ end_time = time.perf_counter()
 print('Mini seq2seq model trained in {}'.format(end_time-start_time)) 
 torch.save(model.state_dict(), '../../../cache/neutralisers/miniseq2seq.pt')
 print('Model saved!')
+
+print(model.generate('Apples are awful', tok))
+print(model.generate('I hate Birmingham', tok))
+print(model.generate('President Biden humiliated', tok))
+print(model.generate('Paul is the best student in the world',tok))
+print(model.generate('The vice chancellor is spectacular',tok))
 
 # Save loss graph
 plt.plot(loss_points, loss_vals)
