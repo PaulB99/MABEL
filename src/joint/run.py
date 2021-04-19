@@ -9,6 +9,7 @@ from neutralisers.bart import model as bart_model
 from neutralisers.roberta import model as roberta_model
 from neutralisers.parrot import model as parrot_model
 from neutralisers.seq2seq import model as seq2seq_model
+from neutralisers.miniseq2seq import model as miniseq2seq_model
 from transformers import BertTokenizer, BartTokenizer
 import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
@@ -76,7 +77,8 @@ class runner():
         t1 = time.perf_counter()
         if self.neutraliser=='bart':
             self.n_tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
-            
+        
+        # Seq2seq model
         elif self.neutraliser=='seq2seq':
             self.n_tokeniser=BertTokenizer.from_pretrained('bert-base-uncased')
             neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
@@ -90,6 +92,21 @@ class runner():
             print('Neutraliser loaded in {}s!'.format(t2-t1))
             return
         
+        # Miniseq2seq
+        elif self.neutraliser=='miniseq2seq':
+            self.n_tokeniser=BertTokenizer("../neutralisers/miniseq2seq/bert-base-uncased-vocab-mini.txt")
+            neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
+            self.neutraliser_model = miniseq2seq_model.seq2seq(self.device, 7630).to(self.device)
+            try:
+                self.load_ckpt(neutraliser_path, self.neutraliser_model)
+            except:
+                print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
+                sys.exit()
+            t2 = time.perf_counter()
+            print('Neutraliser loaded in {}s!'.format(t2-t1))
+            return
+        
+        # Parrot
         elif self.neutraliser=='parrot':
             self.neutraliser_model = parrot_model.parrot()
             t2 = time.perf_counter()
@@ -222,15 +239,16 @@ class runner():
                 if ticker in biased_indices:
                     pred=self.neutraliser_model.predict(s)
                     output_array.insert(ticker, pred)
-                    
-        elif self.neutraliser=='seq2seq':
+        
+        # Both seq2seq sizes use the same pipeline
+        elif self.neutraliser=='seq2seq' or self.neutraliser=='miniseq2seq':
             ticker = -1
             for s in split_sent:
                 ticker+=1
                 if ticker in biased_indices:
                     pred=self.neutraliser_model.generate(s, self.n_tokeniser)
                     output_array.insert(ticker, pred)
-                
+         
         else:
             # Prepare data for neutralisation
             # Padding

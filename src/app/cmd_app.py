@@ -6,7 +6,7 @@ from simple_term_menu import TerminalMenu
 
 if __name__ == "__main__":
     acceptable_taggers = ['base_model','large_model', 'lexi']
-    acceptable_neutralisers = ['bart','roberta','parrot', 'seq2seq']
+    acceptable_neutralisers = ['bart','roberta','parrot', 'seq2seq', 'miniseq2seq']
     
     print('Welcome to the bias neutralisation program! Select a tagger model below')
     

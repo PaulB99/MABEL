@@ -8,7 +8,7 @@ sys.path.insert(0, '../')
 from joint.run import runner
 app = Flask(__name__)
 taggers = ['base_model', 'large_model', 'lexi']
-neutralisers = ['bart', 'roberta', 'seq2seq', 'parrot']
+neutralisers = ['bart', 'roberta', 'seq2seq', 'miniseq2seq', 'parrot']
 tagger=None
 neutraliser=None
 
