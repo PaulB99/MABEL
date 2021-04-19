@@ -14,17 +14,15 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 def train_step(model, input_tensor, target_tensor, optimiser, criterion):
     optimiser.zero_grad()
 
-    #input_length = input_tensor.size(0)
     loss = 0
     epoch_loss = 0
 
     output = model(input_tensor, target_tensor)
     
-    # Remove spurious 1 dimension
-    output = torch.squeeze(output)
-    
     # Calculate the loss from prediction and target
-    loss += criterion(output, target_tensor)
+    target_length = target_tensor.shape[0]
+    for i in range(target_length):
+        loss += criterion(output[i], target_tensor[i])
 
     loss.backward()
     optimiser.step()
@@ -54,11 +52,13 @@ start_time = time.perf_counter()
 loss_vals = []
 loss_points = []
 
-for i in range(num_epochs):
+for i in range(num_epochs): #num_epochs
     j=0
     for index, row in data_df.iterrows():
         input_tensor = tok.encode(row['text'], return_tensors="pt")[0].to(device)
+        input_tensor = input_tensor.view(-1, 1)
         target_tensor = tok.encode(row['target'], return_tensors="pt")[0].to(device)
+        target_tensor = target_tensor.view(-1, 1)
         #input_tensor = tok.tensorise(row['text'])
         #target_tensor = tok.tensorise(row['target'])
     
@@ -74,7 +74,7 @@ for i in range(num_epochs):
             total_loss_iterations = 0
             print('%d %.4f' % (j, average_loss))
         j+=1
-  
+        
 end_time = time.perf_counter()   
 print('Seq2seq model trained in {}'.format(end_time-start_time)) 
 torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
