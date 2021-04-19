@@ -3,7 +3,7 @@ import torch
 import os
 import re
 folder = re.split("\\\\|/",os.getcwd())[-1]
-if folder=='miniseq2seq':
+if folder=='seq2seq':
     from encoder import EncoderRNN
     from decoder import DecoderRNN
 else:

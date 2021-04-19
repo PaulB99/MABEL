@@ -28,6 +28,9 @@
         font-size: 14px;
         text-align: center;
     }
+    optgroup { 
+        font-size:14px;
+    }
     </style>
 <body>
     <div class="content">
@@ -61,9 +64,11 @@
     </select>
 
     <select name= neutralisers method="GET" action="/">
-        {% for neutraliser in neutralisers %}
-        <option value= "{{neutraliser}}" SELECTED>{{neutraliser}}</option>"
-        {% endfor %}
+        <optgroup>
+            {% for neutraliser in neutralisers %}
+            <option value= "{{neutraliser}}" SELECTED>{{neutraliser}}</option>"
+            {% endfor %}
+        </optgroup>
     </select>
 
     <br>
