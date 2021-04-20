@@ -24,7 +24,7 @@ class DecoderRNN(nn.Module):
         # Dropout change
         self.dropout_per = dropout_per
         # Droput layer
-        self.dropout = nn.Dropout(self.dropout_p)
+        self.dropout = nn.Dropout(self.dropout_per)
         # GRU layer
         self.gru = nn.GRU(self.hidden_size, self.hidden_size)
         # Output layer
