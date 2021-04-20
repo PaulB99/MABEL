@@ -15,6 +15,8 @@ import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
 from simpletransformers.seq2seq import Seq2SeqModel, Seq2SeqArgs
 import pandas as pd
+import warnings
+warnings.filterwarnings("ignore")
 
 transformers.logging.set_verbosity_error()
 
