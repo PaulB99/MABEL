@@ -6,6 +6,15 @@
     <title>Bias Neutraliser</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap.css') }}" />
 </head>
+<style>
+.content {
+  max-width: 700px;
+  margin: auto;
+}
+h1{
+    padding-top: 25px;
+}
+</style>
 
 <body>
     <div class="content">
@@ -17,7 +26,7 @@
         <br>
         Choose a tagger model to identify the bias, and a neutraliser to remove it.
         <br>
-        You can see a brief overview of each model available on this page.
+        You can see a brief overview of each model available <a href="{{ url_for('show_models') }}">here</a>.
         <br>
         Please make sure you've trained the models you wish to use!
     

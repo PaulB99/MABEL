@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Bias Neutraliser</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap.css') }}" />
+</head>
+<style>
+.content {
+  max-width: 700px;
+  margin: auto;
+}
+h1{
+    padding-top: 25px;
+}
+</style>
+
+<body>
+    <div class="content">
+
+        <h1>
+        Bias Neutraliser
+        </h1>
+        <br>
+            Welcome to the bias neutraliser! This system hopes to identify and neutralise biased text. 
+        <br>
+            Here are the models available:
+        <br>
+
+        <label for="taggers">Tagger models</label>
+        <table class="table table-hover", id="taggers">
+            <thead>
+                <tr>
+                <th scope="col">Model</th>
+                <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <th scope="row">base_model</th>
+                <td>A sequence classification model using the bert_base architecture. 12 layers, 768 hidden, 12 attention heads and 110M parameters.</td>
+                </tr>
+                <tr>
+                <th scope="row">large_model</th>
+                <td>A sequence classification model using the bert_large architecture. 24 layers, 1024 hidden, 16 attention heads and 336M parameters. Warning - demanding model.</td>
+                </tr>
+                <tr>
+                <th scope="row">lexi</th>
+                <td>A very basic model just considering the bias lexicon produced by Marta Recasens, Cristian Danescu-Niculescu-Mizil, and Dan Jurafsky in their 2013 paper. Designed for low-powered machines.</td>
+                </tr>
+  </tbody>
+</table>
+<br>
+<label for="neutralisers">Neutraliser models</label>
+<table class="table table-hover" id="neutralisers">
+            <thead>
+                <tr>
+                <th scope="col">Model</th>
+                <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <th scope="row">bart</th>
+                <td>A machine translation model based on Facebook's bart architecture. 12 layers, 768 hidden, 16 attention heads and 139M parameters. Warning - very temperamental.</td>
+                </tr>
+                <tr>
+                <th scope="row">roberta</th>
+                <td>A very large machine translation model with a roberta_base encoder and a bert_base decoder. Warning - needs a powerful machine.</td>
+                </tr>
+                <tr>
+                <th scope="row">seq2seq</th>
+                <td>A simple seq2seq model with an RNN as encoder and decoder. Hidden size of 256, and a vocab size of 30552.</td>
+                </tr>
+                <th scope="row">miniseq2seq</th>
+                <td>A smaller version of the seq2seq model above. Hidden size of 64, and a vocab size of 7630.</td>
+                </tr>
+                <th scope="row">parrot</th>
+                <td>Like a parrot - repeats whatever you say right back to you! Doesn't neutralise the text, but allows the system to work on low powered machines.</td>
+                </tr>
+  </tbody>
+</table>
+<br>
+<form method="POST" id="inputform" action="{{ url_for('return_to_selection') }}">
+<formset>
+    <button type="submit" class="btn btn-outline-primary" name="return" value="Return">Return</button>
+</formset>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</body>
+
+
+</div>
+</html>

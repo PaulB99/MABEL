@@ -6,6 +6,15 @@
     <title>Bias Neutraliser</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/bootstrap.css') }}" />
 </head>
+<style>
+.content {
+  max-width: 700px;
+  margin: auto;
+}
+h1{
+    padding-top: 25px;
+}
+</style>
 
 <body>
     <div class="content">
@@ -31,17 +40,23 @@
         Please write your text below:
     </strong>
     <br>
-    <textarea rows="4" cols="50" name="textinput" form="inputform">{{residual_text}}</textarea>
     <form method="POST" id="inputform" action="{{ url_for('run_model') }}">
-        <input type="submit" name="run" value="Run">
-        <input type="submit" name="return" value="Return">
+
+        <formset>
+            <textarea id="textinput" rows="4" cols="50" name="textinput" form="inputform">{{residual_text}}</textarea>
+            <br>
+            <button type="submit" class="btn btn-outline-primary" name="run" value="Run">Run</button>
+            <button type="submit" class="btn btn-outline-primary" name="return" value="Return">Return</button>
+        </formset>
     </form>
     <br>
 
     {{biased}}
 
     <br>
-    <textarea readonly rows="4" cols="50" name="textoutput">
+    <label for="textoutput">Output</label>
+    <br>
+    <textarea readonly id="textoutput" rows="4" cols="50" name="textoutput">
         {{out_text}}
     </textarea>
     </div>

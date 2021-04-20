@@ -72,11 +72,14 @@ def run_model():
         elif 'return' in request.form:
             return redirect(url_for('main'))
     
-    
-#@app.route('/', methods=['POST'])
-#def my_form_post():
-  #  variable = request.form['variable']
-   # return variable
+@app.route('/models')
+def show_models():
+    return render_template('models.html')
+
+@app.route('/models', methods=['POST'])
+def return_to_selection():
+    if request.method == 'POST':
+        return redirect(url_for('main'))
 
 if __name__ == '__main__':
     # app.run(port=5002, threaded=False)
