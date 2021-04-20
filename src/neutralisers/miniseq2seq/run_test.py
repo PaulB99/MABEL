@@ -9,12 +9,13 @@ from transformers import BertTokenizer
 class TestMiniSeq2Seq(unittest.TestCase):
      
     # Check the model is set up correctly
+    '''
     def test_setup(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         mod = model.seq2seq(device, 7630)
         self.assertEqual(mod.vocab_size, 7630)
         self.assertEqual(device, mod.device)
-        
+        '''
 
     def test_tokeniser(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
