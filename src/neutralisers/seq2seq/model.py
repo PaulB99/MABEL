@@ -24,8 +24,8 @@ class seq2seq(nn.Module):
        super().__init__()
       
         # Initialise the encoder and decoder
-       self.encoder = EncoderRNN(input_size, 256)
-       self.decoder = DecoderRNN(input_size, 256)
+       self.encoder = EncoderRNN(input_size, 512)
+       self.decoder = DecoderRNN(input_size, 512)
        self.vocab_size = input_size
        self.device = device       
       

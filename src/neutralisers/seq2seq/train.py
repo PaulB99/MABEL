@@ -38,7 +38,7 @@ data_path = '../../../data/datasets/main/train_neutralisation.csv'
 data_df = pd.read_csv(data_path, header=None, skiprows=1, names=['text', 'target'])
 
 # Batch size
-batch_size = 24
+batch_size = 32
 
 #tok = tokeniser.tokeniser(device, data_path)
 tok = BertTokenizer.from_pretrained('bert-base-uncased') 
@@ -49,10 +49,10 @@ model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.SGD(model.parameters(), lr=0.01)
+optimiser = optim.SGD(model.parameters(), lr=0.003)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
-num_epochs = 3
+num_epochs = 30
 
 start_time = time.perf_counter()
 loss_vals = []
