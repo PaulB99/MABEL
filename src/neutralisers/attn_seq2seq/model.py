@@ -30,7 +30,7 @@ class seq2seq(nn.Module):
        self.device = device       
       
      # Forward function
-    def forward(self, text, target, teacher_forcing_ratio=0.5, max_length=128):
+    def forward(self, text, target, teacher_forcing_ratio=0.5, max_length=64):
         
         encoder_hidden = self.encoder.initHidden()
 
@@ -71,7 +71,7 @@ class seq2seq(nn.Module):
 
     
     # Neutralise a given sequence
-    def generate(self, sentence, tokeniser, max_length=128):
+    def generate(self, sentence, tokeniser, max_length=64):
         with torch.no_grad():
             
             encoder_hidden = self.encoder.initHidden()

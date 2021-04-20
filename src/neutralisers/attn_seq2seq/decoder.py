@@ -6,7 +6,7 @@ import torch.nn.functional as f
 
 class DecoderRNN(nn.Module):
     
-    def __init__(self, hidden_size, output_size, dropout_per=0.1, max_length=128):
+    def __init__(self, hidden_size, output_size, dropout_per=0.1, max_length=64):
         super(DecoderRNN, self).__init__()
         # Hidden layer size
         self.hidden_size = hidden_size
