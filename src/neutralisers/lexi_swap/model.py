@@ -24,4 +24,5 @@ class lexi():
             if s not in self.words:
                 new_sent.append(s)
         sent = " ".join(str(x) for x in new_sent)
+        return sent
     
