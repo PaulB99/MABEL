@@ -10,6 +10,7 @@ from neutralisers.roberta import model as roberta_model
 from neutralisers.parrot import model as parrot_model
 from neutralisers.seq2seq import model as seq2seq_model
 from neutralisers.miniseq2seq import model as miniseq2seq_model
+from neutralisers.lexi_swap import model as lexi_swap_model
 from transformers import BertTokenizer, BartTokenizer
 import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
@@ -107,6 +108,10 @@ class runner():
             t2 = time.perf_counter()
             print('Neutraliser loaded in {}s!'.format(t2-t1))
             return
+        
+        #Lexi swap
+        elif self.neutraliser=='lexi_swap':
+            self.neutraliser_model = lexi_swap_model.lexi()
         
         # Parrot
         elif self.neutraliser=='parrot':
@@ -224,8 +229,8 @@ class runner():
             return sentence, biased_bool
         # TIME TO NEUTRALISE!
         
-        # The parrot pipeline is greatly simplified
-        if self.neutraliser=='parrot':
+        # The parrot and lexi_swap pipeline is greatly simplified
+        if self.neutraliser=='parrot' or self.neutraliser=='lexi_swap':
             ticker = -1
             for s in split_sent:
                 ticker+=1
