@@ -24,8 +24,8 @@ class seq2seq(nn.Module):
        super().__init__()
       
         # Initialise the encoder and decoder
-       self.encoder = EncoderRNN(input_size, 512)
-       self.decoder = DecoderRNN(input_size, 512)
+       self.encoder = EncoderRNN(input_size, 256)
+       self.decoder = DecoderRNN(input_size, 256)
        self.vocab_size = input_size
        self.device = device       
       
@@ -64,7 +64,7 @@ class seq2seq(nn.Module):
             # If teacher forcing, next decoder input is the next word. If not, use the highest value from decoder
             teacher_force = random.random() < teacher_forcing_ratio
             topv, topi = decoder_output.topk(1)
-            decoder_input = (target[t] if teacher_force else topi.squeeze())
+            decoder_input = (target[t] if teacher_force else topi.squeeze().detatch())
             if(teacher_force == False and decoder_input.item() == EOS_token):
                 break
         return outputs
@@ -102,11 +102,11 @@ class seq2seq(nn.Module):
             # For each word, run decoder and make predictions
             for t in range(target_length):   
                 
-                decoder_output, decoder_hidden = self.decoder(decoder_input, decoder_hidden, encoder_outputs)
+                decoder_output, decoder_hidden, decoder_attn = self.decoder(decoder_input, decoder_hidden, encoder_outputs)
                 outputs[t] = decoder_output
                 
                 topv, topi = decoder_output.topk(1)
-                decoder_input = topi
+                decoder_input = topi.squeeze().detatch()
                 if decoder_input.item() == EOS_token:
                     break
                 
