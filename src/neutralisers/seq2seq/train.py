@@ -16,7 +16,7 @@ def train_step(model, input_tensors, target_tensors, optimiser, criterion):
 
     loss = 0
     epoch_loss = 0
-    for x in len(input_tensors):
+    for x in range(len(input_tensors)):
         input_tensor = input_tensors[x]
         target_tensor = target_tensors[x]
 
@@ -60,6 +60,8 @@ loss_points = []
 
 for i in range(num_epochs): #num_epochs
     j=0
+    input_back = []
+    target_back = []
     for index, row in data_df.iterrows():
         input_tensor = tok.encode(row['text'], return_tensors="pt")[0].to(device)
         input_tensor = input_tensor.view(-1, 1)
@@ -68,7 +70,9 @@ for i in range(num_epochs): #num_epochs
         #input_tensor = tok.tensorise(row['text'])
         #target_tensor = tok.tensorise(row['target'])
         if j % batch_size == 0:
-            loss = train_step(model, input_tensor, target_tensor, optimiser, criterion)
+            input_back.append(input_tensor)
+            target_back.append(target_tensor)
+            loss = train_step(model, input_back, target_back, optimiser, criterion)
             total_loss_iterations += loss
             input_back = []
             target_back = []
