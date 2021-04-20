@@ -18,7 +18,8 @@ class TestMiniSeq2Seq(unittest.TestCase):
     def test_tokeniser(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         tok=BertTokenizer("bert-base-uncased-vocab-mini.txt")
-        input_tensor = tok.encode('Hello word', return_tensors="pt")[0].to(device)
+        string = 'Hello world'
+        input_tensor = tok.encode(string, return_tensors="pt")[0].to(device)
         output_tensor = tok.decode(input_tensor)
         self.assertEqual(input_tensor, output_tensor)
 

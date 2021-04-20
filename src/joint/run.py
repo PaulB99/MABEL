@@ -112,6 +112,9 @@ class runner():
         #Lexi swap
         elif self.neutraliser=='lexi_swap':
             self.neutraliser_model = lexi_swap_model.lexi()
+            t2 = time.perf_counter()
+            print('Neutraliser loaded in {}s!'.format(t2-t1))
+            return
         
         # Parrot
         elif self.neutraliser=='parrot':

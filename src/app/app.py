@@ -32,7 +32,7 @@ def get_models():
         if tagger is not None and neutraliser is not None:
             if not os.path.exists('../../cache/taggers/' + tagger +'.pt') and tagger!='lexi':
                 error+="{} has not been trained yet! Please run the relevant testing script and try again.<br>".format(tagger)
-            if not os.path.exists('../../cache/neutralisers/' + neutraliser + '.pt') and neutraliser!='parrot':
+            if not os.path.exists('../../cache/neutralisers/' + neutraliser + '.pt') and (neutraliser!='parrot' and neutraliser!='lexi_swap'):
                 error+="{} has not been trained yet! Please run the relevant testing script and try again.<br>".format(neutraliser)      
             if error != "":
                 return render_template('index.html', taggers=taggers,neutralisers=neutralisers, error=error)
