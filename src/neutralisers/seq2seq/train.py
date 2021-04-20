@@ -11,18 +11,21 @@ import matplotlib.pyplot as plt
 # Device
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-def train_step(model, input_tensor, target_tensor, optimiser, criterion):
+def train_step(model, input_tensors, target_tensors, optimiser, criterion):
     optimiser.zero_grad()
 
     loss = 0
     epoch_loss = 0
+    for x in len(input_tensors):
+        input_tensor = input_tensors[x]
+        target_tensor = target_tensors[x]
 
-    output = model(input_tensor, target_tensor)
-    
-    # Calculate the loss from prediction and target
-    target_length = target_tensor.shape[0]
-    for i in range(target_length):
-        loss += criterion(output[i], target_tensor[i])
+        output = model(input_tensor, target_tensor)
+        
+        # Calculate the loss from prediction and target
+        target_length = target_tensor.shape[0]
+        for i in range(target_length):
+            loss += criterion(output[i], target_tensor[i])
 
     loss.backward()
     optimiser.step()
@@ -34,6 +37,9 @@ def train_step(model, input_tensor, target_tensor, optimiser, criterion):
 data_path = '../../../data/datasets/main/train_neutralisation.csv'
 data_df = pd.read_csv(data_path, header=None, skiprows=1, names=['text', 'target'])
 
+# Batch size
+batch_size = 24
+
 #tok = tokeniser.tokeniser(device, data_path)
 tok = BertTokenizer.from_pretrained('bert-base-uncased') 
 lang_size = 30522
@@ -43,7 +49,7 @@ model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.SGD(model.parameters(), lr=0.001)
+optimiser = optim.SGD(model.parameters(), lr=0.01)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
 num_epochs = 3
@@ -61,10 +67,14 @@ for i in range(num_epochs): #num_epochs
         target_tensor = target_tensor.view(-1, 1)
         #input_tensor = tok.tensorise(row['text'])
         #target_tensor = tok.tensorise(row['target'])
-    
-        loss = train_step(model, input_tensor, target_tensor, optimiser, criterion)
-    
-        total_loss_iterations += loss
+        if j % batch_size == 0:
+            loss = train_step(model, input_tensor, target_tensor, optimiser, criterion)
+            total_loss_iterations += loss
+            input_back = []
+            target_back = []
+        else:
+            input_back.append(input_tensor)
+            target_back.append(target_tensor)
     
         if j % 5000 == 0:
             average_loss= total_loss_iterations / 5000
