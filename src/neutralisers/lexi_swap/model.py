@@ -11,6 +11,7 @@ class lexi():
         for line in lines:
             line = line.strip()
             self.words.append(line)
+        file.close()
 
 
     # Return true if in bias lexicon, false otherwise
@@ -24,5 +25,6 @@ class lexi():
             if s not in self.words:
                 new_sent.append(s)
         sent = " ".join(str(x) for x in new_sent)
+        
         return sent
     

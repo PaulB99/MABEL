@@ -239,6 +239,7 @@ class runner():
                 ticker+=1
                 if ticker in biased_indices:
                     pred=self.neutraliser_model.generate(s)
+                    print(pred)
                     output_array.insert(ticker, pred)
                     
         # Using the roberta neutraliser has a different pipeline
