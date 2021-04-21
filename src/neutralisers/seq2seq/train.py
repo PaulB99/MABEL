@@ -7,6 +7,7 @@ import tokeniser
 from transformers import BertTokenizer
 import time
 import matplotlib.pyplot as plt
+import os
 
 # Device
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -24,8 +25,8 @@ def train_step(model, input_tensors, target_tensors, optimiser, criterion):
         
         # Calculate the loss from prediction and target
         target_length = target_tensor.shape[0]
-        for i in range(target_length):
-            loss += criterion(output[i], target_tensor[i])
+        for index in range(target_length):
+            loss += criterion(output[index], target_tensor[index])
 
     loss.backward()
     optimiser.step()
@@ -52,7 +53,7 @@ print('Model initialised')
 optimiser = optim.SGD(model.parameters(), lr=0.003)
 criterion = nn.NLLLoss()
 total_loss_iterations = 0
-num_epochs = 11
+num_epochs = 30
 
 start_time = time.perf_counter()
 loss_vals = []
@@ -88,6 +89,11 @@ for i in range(num_epochs): #num_epochs
             total_loss_iterations = 0
             print('%d %.4f' % (j, average_loss))
         j+=1
+        
+    if os.path.exists('../../../cache/neutralisers/seq2seq.pt'):  # checking if there is a file with this name
+        os.remove('../../../cache/neutralisers/seq2seq.pt')
+    torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
+    print('Model saved after epoch {}'.format(str(i)))
       
 end_time = time.perf_counter()   
 print('Seq2seq model trained in {}'.format(end_time-start_time)) 
