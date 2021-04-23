@@ -73,8 +73,25 @@ def test(model, test_loader, tokeniser):
     with open('examples.csv', 'w+', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Correct biased", "Correct unbiased", "Incorrect biased", "Incorrect unbiased"])
-        for n in range(20):
-            writer.writerow([tokeniser.batch_decode(bias_corr[n]), tokeniser.batch_decode(un_corr[n]), tokeniser.batch_decode(bias_inco[n]), tokeniser.batch_decode(un_inco[n])])
+        for n in range(50):
+            try:
+                a = tokeniser.batch_decode(bias_corr[n])
+            except:
+                a = ''
+            try:
+                b = tokeniser.batch_decode(un_corr[n])
+            except:
+                b = ''
+            try:    
+                c = tokeniser.batch_decode(bias_inco[n])
+            except:
+                c = ''
+            try:
+                d = tokeniser.batch_decode(un_inco[n])
+            except:
+                d = ''
+            
+            writer.writerow([a, b , c, d])
             
     # Create confusion matrix
     cm = confusion_matrix(y_target, y_pred, labels=[1,0])
