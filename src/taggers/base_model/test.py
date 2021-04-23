@@ -43,7 +43,7 @@ def test(model, test_loader):
             _, output = output
             y_pred.extend(torch.argmax(output, 1).tolist())
             y_target.extend(labels.tolist())
-            if torch.eq(torch.argmax(output, 1),labels):
+            if torch.argmax(output, 1).tolist()[0] == labels.tolist()[0]:
                 if l == 1:
                     bias_corr.append(text)
                 else:
