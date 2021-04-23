@@ -6,6 +6,13 @@ from transformers import BertTokenizer
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
+import csv
+import os
+import re
+folder = re.split("\\\\|/",os.getcwd())[-5]
+if folder=='pab734':
+    os.environ['TORCH_HOME'] = '/data/labfs/pab734/torch'
+    print('True')
 
 # Probably wants to go into a nice util file
 def load_ckpt(load_path, model):
@@ -19,6 +26,11 @@ def load_ckpt(load_path, model):
 def test(model, test_loader):
     y_pred = []
     y_target = []
+    # Store each classification
+    bias_corr = []
+    bias_inco = []
+    un_corr = []
+    un_inco = []
     model.eval()
     with torch.no_grad():
         for (labels, text), _ in test_loader:
@@ -30,11 +42,40 @@ def test(model, test_loader):
             _, output = output
             y_pred.extend(torch.argmax(output, 1).tolist())
             y_target.extend(labels.tolist())
+            if torch.argmax(output, 1) == labels:
+                if labels == 1:
+                    bias_corr.append(text)
+                else:
+                    un_corr.append(text)
+            else:
+                if labels == 1:
+                    un_inco.append(text)
+                else:
+                    bias_inco.append(text)
     
     # Print report
     print('Classification Report:\n')
     print(classification_report(y_target, y_pred, labels=[1,0], digits=4))
     
+    # Print examples
+    print('Correctly identified as biased:')
+    print(bias_corr[:10])
+    
+    print('Correctly identified as unbiased:')
+    print(un_corr[:10])
+    
+    print('Incorrectly identified as biased:')
+    print(bias_inco[:10])
+    
+    print('Inorrectly identified as unbiased:')
+    print(un_inco[:10])
+    
+    with open('examples.csv', 'w+', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(["Correct biased", "Correct unbiased", "Incorrect biased", "Incorrect unbiased"])
+        for n in range(200):
+            writer.writerow([bias_corr[n], un_corr[n], bias_inco[n], un_inco[n]])
+            
     # Create confusion matrix
     cm = confusion_matrix(y_target, y_pred, labels=[1,0])
     fig, ax = plt.subplots()
