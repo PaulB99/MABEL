@@ -23,7 +23,7 @@ def load_ckpt(load_path, model):
     #return state_dict['valid_loss']
 
 # Test given model using dataset
-def test(model, test_loader):
+def test(model, test_loader, tokeniser):
     y_pred = []
     y_target = []
     # Store each classification
@@ -73,8 +73,8 @@ def test(model, test_loader):
     with open('examples.csv', 'w+', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Correct biased", "Correct unbiased", "Incorrect biased", "Incorrect unbiased"])
-        for n in range(200):
-            writer.writerow([bias_corr[n], un_corr[n], bias_inco[n], un_inco[n]])
+        for n in range(20):
+            writer.writerow([tokeniser.decode(bias_corr[n]), tokeniser.decode(un_corr[n]), tokeniser.decode(bias_inco[n]), tokeniser.decode(un_inco[n])])
             
     # Create confusion matrix
     cm = confusion_matrix(y_target, y_pred, labels=[1,0])
@@ -120,5 +120,5 @@ if __name__ == "__main__":
     # Test model
     mymodel = model.BERT().to(device)
     load_ckpt('../../../cache/taggers/base_model.pt', mymodel)
-    test(mymodel, test_iter)
+    test(mymodel, test_iter, tokeniser)
     
