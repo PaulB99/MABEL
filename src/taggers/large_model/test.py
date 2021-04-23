@@ -19,6 +19,11 @@ def load_ckpt(load_path, model):
 def test(model, test_loader):
     y_pred = []
     y_target = []
+    # Store each classification
+    bias_corr = []
+    bias_inco = []
+    un_corr = []
+    un_inco = []
     model.eval()
     with torch.no_grad():
         for (labels, text), _ in test_loader:
@@ -30,10 +35,33 @@ def test(model, test_loader):
             _, output = output
             y_pred.extend(torch.argmax(output, 1).tolist())
             y_target.extend(labels.tolist())
+            if torch.argmax(output, 1) == labels:
+                if labels == 1:
+                    bias_corr.append(text)
+                else:
+                    un_corr.append(text)
+            else:
+                if labels == 1:
+                    un_inco.append(text)
+                else:
+                    bias_inco.append(text)
     
     # Print report
     print('Classification Report:\n')
     print(classification_report(y_target, y_pred, labels=[1,0], digits=4))
+    
+    # Print examples
+    print('Correctly identified as biased:')
+    print(bias_corr[:10])
+    
+    print('Correctly identified as unbiased:')
+    print(bias_corr[:10])
+    
+    print('Incorrectly identified as biased:')
+    print(bias_corr[:10])
+    
+    print('Inorrectly identified as unbiased:')
+    print(bias_corr[:10])
     
     # Create confusion matrix
     cm = confusion_matrix(y_target, y_pred, labels=[1,0])

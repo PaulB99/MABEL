@@ -5,6 +5,7 @@ from torchtext.data import Field, TabularDataset, BucketIterator
 import torch.nn as nn
 from transformers import BertTokenizer
 import torch.optim as optim
+import matplotlib.pyplot as plt
 
 data_path = '../../../data/'
 
@@ -117,7 +118,13 @@ def train(model,
                   'validation_loss': valid_loss_list,
                   'steps': global_steps_list}
     
+    # Save loss graph
     torch.save(state, ('../../../output/taggers/training_output.pt'))
+    plt.plot(global_steps_list, training_loss_list)
+    plt.xlabel('Training steps')
+    plt.ylabel('Training loss')
+    plt.title('Training loss of bert large model')
+    plt.savefig('bert_large_loss.png')    
     # Save model
     torch.save(model.state_dict(), '../../../cache/taggers/large_model.pt')
     end_time = time.clock()
