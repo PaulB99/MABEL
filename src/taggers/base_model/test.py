@@ -34,7 +34,6 @@ def test(model, test_loader):
     model.eval()
     with torch.no_grad():
         for (labels, text), _ in test_loader:
-            l = labels
             labels = labels.type(torch.LongTensor)           
             labels = labels.to(device)
             text = text.type(torch.LongTensor)  
@@ -44,12 +43,12 @@ def test(model, test_loader):
             y_pred.extend(torch.argmax(output, 1).tolist())
             y_target.extend(labels.tolist())
             if torch.argmax(output, 1).tolist()[0] == labels.tolist()[0]:
-                if l == 1:
+                if labels.tolist()[0] == 1:
                     bias_corr.append(text)
                 else:
                     un_corr.append(text)
             else:
-                if l == 1:
+                if labels.tolist()[0] == 1:
                     un_inco.append(text)
                 else:
                     bias_inco.append(text)
