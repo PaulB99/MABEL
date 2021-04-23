@@ -10,6 +10,7 @@ import os
 import re
 folder = re.split("\\\\|/",os.getcwd())[-5]
 if folder=='pab734':
+    print('True')
     os.environ['TORCH_HOME'] = '/data/labfs/pab734/torch'
 
 data_path = '../../../data/'
