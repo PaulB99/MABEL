@@ -6,6 +6,11 @@ import torch.nn as nn
 from transformers import BertTokenizer
 import torch.optim as optim
 import matplotlib.pyplot as plt
+import os
+import re
+folder = re.split("\\\\|/",os.getcwd())[-5]
+if folder=='pab734':
+    os.environ['TORCH_HOME'] = '/data/labfs/pab734/torch'
 
 data_path = '../../../data/'
 

@@ -7,6 +7,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix
 import csv
+import os
+import re
+folder = re.split("\\\\|/",os.getcwd())[-5]
+if folder=='pab734':
+    os.environ['TORCH_HOME'] = '/data/labfs/pab734/torch'
 
 # Probably wants to go into a nice util file
 def load_ckpt(load_path, model):
