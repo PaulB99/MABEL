@@ -2,10 +2,11 @@ from transformers import (
     BartTokenizer,
     BartForConditionalGeneration,
     BartConfig,
-    Trainer,
-    TrainingArguments,
+    Seq2SeqTrainer,
+    Seq2SeqTrainingArguments,
     DataCollatorForSeq2Seq,
     AutoTokenizer,
+    Trainer
     )
 import torch
 import time
@@ -36,7 +37,7 @@ target_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, in
 fields = [('text', text_field), ('target', target_field)]
 
 # Dataset TODO: Work out how the data is coming in
-train, valid = TabularDataset.splits(path=data_path, train='datasets/big/train_neutralisation.csv', validation='datasets/big/valid_neutralisation.csv',
+train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
                                            format='CSV', fields=fields, skip_header=True)
 
 # Iterators
@@ -134,11 +135,32 @@ def train(model,
     train_time = end_time - start_time
     print('Bart training complete in {} seconds'.format(train_time))
     print('Done!')
+  
+def alt_train(model):
+    training_args = Seq2SeqTrainingArguments(
+    output_dir='../../../cache/neutralisers/bart',          
+    num_train_epochs=11,           
+    per_device_train_batch_size=8, 
+    per_device_eval_batch_size=8,   
+    warmup_steps=500,               
+    weight_decay=0.01,
+    learning_rate=0.003,
+    logging_strategy='no'
+           
+)
+    
+    trainer = Seq2SeqTrainer(
+    model=model,                       
+    args=training_args,                  
+    train_dataset=train,        
+    eval_dataset=valid,
+)
+    trainer.train()
     
 # Run the training
 if __name__ == "__main__":
     mymodel = model.BART().to(device)
-    optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
-    train(model=mymodel, optimiser=optimiser)
-    
+    #optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
+    #train(model=mymodel, optimiser=optimiser)
+    alt_train(mymodel)
     
