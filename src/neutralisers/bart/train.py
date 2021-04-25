@@ -40,6 +40,8 @@ fields = [('text', text_field), ('target', target_field)]
 train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
                                            format='CSV', fields=fields, skip_header=True)
 
+print(train[0])
+print(valid[0])
 # Iterators
 train_iter = BucketIterator(train, batch_size=8, sort_key=lambda x: len(x.text),
                             device=device, train=True, sort=True, sort_within_batch=True)
@@ -157,9 +159,9 @@ def alt_train(model):
     trainer.train()
     
 # Run the training
-if __name__ == "__main__":
-    mymodel = model.BART().to(device)
+#if __name__ == "__main__":
+    #mymodel = model.BART().to(device)
     #optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
     #train(model=mymodel, optimiser=optimiser)
-    alt_train(mymodel)
+    #alt_train(mymodel)
     
