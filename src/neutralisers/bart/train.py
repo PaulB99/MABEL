@@ -193,11 +193,11 @@ def alt_train(model):
         learning_rate=0.003,
         )
     
-    data_collator = DataCollatorForSeq2Seq(
-            tokeniser,
-            model=model,
-            label_pad_token_id=label_pad_token_id,
-            )
+    #data_collator = DataCollatorForSeq2Seq(
+            #tokeniser,
+            #model=model,
+            #label_pad_token_id=label_pad_token_id,
+            #)
     
     trainer = Seq2SeqTrainer(
         model=model,                       
@@ -205,7 +205,7 @@ def alt_train(model):
         train_dataset=train,        
         eval_dataset=valid,
         tokenizer = tokeniser,
-        data_collator=data_collator,
+       # data_collator=data_collator,
     )
     trainer.train()
     trainer.save_model()
