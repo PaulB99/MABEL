@@ -54,7 +54,7 @@ def prepro(examples):
         targets = [ex for ex in examples['target']]
         #inputs = examples['text']
         #targets = examples['target']
-        inputs = [inp for inp in inputs]
+        #inputs = [inp for inp in inputs]
         model_inputs = tokeniser(inputs, max_length=MAX_SEQ_LEN, padding=False, truncation=True)
 
         # Setup the tokenizer for targets
@@ -171,7 +171,8 @@ def alt_train(model):
     
     
     valid = load_dataset('csv', data_files=data_path+'datasets/main/valid_neutralisation.csv')
-    valid = valid["train"]
+    print(valid)
+    #valid = valid["train"]
     train = train.map(
             prepro,
             batched=True,
