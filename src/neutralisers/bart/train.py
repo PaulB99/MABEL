@@ -178,6 +178,8 @@ def alt_train(model):
         )
     
     label_pad_token_id = tokeniser.pad_token_id
+    print(train.column_names)
+    print(valid.column_names)
     
     training_args = Seq2SeqTrainingArguments(
         output_dir='../../../cache/neutralisers/bart',          
