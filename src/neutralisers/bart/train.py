@@ -49,8 +49,8 @@ valid_iter = BucketIterator(valid_a, batch_size=8, sort_key=lambda x: len(x.text
 
 # Preprocess data for bart model                            
 def prepro(examples):
-        inputs = [ex['text'] for ex in examples]
-        targets = [ex['target'] for ex in examples]
+        inputs = [ex for ex in examples['text']]
+        targets = [ex for ex in examples['target']]
         inputs = [inp for inp in inputs]
         model_inputs = tokeniser(inputs, max_length=MAX_SEQ_LEN, padding=False, truncation=True)
 
