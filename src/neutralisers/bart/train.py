@@ -180,7 +180,8 @@ def alt_train(model):
             remove_columns=cols,
         )
     
-    
+    print(train[0])
+    print(valid[0])
     label_pad_token_id = tokeniser.pad_token_id
     
     training_args = Seq2SeqTrainingArguments(
