@@ -192,18 +192,18 @@ def alt_train(model):
             )
     
     trainer = Seq2SeqTrainer(
-    model=model,                       
-    args=training_args,                  
-    train_dataset=train,        
-    eval_dataset=valid,
-    tokenizer = tokeniser,
-    data_collator=data_collator,
-)
+        model=model,                       
+        args=training_args,                  
+        train_dataset=train,        
+        eval_dataset=valid,
+        tokenizer = tokeniser,
+        data_collator=data_collator,
+    )
     trainer.train()
     trainer.save_model()
     
 # Run the training
-#if __name__ == "__main__":
+if __name__ == "__main__":
     mymodel = model.BART().to(device)
     #optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
     #train(model=mymodel, optimiser=optimiser)
