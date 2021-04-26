@@ -157,7 +157,7 @@ def alt_train(model):
     
     # Prepare data
     train = load_dataset('csv', data_files=data_path+'datasets/main/train_neutralisation.csv')
-    print(train)
+    train = train["train"]
     cols = train.column_names
     train = train.map(
             prepro,
@@ -168,6 +168,7 @@ def alt_train(model):
     
     
     valid = load_dataset('csv', data_files=data_path+'datasets/main/valid_neutralisation.csv')
+    valid = valid["train"]
     train = train.map(
             prepro,
             batched=True,
@@ -175,7 +176,6 @@ def alt_train(model):
             remove_columns=cols,
         )
     
-    print(valid)
     
     label_pad_token_id = tokeniser.pad_token_id
     
