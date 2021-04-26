@@ -177,8 +177,6 @@ def alt_train(model):
             remove_columns=cols,
         )
     
-    print(train[0])
-    print(valid[0])
     label_pad_token_id = tokeniser.pad_token_id
     
     training_args = Seq2SeqTrainingArguments(
@@ -212,7 +210,17 @@ def alt_train(model):
     
 # Run the training
 if __name__ == "__main__":
-    mymodel = model.BART().to(device)
+    config = BartConfig(d_model=512,
+                            encoder_layers=6,
+                            decoder_layers=6,
+                            encoder_attention_heads=8,
+                            decoder_attention_heads=8,
+                            encoder_ffn_dim=2048,
+                            decoder_ffn_dim=2048,
+                            activation_function='gelu'
+                            )
+    mymodel = BartForConditionalGeneration(config=config).to(device)
+    #mymodel = model.BART().to(device)
     #optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
     #train(model=mymodel, optimiser=optimiser)
     alt_train(mymodel)
