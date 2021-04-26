@@ -14,6 +14,7 @@ import model
 from torchtext.data import Field, TabularDataset, BucketIterator
 import torch.nn as nn
 import torch.optim as optim
+from datasets import load_dataset
 
 data_path = '../../../data/'
 output_path = '../../../output'
@@ -37,16 +38,31 @@ target_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, in
 fields = [('text', text_field), ('target', target_field)]
 
 # Dataset TODO: Work out how the data is coming in
-train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
-                                           format='CSV', fields=fields, skip_header=True)
+#train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
+                                           #format='CSV', fields=fields, skip_header=True)
 
-print(train[0])
-print(valid[0])
 # Iterators
-train_iter = BucketIterator(train, batch_size=8, sort_key=lambda x: len(x.text),
-                            device=device, train=True, sort=True, sort_within_batch=True)
-valid_iter = BucketIterator(valid, batch_size=8, sort_key=lambda x: len(x.text),
-                            device=device, train=True, sort=True, sort_within_batch=True)
+#train_iter = BucketIterator(train, batch_size=8, sort_key=lambda x: len(x.text),
+                            #device=device, train=True, sort=True, sort_within_batch=True)
+#valid_iter = BucketIterator(valid, batch_size=8, sort_key=lambda x: len(x.text),
+                            #device=device, train=True, sort=True, sort_within_batch=True)
+
+# Preprocess data for bart model                            
+def prepro(examples):
+        inputs = [ex['text'] for ex in examples]
+        targets = [ex['target'] for ex in examples]
+        inputs = [inp for inp in inputs]
+        model_inputs = tokeniser(inputs, max_length=MAX_SEQ_LEN, padding=False, truncation=True)
+
+        # Setup the tokenizer for targets
+        with tokeniser.as_target_tokenizer():
+            labels = tokeniser(targets, max_length=MAX_SEQ_LEN, padding=False, truncation=True)
+
+        # If we are padding here, replace all tokenizer.pad_token_id in the labels by -100 when we want to ignore
+        # padding in the loss.
+        model_inputs["labels"] = labels["input_ids"]
+        return model_inputs
+
 
 
 # Training Function
@@ -139,6 +155,27 @@ def train(model,
     print('Done!')
   
 def alt_train(model):
+    
+    # Prepare data
+    train = load_dataset('csv', data_files=data_path+'datasets/main/train_neutralisation.csv')
+    cols = train.column_names
+    train = train.map(
+            prepro,
+            batched=True,
+            num_proc=None,
+            remove_columns=cols,
+        )
+    
+    valid = load_dataset('csv', data_files=data_path+'datasets/main/valid_neutralisation.csv')
+    train = train.map(
+            prepro,
+            batched=True,
+            num_proc=None,
+            remove_columns=cols,
+        )
+    
+    label_pad_token_id = tokeniser.pad_token_id
+    
     training_args = Seq2SeqTrainingArguments(
         output_dir='../../../cache/neutralisers/bart',          
         num_train_epochs=11,           
@@ -147,21 +184,29 @@ def alt_train(model):
         warmup_steps=500,               
         weight_decay=0.01,
         learning_rate=0.003,
-        max_steps=1000000
         )
+    
+    data_collator = DataCollatorForSeq2Seq(
+            tokeniser,
+            model=model,
+            label_pad_token_id=label_pad_token_id,
+            )
     
     trainer = Seq2SeqTrainer(
     model=model,                       
     args=training_args,                  
     train_dataset=train,        
     eval_dataset=valid,
+    tokenizer = tokeniser,
+    data_collator=data_collator,
 )
     trainer.train()
+    trainer.save_model()
     
 # Run the training
 #if __name__ == "__main__":
-    #mymodel = model.BART().to(device)
+    mymodel = model.BART().to(device)
     #optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
     #train(model=mymodel, optimiser=optimiser)
-    #alt_train(mymodel)
+    alt_train(mymodel)
     
