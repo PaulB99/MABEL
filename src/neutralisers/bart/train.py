@@ -177,9 +177,9 @@ def alt_train(model):
             remove_columns=cols,
         )
     
+    print(train[0])
+    print(valid[0])
     label_pad_token_id = tokeniser.pad_token_id
-    print(train.column_names)
-    print(valid.column_names)
     
     training_args = Seq2SeqTrainingArguments(
         output_dir='../../../cache/neutralisers/bart',          
@@ -190,9 +190,8 @@ def alt_train(model):
         weight_decay=0.01,
         learning_rate=0.003,
         )
-   
-    print(type(train))
-    print(type(valid))
+
+
     data_collator = DataCollatorForSeq2Seq(
             tokeniser,
             model=model,
