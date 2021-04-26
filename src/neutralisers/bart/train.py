@@ -63,7 +63,6 @@ def prepro(examples):
         # If we are padding here, replace all tokenizer.pad_token_id in the labels by -100 when we want to ignore
         # padding in the loss.
         model_inputs["labels"] = labels["input_ids"]
-        print(model_inputs["input_ids"])
         return model_inputs
 
 
