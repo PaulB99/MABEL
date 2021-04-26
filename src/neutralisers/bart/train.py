@@ -50,8 +50,8 @@ valid_iter = BucketIterator(valid_a, batch_size=8, sort_key=lambda x: len(x.text
 # Preprocess data for bart model                            
 def prepro(examples):
         print(examples)
-        inputs = [ex for ex in examples['text']]
-        targets = [ex for ex in examples['target']]
+        inputs = [ex for ex in examples['input_ids']]
+        targets = [ex for ex in examples['labels']]
         #inputs = examples['text']
         #targets = examples['target']
         inputs = [inp for inp in inputs]
