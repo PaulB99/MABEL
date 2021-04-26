@@ -60,8 +60,6 @@ def prepro(examples):
         with tokeniser.as_target_tokenizer():
             labels = tokeniser(targets, max_length=MAX_SEQ_LEN, padding=False, truncation=True)
 
-        # If we are padding here, replace all tokenizer.pad_token_id in the labels by -100 when we want to ignore
-        # padding in the loss.
         model_inputs["labels"] = labels["input_ids"]
         return model_inputs
 
@@ -161,7 +159,6 @@ def alt_train(model):
     train = load_dataset('csv', data_files=data_path+'datasets/main/train_neutralisation.csv')
     train = train["train"]
     cols = train.column_names
-    print(cols)
     train = train.map(
             prepro,
             batched=True,
@@ -180,8 +177,6 @@ def alt_train(model):
             remove_columns=cols,
         )
     
-    print(train[0])
-    print(valid[0])
     label_pad_token_id = tokeniser.pad_token_id
     
     training_args = Seq2SeqTrainingArguments(
@@ -193,11 +188,13 @@ def alt_train(model):
         weight_decay=0.01,
         learning_rate=0.003,
         )
-    
+   
+    print(type(train))
+    print(type(valid))
     data_collator = DataCollatorForSeq2Seq(
             tokeniser,
             model=model,
-            #label_pad_token_id=label_pad_token_id,
+            label_pad_token_id=label_pad_token_id,
             )
     
     trainer = Seq2SeqTrainer(
@@ -207,7 +204,8 @@ def alt_train(model):
         eval_dataset=valid,
         tokenizer = tokeniser,
         data_collator=data_collator,
-    )
+        )
+    
     trainer.train()
     trainer.save_model()
     
