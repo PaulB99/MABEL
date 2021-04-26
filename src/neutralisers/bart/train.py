@@ -157,6 +157,8 @@ def alt_train(model):
     
     # Prepare data
     train = load_dataset('csv', data_files=data_path+'datasets/main/train_neutralisation.csv')
+    print(train[0])
+    print(train[1])
     cols = train.column_names
     train = train.map(
             prepro,
@@ -165,8 +167,6 @@ def alt_train(model):
             remove_columns=cols,
         )
     
-    print(train[0])
-    print(train[1])
     
     valid = load_dataset('csv', data_files=data_path+'datasets/main/valid_neutralisation.csv')
     train = train.map(
