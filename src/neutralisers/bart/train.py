@@ -50,8 +50,8 @@ valid_iter = BucketIterator(valid_a, batch_size=8, sort_key=lambda x: len(x.text
 # Preprocess data for bart model                            
 def prepro(examples):
         print(examples)
-        inputs = [ex for ex in examples['input_ids']]
-        targets = [ex for ex in examples['labels']]
+        inputs = [ex for ex in examples['text']]
+        targets = [ex for ex in examples['target']]
         #inputs = examples['text']
         #targets = examples['target']
         inputs = [inp for inp in inputs]
@@ -161,7 +161,6 @@ def alt_train(model):
     # Prepare data
     train = load_dataset('csv', data_files=data_path+'datasets/main/train_neutralisation.csv')
     train = train["train"]
-    print(train)
     cols = train.column_names
     train = train.map(
             prepro,
