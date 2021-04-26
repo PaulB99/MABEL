@@ -63,7 +63,7 @@ def prepro(examples):
         # If we are padding here, replace all tokenizer.pad_token_id in the labels by -100 when we want to ignore
         # padding in the loss.
         model_inputs["labels"] = labels["input_ids"]
-        print(model_inputs["labels"])
+        print(model_inputs["input_ids"])
         return model_inputs
 
 
@@ -194,11 +194,11 @@ def alt_train(model):
         learning_rate=0.003,
         )
     
-    #data_collator = DataCollatorForSeq2Seq(
-            #tokeniser,
-            #model=model,
+    data_collator = DataCollatorForSeq2Seq(
+            tokeniser,
+            model=model,
             #label_pad_token_id=label_pad_token_id,
-            #)
+            )
     
     trainer = Seq2SeqTrainer(
         model=model,                       
@@ -206,7 +206,7 @@ def alt_train(model):
         train_dataset=train,        
         eval_dataset=valid,
         tokenizer = tokeniser,
-       # data_collator=data_collator,
+        data_collator=data_collator,
     )
     trainer.train()
     trainer.save_model()
