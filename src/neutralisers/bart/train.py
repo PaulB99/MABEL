@@ -38,14 +38,14 @@ target_field = Field(use_vocab=False, tokenize=tokeniser.encode, lower=False, in
 fields = [('text', text_field), ('target', target_field)]
 
 # Dataset TODO: Work out how the data is coming in
-#train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
-                                           #format='CSV', fields=fields, skip_header=True)
+train_a, valid_a = TabularDataset.splits(path=data_path, train='datasets/main/train_neutralisation.csv', validation='datasets/main/valid_neutralisation.csv',
+                                           format='CSV', fields=fields, skip_header=True)
 
 # Iterators
-#train_iter = BucketIterator(train, batch_size=8, sort_key=lambda x: len(x.text),
-                            #device=device, train=True, sort=True, sort_within_batch=True)
-#valid_iter = BucketIterator(valid, batch_size=8, sort_key=lambda x: len(x.text),
-                            #device=device, train=True, sort=True, sort_within_batch=True)
+train_iter = BucketIterator(train_a, batch_size=8, sort_key=lambda x: len(x.text),
+                            device=device, train=True, sort=True, sort_within_batch=True)
+valid_iter = BucketIterator(valid_a, batch_size=8, sort_key=lambda x: len(x.text),
+                            device=device, train=True, sort=True, sort_within_batch=True)
 
 # Preprocess data for bart model                            
 def prepro(examples):
@@ -62,7 +62,6 @@ def prepro(examples):
         # padding in the loss.
         model_inputs["labels"] = labels["input_ids"]
         return model_inputs
-
 
 
 # Training Function
