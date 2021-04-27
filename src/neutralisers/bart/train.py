@@ -187,6 +187,7 @@ def alt_train(model):
         warmup_steps=500,               
         weight_decay=0.01,
         learning_rate=0.003,
+        save_total_limit=3
         )
 
 
