@@ -14,13 +14,17 @@ import model
 from torchtext.data import Field, TabularDataset, BucketIterator
 import torch.nn as nn
 import torch.optim as optim
-from datasets import load_dataset
+from datasets import load_dataset, load_metric
+import numpy as np
 
 data_path = '../../../data/'
 output_path = '../../../output'
 
 # Tokeniser
 tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
+
+# Metrics
+metric = load_metric("sacrebleu")
 
 # Check if GPU is available
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -63,6 +67,30 @@ def prepro(examples):
         model_inputs["labels"] = labels["input_ids"]
         return model_inputs
 
+# Postprocess text for evaluation
+def postpro(preds, labels):
+    preds = [pred.strip() for pred in preds]
+    labels = [[label.strip()] for label in labels]
+    return preds, labels
+
+# Calculate sacrebleu score
+def compute_metrics(eval_preds):
+        preds, labels = eval_preds
+        if isinstance(preds, tuple):
+            preds = preds[0]
+        decoded_preds = tokeniser.batch_decode(preds, skip_special_tokens=True)
+        decoded_labels = tokeniser.batch_decode(labels, skip_special_tokens=True)
+
+        # Simple post-processing
+        decoded_preds, decoded_labels = postpro(decoded_preds, decoded_labels)
+
+        result = metric.compute(predictions=decoded_preds, references=decoded_labels)
+        result = {"bleu": result["score"]}
+
+        prediction_lens = [np.count_nonzero(pred != tokeniser.pad_token_id) for pred in preds]
+        result["gen_len"] = np.mean(prediction_lens)
+        result = {k: round(v, 4) for k, v in result.items()}
+        return result
 
 # Training Function
 def train(model,
@@ -185,9 +213,10 @@ def alt_train(model):
         per_device_train_batch_size=8, 
         per_device_eval_batch_size=8,   
         warmup_steps=500,               
-        weight_decay=0.01,
-        learning_rate=0.003,
-        save_total_limit=3
+        #weight_decay=0.01,
+        learning_rate=0.03,
+        save_total_limit=1,
+        compute_metrics=compute_metrics
         )
 
 
@@ -206,8 +235,23 @@ def alt_train(model):
         data_collator=data_collator,
         )
     
-    trainer.train()
+    result = trainer.train()
+    metrics = result.metrics
+    metrics["train_samples"] = len(train)
+
+    trainer.log_metrics("train", metrics)
+    trainer.save_metrics("train", metrics)
     trainer.save_model()
+    trainer.save_state()
+    
+    val_metrics = trainer.evaluate(
+            max_length=128, num_beams=1, metric_key_prefix="eval"
+        )
+
+    val_metrics["eval_samples"] = len(valid)
+
+    trainer.log_metrics("eval", val_metrics)
+    trainer.save_metrics("eval", val_metrics)
     
 # Run the training
 if __name__ == "__main__":
