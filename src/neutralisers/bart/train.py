@@ -216,7 +216,6 @@ def alt_train(model):
         #weight_decay=0.01,
         learning_rate=0.03,
         save_total_limit=1,
-        compute_metrics=compute_metrics
         )
 
 
@@ -233,6 +232,7 @@ def alt_train(model):
         eval_dataset=valid,
         tokenizer = tokeniser,
         data_collator=data_collator,
+        compute_metrics=compute_metrics,
         )
     
     result = trainer.train()
