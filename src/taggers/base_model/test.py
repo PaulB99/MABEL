@@ -5,7 +5,7 @@ from torchtext.data import Field, TabularDataset, BucketIterator
 from transformers import BertTokenizer
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, f1_score, roc_auc_score
 import csv
 import os
 import re
@@ -56,6 +56,12 @@ def test(model, test_loader, tokeniser):
     # Print report
     print('Classification Report:\n')
     print(classification_report(y_target, y_pred, labels=[1,0], digits=4))
+    
+    f1 = f1_score(y_target, y_pred)
+    print('F1 score: {}'.format(f1))
+    
+    r = roc_auc_score(y_target, y_pred)
+    print('roc auc score: {}'.format(r))
     
     # Print examples
     print('Correctly identified as biased:')
@@ -129,7 +135,7 @@ if __name__ == "__main__":
     fields = [('label', label_field), ('text', text_field)]
     
     # Load in data 
-    test_data, train = TabularDataset.splits(path=data_path, test='datasets/main/test_detection.csv', train='datasets/main/train_detection.csv',format='CSV', fields=fields, skip_header=True)
+    test_data = TabularDataset(path=data_path+'datasets/main/test_detection.csv',format='CSV', fields=fields, skip_header=True)
     
     # Test data iterator
     test_iter = BucketIterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
