@@ -79,7 +79,7 @@ def test(model, test_loader, tokeniser):
     with open('examples.csv', 'w+', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Correct biased", "Correct unbiased", "Incorrect biased", "Incorrect unbiased"])
-        for n in range(50):
+        for n in range(200):
             try:
                 a = tokeniser.batch_decode(bias_corr[n])
             except:
@@ -135,7 +135,7 @@ if __name__ == "__main__":
     fields = [('label', label_field), ('text', text_field)]
     
     # Load in data 
-    test_data = TabularDataset(path=data_path+'datasets/main/test_detection.csv',format='CSV', fields=fields, skip_header=True)
+    test_data = TabularDataset(path=data_path+'datasets/big/test_detection.csv',format='CSV', fields=fields, skip_header=True)
     
     # Test data iterator
     test_iter = BucketIterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
