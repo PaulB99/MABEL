@@ -157,15 +157,17 @@ def create_dataset(size, path_name, add_npov = False ,mode='detection'):
         random.shuffle(test)
     
     # Make sure sequences aren't too long
-    limit = 512
+    limit = 120
+    print(len(train[0][1]))
+    print(train[0][1])
     for x in train:
-        if len(x) >limit:
+        if len(x[1]) >limit:
             train.remove(x)
     for x in valid:
-        if len(x) >limit:
+        if len(x[1]) >limit:
             valid.remove(x)
     for x in test:
-        if len(x) >limit:
+        if len(x[1]) >limit:
             test.remove(x)
     
     # Write to file
@@ -264,15 +266,15 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
         random.shuffle(test)
         
     # Make sure sequences aren't too long
-    limit = 512
+    limit = 120
     for x in train:
-        if len(x) >limit:
+        if len(x[1]) >limit:
             train.remove(x)
     for x in valid:
-        if len(x) >limit:
+        if len(x[1]) >limit:
             valid.remove(x)
     for x in test:
-        if len(x) >limit:
+        if len(x[1]) >limit:
             test.remove(x)
     
     # Write to file
@@ -307,8 +309,8 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
             
     print('Done!')
     
-create_dataset(200000, 'main', add_npov=False)
+create_dataset(200000, 'big', add_npov=True)
 
-create_seq2seq(200000, 'main', add_npov=False)
+#create_seq2seq(200000, 'big', add_npov=True)
     
     
