@@ -14,6 +14,8 @@ if folder=='pab734':
     os.environ['TORCH_HOME'] = '/data/labfs/pab734/torch'
     print('True')
 
+MAX_SEQ_LEN = 128
+
 # Probably wants to go into a nice util file
 def load_ckpt(load_path, model):
     #state_dict = torch.load(load_path, map_location=device)
@@ -38,20 +40,21 @@ def test(model, test_loader, tokeniser):
             labels = labels.to(device)
             text = text.type(torch.LongTensor)  
             text = text.to(device)
-            output = model(labels, text)
-            _, output = output
-            y_pred.extend(torch.argmax(output, 1).tolist())
-            y_target.extend(labels.tolist())
-            if torch.argmax(output, 1).tolist()[0] == labels.tolist()[0]:
-                if labels.tolist()[0] == 1:
-                    bias_corr.append(text)
+            if len(text) <= MAX_SEQ_LEN and len(labels) <= MAX_SEQ_LEN:
+                output = model(labels, text)
+                _, output = output
+                y_pred.extend(torch.argmax(output, 1).tolist())
+                y_target.extend(labels.tolist())
+                if torch.argmax(output, 1).tolist()[0] == labels.tolist()[0]:
+                    if labels.tolist()[0] == 1:
+                        bias_corr.append(text)
+                    else:
+                        un_corr.append(text)
                 else:
-                    un_corr.append(text)
-            else:
-                if labels.tolist()[0] == 1:
-                    un_inco.append(text)
-                else:
-                    bias_inco.append(text)
+                    if labels.tolist()[0] == 1:
+                        un_inco.append(text)
+                    else:
+                        bias_inco.append(text)
     
     # Print report
     print('Classification Report:\n')
@@ -128,7 +131,6 @@ if __name__ == "__main__":
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     
     # Model parameters
-    MAX_SEQ_LEN = 128
     PAD_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.pad_token)
     UNK_INDEX = tokeniser.convert_tokens_to_ids(tokeniser.unk_token)
     
