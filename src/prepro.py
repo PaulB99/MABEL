@@ -244,7 +244,7 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
     
     for b in range(len(biased)):
         x = biased[b].split('	')
-        if len(x[3] < limit):
+        if len(x[3]) < limit:
             if b < train_size:
                 train.append((x[3],x[4])) 
             elif b < (train_size+valid_size):
@@ -263,21 +263,21 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
             train_tsv = csv.reader(f, delimiter="\t")
             for row in train_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    if len(row[-2] < limit):
+                    if len(row[-2]) < limit:
                         train.append((row[-2],row[-1]))
          
         with open('../data/NPOV/5gram-edits-dev.tsv', encoding='utf8') as f:    
             valid_tsv = csv.reader(f, delimiter="\t")
             for row in valid_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    if len(row[-2] < limit):
+                    if len(row[-2]) < limit:
                         valid.append((row[-2],row[-1]))
         
         with open('../data/NPOV/5gram-edits-test.tsv', encoding='utf8') as f:
             test_tsv = csv.reader(f, delimiter="\t")
             for row in test_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    if len(row[-2] < limit):
+                    if len(row[-2]) < limit:
                         test.append((row[-2],row[-1]))
             
         random.shuffle(train)
