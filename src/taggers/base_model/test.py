@@ -76,6 +76,9 @@ def test(model, test_loader, tokeniser):
     print('Inorrectly identified as unbiased:')
     print(un_inco[:10])
     
+    if os.path.exists("examples.csv"):
+        os.remove("examples.csv")
+  
     with open('examples.csv', 'w+', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Correct biased", "Correct unbiased", "Incorrect biased", "Incorrect unbiased"])
