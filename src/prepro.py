@@ -70,6 +70,8 @@ def create_dataset(size, path_name, add_npov = False ,mode='detection'):
     valid_frac = 0.15
     test_frac = 0.15
     
+    limit = 120
+    
     # The size of each part
     train_size = int(size*train_frac)
     valid_size = int(size*valid_frac)
@@ -105,11 +107,14 @@ def create_dataset(size, path_name, add_npov = False ,mode='detection'):
     for n in range(len(neutral2)):
         x = neutral2[n].split('	')
         if n < int(train_size/2):
-            train.append((0,x[-2])) # Skip out the id at the start
+            if len(x[-2]) < limit:
+                train.append((0,x[-2])) # Skip out the id at the start
         elif n < int((train_size+valid_size)/2):
-            valid.append((0,x[-2]))
+            if len(x[-2]) < limit:
+                valid.append((0,x[-2]))
         else:
-            test.append((0,x[-2]))
+            if len(x[-2]) < limit:
+                test.append((0,x[-2]))
             
     for b in range(len(biased2)):
         x = biased2[b].split('	')
@@ -132,25 +137,31 @@ def create_dataset(size, path_name, add_npov = False ,mode='detection'):
             train_tsv = csv.reader(f, delimiter="\t")
             for row in train_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    train.append((1,row[-2]))
+                    if len(row[-2]) < limit:
+                        train.append((1,row[-2]))
                 else:
-                    train.append((0,row[-2]))
+                    if len(row[-2]) < limit:
+                        train.append((0,row[-2]))
          
         with open('../data/NPOV/5gram-edits-dev.tsv', encoding='utf8') as f:    
             valid_tsv = csv.reader(f, delimiter="\t")
             for row in valid_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    valid.append((1,row[-2]))
+                    if len(row[-2]) < limit:
+                        valid.append((1,row[-2]))
                 else:
-                    valid.append((0,row[-2]))
+                    if len(row[-2]) < limit:
+                        valid.append((0,row[-2]))
         
         with open('../data/NPOV/5gram-edits-test.tsv', encoding='utf8') as f:
             test_tsv = csv.reader(f, delimiter="\t")
             for row in test_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    test.append((1,row[-2]))
+                    if len(row[-2]) < limit:
+                        test.append((1,row[-2]))
                 else:
-                    test.append((0,row[-2]))
+                    if len(row[-2]) < limit:
+                        test.append((0,row[-2]))
             
         random.shuffle(train)
         random.shuffle(valid)
@@ -160,6 +171,7 @@ def create_dataset(size, path_name, add_npov = False ,mode='detection'):
     limit = 120
     print(len(train[0][1]))
     print(train[0][1])
+    '''
     for x in train:
         if len(x[1]) >limit:
             train.remove(x)
@@ -169,6 +181,7 @@ def create_dataset(size, path_name, add_npov = False ,mode='detection'):
     for x in test:
         if len(x[1]) >limit:
             test.remove(x)
+    '''
     
     # Write to file
     if os.path.exists("../data/datasets/"+path_name+"/train_" + mode + ".csv"):
@@ -212,6 +225,8 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
     valid_frac = 0.15
     test_frac = 0.15
     
+    limit = 120
+    
     # The size of each part
     train_size = int(size*train_frac)
     valid_size = int(size*valid_frac)
@@ -229,12 +244,13 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
     
     for b in range(len(biased)):
         x = biased[b].split('	')
-        if b < train_size:
-            train.append((x[3],x[4])) 
-        elif b < (train_size+valid_size):
-            valid.append((x[3],x[4])) 
-        else:
-            test.append((x[3],x[4])) 
+        if len(x[3] < limit):
+            if b < train_size:
+                train.append((x[3],x[4])) 
+            elif b < (train_size+valid_size):
+                valid.append((x[3],x[4])) 
+            else:
+                test.append((x[3],x[4])) 
             
     random.shuffle(train)
     random.shuffle(valid)
@@ -247,25 +263,29 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
             train_tsv = csv.reader(f, delimiter="\t")
             for row in train_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    train.append((row[-2],row[-1]))
+                    if len(row[-2] < limit):
+                        train.append((row[-2],row[-1]))
          
         with open('../data/NPOV/5gram-edits-dev.tsv', encoding='utf8') as f:    
             valid_tsv = csv.reader(f, delimiter="\t")
             for row in valid_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    valid.append((row[-2],row[-1]))
+                    if len(row[-2] < limit):
+                        valid.append((row[-2],row[-1]))
         
         with open('../data/NPOV/5gram-edits-test.tsv', encoding='utf8') as f:
             test_tsv = csv.reader(f, delimiter="\t")
             for row in test_tsv:
                 if row[2] == 'true' or row[3] == 'true':
-                    test.append((row[-2],row[-1]))
+                    if len(row[-2] < limit):
+                        test.append((row[-2],row[-1]))
             
         random.shuffle(train)
         random.shuffle(valid)
         random.shuffle(test)
         
     # Make sure sequences aren't too long
+    '''
     limit = 120
     for x in train:
         if len(x[1]) >limit:
@@ -276,6 +296,7 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
     for x in test:
         if len(x[1]) >limit:
             test.remove(x)
+    '''
     
     # Write to file
     if os.path.exists("../data/datasets/"+path_name+ "/train_" + mode + ".csv"):
