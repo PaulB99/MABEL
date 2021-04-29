@@ -311,6 +311,6 @@ def create_seq2seq(size, path_name, mode='neutralisation', add_npov=False):
     
 create_dataset(200000, 'big', add_npov=True)
 
-#create_seq2seq(200000, 'big', add_npov=True)
+create_seq2seq(200000, 'big', add_npov=True)
     
     
