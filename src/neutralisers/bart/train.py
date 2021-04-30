@@ -214,7 +214,7 @@ def alt_train(model):
         per_device_eval_batch_size=8,   
         warmup_steps=500,               
         #weight_decay=0.01,
-        learning_rate=0.03,
+        learning_rate=0.00003,
         save_total_limit=1,
         )
 
