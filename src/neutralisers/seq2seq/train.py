@@ -50,8 +50,8 @@ model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.SGD(model.parameters(), lr=0.00003)
-criterion = nn.NLLLoss()
+optimiser = optim.SGD(model.parameters(), lr=3e-5)
+criterion = nn.CrossEntropyLoss()
 total_loss_iterations = 0
 num_epochs = 11
 
