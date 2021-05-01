@@ -51,7 +51,7 @@ def main():
     optimiser = optim.Adam(model.parameters(), lr=3e-5)
     criterion = nn.CrossEntropyLoss()
     total_loss_iterations = 0
-    num_epochs = 1
+    num_epochs = 11
     
     start_time = time.perf_counter()
     loss_vals = []
