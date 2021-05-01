@@ -209,13 +209,14 @@ def alt_train(model):
     
     training_args = Seq2SeqTrainingArguments(
         output_dir='../../../cache/neutralisers/bart',          
-        num_train_epochs=11,           
-        per_device_train_batch_size=16, 
-        per_device_eval_batch_size=16,   
+        num_train_epochs=9,           
+        per_device_train_batch_size=20, 
+        per_device_eval_batch_size=20,   
         warmup_steps=500,               
         #weight_decay=0.01,
         learning_rate=0.00003,
-        save_total_limit=1,
+        #save_total_limit=1,
+        save_strategy="no"
         )
 
 
