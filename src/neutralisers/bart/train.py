@@ -46,9 +46,9 @@ train_a, valid_a = TabularDataset.splits(path=data_path, train='datasets/main/tr
                                            format='CSV', fields=fields, skip_header=True)
 
 # Iterators
-train_iter = BucketIterator(train_a, batch_size=8, sort_key=lambda x: len(x.text),
+train_iter = BucketIterator(train_a, batch_size=32, sort_key=lambda x: len(x.text),
                             device=device, train=True, sort=True, sort_within_batch=True)
-valid_iter = BucketIterator(valid_a, batch_size=8, sort_key=lambda x: len(x.text),
+valid_iter = BucketIterator(valid_a, batch_size=32, sort_key=lambda x: len(x.text),
                             device=device, train=True, sort=True, sort_within_batch=True)
 
 # Preprocess data for bart model                            
@@ -210,8 +210,8 @@ def alt_train(model):
     training_args = Seq2SeqTrainingArguments(
         output_dir='../../../cache/neutralisers/bart',          
         num_train_epochs=11,           
-        per_device_train_batch_size=8, 
-        per_device_eval_batch_size=8,   
+        per_device_train_batch_size=32, 
+        per_device_eval_batch_size=32,   
         warmup_steps=500,               
         #weight_decay=0.01,
         learning_rate=0.00003,
