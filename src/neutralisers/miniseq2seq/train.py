@@ -75,7 +75,7 @@ def main():
                 average_loss= total_loss_iterations / 500
                 if j != 0:
                     loss_vals.append(average_loss)
-                    loss_points.append(j)
+                    loss_points.append(j+(70000*i))
                 total_loss_iterations = 0
                 print('%d %.4f' % (j, average_loss))
             j+=1

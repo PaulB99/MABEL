@@ -85,7 +85,7 @@ for i in range(num_epochs): #num_epochs
             average_loss= total_loss_iterations / 5000
             if j != 0:
                 loss_vals.append(average_loss)
-                loss_points.append(j)
+                loss_points.append(j+(70000*i))
             total_loss_iterations = 0
             print('%d %.4f' % (j, average_loss))
         j+=1
