@@ -125,7 +125,7 @@ def train(model,
                   'steps': global_steps_list}
     
     # Save loss graph
-    torch.save(state, ('../../../output/taggers/base_training.pt'))
+    torch.save(state, ('../../../output/taggers/dist_training.pt'))
     plt.plot(global_steps_list, training_loss_list)
     plt.xlabel('Training steps')
     plt.ylabel('Training loss')
