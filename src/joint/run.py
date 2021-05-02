@@ -273,8 +273,8 @@ class runner():
             for s in split_sent:
                 ticker+=1
                 if ticker in biased_indices:
-                    inp = self.n_tokeniser([s], max_length=128, return_tensors='pt')
-                    pred_tensors=self.neutraliser_model.generate(inp['input_ids']).to(device)
+                    inp = self.n_tokeniser([s], max_length=128, return_tensors='pt').to(self.device)
+                    pred_tensors=self.neutraliser_model.generate(inp['input_ids']).to(self.device)
                     pred = self.n_tokeniser.decode(pred_tensors)
                     output_array.insert(ticker, pred)
         '''
