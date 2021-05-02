@@ -11,7 +11,7 @@ from neutralisers.parrot import model as parrot_model
 from neutralisers.seq2seq import model as seq2seq_model
 from neutralisers.miniseq2seq import model as miniseq2seq_model
 from neutralisers.lexi_swap import model as lexi_swap_model
-from transformers import BertTokenizer, BartTokenizer
+from transformers import BertTokenizer, BartTokenizer, BartForConditionalGeneration, BartConfig
 import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
 from simpletransformers.seq2seq import Seq2SeqModel, Seq2SeqArgs
@@ -148,10 +148,18 @@ class runner():
         else:
             raise ValueError('Model {} not recognised'.format(self.tagger))
          
-        neutraliser_path = '../../cache/neutralisers/' + self.neutraliser + '.pt'
-        self.neutraliser_model = bart_model.BART().to(self.device)
+        neutraliser_path = '../../cache/neutralisers/' + self.neutraliser
+        bart_config = BartConfig(d_model=512,
+                            encoder_layers=6,
+                            decoder_layers=6,
+                            encoder_attention_heads=8,
+                            decoder_attention_heads=8,
+                            encoder_ffn_dim=2048,
+                            decoder_ffn_dim=2048,
+                            activation_function='gelu'
+                            )
         try:
-            self.load_ckpt(neutraliser_path, self.neutraliser_model)
+            self.neutraliser_model = BartForConditionalGeneration(config=bart_config).from_pretrained(neutraliser_path).to(self.device)
         except:
             print('Pretrained {} model not found! Please train it and try again'.format(self.neutraliser))
             sys.exit()
@@ -259,7 +267,17 @@ class runner():
                 if ticker in biased_indices:
                     pred=self.neutraliser_model.generate(s, self.n_tokeniser)
                     output_array.insert(ticker, pred)
-         
+        
+        elif self.neutraliser=='bart':
+            ticker = -1
+            for s in split_sent:
+                ticker+=1
+                if ticker in biased_indices:
+                    inp = self.n_tokeniser([s], max_length=128, return_tensors='tf')
+                    pred_tensors=self.neutraliser_model.generate(inp)
+                    pred = self.n_tokeniser.decode(pred_tensors)
+                    output_array.insert(ticker, pred)
+        '''
         else:
             # Prepare data for neutralisation
             # Padding
@@ -291,7 +309,7 @@ class runner():
                         neutraliser_output = self.neutraliser_model.generate(text)
                         decoded = self.n_tokeniser.decode(neutraliser_output[0], skip_special_tokens=True)
                         output_array.insert(ticker, decoded)
-    
+                        '''
         output_string = ''
         for s in output_array:
             output_string+=(s+'.')
