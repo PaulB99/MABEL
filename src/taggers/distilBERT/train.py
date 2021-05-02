@@ -37,9 +37,9 @@ train, valid = TabularDataset.splits(path=data_path, train='datasets/main/train_
                                            format='CSV', fields=fields, skip_header=True)
 
 # Iterators
-train_iter = BucketIterator(train, batch_size=16, sort_key=lambda x: len(x.text),
+train_iter = BucketIterator(train, batch_size=32, sort_key=lambda x: len(x.text),
                             device=device, train=True, sort=True, sort_within_batch=True)
-valid_iter = BucketIterator(valid, batch_size=16, sort_key=lambda x: len(x.text),
+valid_iter = BucketIterator(valid, batch_size=32, sort_key=lambda x: len(x.text),
                             device=device, train=True, sort=True, sort_within_batch=True)
 
 
@@ -49,7 +49,7 @@ def train(model,
           criterion = nn.BCELoss(),
           train_loader = train_iter,
           valid_loader = valid_iter,
-          num_epochs = 11,
+          num_epochs = 15,
           eval_every = len(train_iter) // 2,
           path = data_path,
           best_valid_loss = float("Inf")):
