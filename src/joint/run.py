@@ -177,7 +177,22 @@ class runner():
         biased_bool=False
         
         # Split sentences
-        split_sent = sentence.split('.')
+        split_sent = sentence.split('.|!|?')
+        
+        quote_indices = []
+        if '"' in sentence:
+            new_split_sent = []
+            for s in range(len(split_sent)):
+                sp = [e+'"' for e in split_sent[s].split('"') if e]
+                if len(sp) > 2:
+                    for sp_s in range(len(sp)):
+                        if sp_s % 2 == 0:
+                            quote_indices.append(sp_s)
+                new_split_sent += sp
+            split_sent = new_split_sent
+                
+        
+        
         
         # Lexi is easier
         if not self.bert:
@@ -225,11 +240,11 @@ class runner():
                     tagger_output = self.tagger_model(labels, text)
                     _,tagger_output = tagger_output
                     biased = torch.argmax(tagger_output, 1)
-                    if biased == 1:
+                    if biased == 1 and ticker not in quote_indices:
                         biased_bool=True
                         #print('Biased!')
                         biased_indices.append(ticker)
-                    elif biased == 0:
+                    else:
                         #print('Unbiased!')
                         output_array.insert(ticker, split_sent[ticker])
           
@@ -238,6 +253,7 @@ class runner():
         else:
             print('Unbiased')
             return sentence, biased_bool
+        
         # TIME TO NEUTRALISE!
         
         # The parrot and lexi_swap pipeline is greatly simplified
@@ -277,6 +293,8 @@ class runner():
                     pred_tensors=self.neutraliser_model.generate(inp['input_ids']).to(self.device)
                     pred_list = [self.n_tokeniser.decode(p) for p in pred_tensors]
                     pred = ''.join(pred_list)
+                    pred = pred.replace('<s>', '')
+                    pred = pred.replace('</s>', '')
                     output_array.insert(ticker, pred)
         '''
         else:
