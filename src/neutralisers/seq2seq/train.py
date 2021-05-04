@@ -50,7 +50,7 @@ model = md.seq2seq(device, lang_size).to(device)
 model.train()
 print('Model initialised')
 
-optimiser = optim.Adam(model.parameters(), lr=0.000003)
+optimiser = optim.Adam(model.parameters(), lr=0.0000003)
 criterion = nn.CrossEntropyLoss()
 total_loss_iterations = 0
 num_epochs = 11
