@@ -256,7 +256,7 @@ def alt_train(model):
     
 # Run the training
 if __name__ == "__main__":
-    config = BartConfig(d_model=512,
+    config = BartConfig(d_model=1024,
                             encoder_layers=6,
                             decoder_layers=6,
                             encoder_attention_heads=8,
