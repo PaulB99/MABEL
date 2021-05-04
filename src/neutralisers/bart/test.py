@@ -74,7 +74,7 @@ def compute_metrics(eval_preds):
 
 
 def test(model):
-    test_data = load_dataset('csv', data_files=data_path+'datasets/big/test_neutralisation.csv')
+    test_data = load_dataset('csv', data_files=data_path+'datasets/main/test_neutralisation.csv')
     test_data = test_data["train"]
     cols = test_data.column_names
     label_pad_token_id = tokeniser.pad_token_id
