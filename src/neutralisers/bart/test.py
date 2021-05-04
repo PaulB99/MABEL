@@ -117,7 +117,7 @@ if __name__ == "__main__":
                             decoder_ffn_dim=2048,
                             activation_function='gelu'
                             )
-    mymodel = BartForConditionalGeneration(config=config).to(device)
+    mymodel = BartForConditionalGeneration(config=config).from_pretrained('../../../cache/neutralisers/bart').to(device)
     #mymodel = model.BART().to(device)
     #optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
     #train(model=mymodel, optimiser=optimiser)
