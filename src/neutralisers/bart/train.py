@@ -75,22 +75,22 @@ def postpro(preds, labels):
 
 # Calculate sacrebleu score
 def compute_metrics(eval_preds):
-        preds, labels = eval_preds
-        if isinstance(preds, tuple):
-            preds = preds[0]
-        decoded_preds = tokeniser.batch_decode(preds, skip_special_tokens=True)
-        decoded_labels = tokeniser.batch_decode(labels, skip_special_tokens=True)
+    preds, labels = eval_preds
+    if isinstance(preds, tuple):
+        preds = preds[0]
+    decoded_preds = tokeniser.batch_decode(preds, skip_special_tokens=True)
+    decoded_labels = tokeniser.batch_decode(labels, skip_special_tokens=True)
 
-        # Simple post-processing
-        decoded_preds, decoded_labels = postpro(decoded_preds, decoded_labels)
+    # Simple post-processing
+    decoded_preds, decoded_labels = postpro(decoded_preds, decoded_labels)
 
-        result = metric.compute(predictions=decoded_preds, references=decoded_labels)
-        result = {"bleu": result["score"]}
+    result = metric.compute(predictions=decoded_preds, references=decoded_labels)
+    result = {"bleu": result["score"]}
 
-        prediction_lens = [np.count_nonzero(pred != tokeniser.pad_token_id) for pred in preds]
-        result["gen_len"] = np.mean(prediction_lens)
-        result = {k: round(v, 4) for k, v in result.items()}
-        return result
+    prediction_lens = [np.count_nonzero(pred != tokeniser.pad_token_id) for pred in preds]
+    result["gen_len"] = np.mean(prediction_lens)
+    result = {k: round(v, 4) for k, v in result.items()}
+    return result
 
 # Training Function
 def train(model,
