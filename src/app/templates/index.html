@@ -19,10 +19,10 @@ h1{
 <body>
     <div class="content">
     <h1>
-        Bias Neutraliser
+        MABEL
     </h1>
     <br>
-        Welcome to the bias neutraliser! This system hopes to identify and neutralise biased text. 
+        Welcome to MABEL! This system hopes to identify and neutralise biased text. 
         <br>
         Choose a tagger model to identify the bias, and a neutraliser to remove it.
         <br>
@@ -49,13 +49,6 @@ h1{
                     {% endfor %}
                 </select>
               </div>
-             <!-- 
-            <select name= taggers method="GET" action="/">
-                {% for tagger in taggers %}
-                <option value= "{{tagger}}" SELECTED>{{tagger}}</option>"
-                {% endfor %}
-            </select>
-            -->
             <div class="form-group">
                 <label for="neutraliser">Select a neutraliser</label>
                 <select class="form-control" id="neutraliser" name= neutralisers method="GET" action="/">
@@ -64,15 +57,6 @@ h1{
                     {% endfor %}
                 </select>
               </div>
-              <!--
-            <select name= neutralisers method="GET" action="/">
-                <optgroup>
-                    {% for neutraliser in neutralisers %}
-                    <option value= "{{neutraliser}}" SELECTED>{{neutraliser}}</option>"
-                    {% endfor %}
-                </optgroup>
-            </select>
-            -->
             <br>
         
             <button type="submit" class="btn btn-outline-primary" onclick="$('#loading').show()";>Load models</button>
