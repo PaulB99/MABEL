@@ -95,11 +95,9 @@ def test(model):
                 inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
                 pred_tensors=model.generate(inp['input_ids']).to(device)
                 pred_list = [tokeniser.decode(p) for p in pred_tensors]
-                print(pred_list)
-                print(pred_list[0])
-                pred_list = pred_list.replace('<s>', '')
+                pred_list = pred_list[0].replace('<s>', '')
                 pred_list = pred_list.replace('</s>', '')
-                pred_list = pred_list[0].split(' ')
+                pred_list = pred_list.split(' ')
                 full_preds+=pred_list
             split_target = row['target'].split(' ')
             score = nltk.translate.bleu_score.sentence_bleu([split_target], full_preds)
