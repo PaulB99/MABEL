@@ -289,16 +289,12 @@ class runner():
                 ticker+=1
                 if ticker in biased_indices:
                     inp = self.n_tokeniser([s], max_length=128, return_tensors='pt').to(self.device)
-                    print(inp)
                     pred_tensors=self.neutraliser_model.generate(inp['input_ids']).to(self.device)
-                    print(pred_tensors)
                     pred_list = [self.n_tokeniser.decode(p) for p in pred_tensors]
-                    print(pred_list)
                     pred = ''.join(pred_list)
-                    print(pred)
                     pred = pred.replace('<s>', '')
                     pred = pred.replace('</s>', '')
-        
+                    output_array.insert(ticker, pred)
         output_string = ''
         for s in output_array:
             output_string+=(s+'.')
