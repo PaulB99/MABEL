@@ -11,7 +11,7 @@ if __name__ == "__main__":
     acceptable_taggers = ['base_model','large_model', 'distilbert','lexi']
     acceptable_neutralisers = ['bart','roberta','parrot', 'seq2seq', 'miniseq2seq', 'lexi_swap']
     
-    print('Welcome to the bias neutralisation program! Select a tagger model below')
+    print('Welcome to the MABEL system! Select a tagger model below')
     
     tagger_menu = TerminalMenu(acceptable_taggers)
     neutraliser_menu = TerminalMenu(acceptable_neutralisers)
