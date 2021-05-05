@@ -18,6 +18,7 @@ from datasets import load_dataset, load_metric
 import numpy as np
 from torchtext.data.metrics import bleu_score
 import pandas as pd
+import nltk
 
 data_path = '../../../data/'
 output_path = '../../../output'
@@ -85,9 +86,9 @@ def test(model):
         s = row['text']
         inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
         pred_tensors=model.generate(inp['input_ids']).to(device)
-        pred_list = [[tokeniser.decode(p) for p in pred_tensors]]
-        split_target = [row['target'].split(' ')]
-        score = bleu_score(pred_list, split_target)
+        pred_list = [tokeniser.decode(p) for p in pred_tensors]
+        split_target = row['target'].split(' ')
+        score = nltk.translate.bleu_score.sentence_bleu([split_target], pred_list)
         running_score+=score
     final_score = running_score/counter
     print('Bleu score ' + final_score)
