@@ -95,6 +95,8 @@ def test(model):
                 inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
                 pred_tensors=model.generate(inp['input_ids']).to(device)
                 pred_list = [tokeniser.decode(p) for p in pred_tensors]
+                print(pred_list)
+                print(pred_list[0])
                 pred_list = pred_list.replace('<s>', '')
                 pred_list = pred_list.replace('</s>', '')
                 pred_list = pred_list[0].split(' ')
