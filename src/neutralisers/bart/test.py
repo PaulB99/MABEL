@@ -85,6 +85,10 @@ def test(model):
         counter+=1
         text = [row['text']]
         full_preds = []
+        print(text)
+        print(text[0])
+        print(text[0][0])
+        break
         if len(text[0]) > 120:
             text_new = [text[i:i+120] for i in range(0, len(text), 120)]
             text = text_new
