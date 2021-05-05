@@ -85,14 +85,11 @@ def test(model):
         counter+=1
         text = [row['text']]
         full_preds = []
-        print(text)
-        print(text[0])
-        print(text[0][0])
-        break
         if len(text[0]) > 120:
             text_new = [text[i:i+120] for i in range(0, len(text), 120)]
             text = text_new
         for s in text:
+            s = [s]
             inp = tokeniser(s, max_length=128, return_tensors='pt').to(device)
             pred_tensors=model.generate(inp['input_ids']).to(device)
             pred_list = [tokeniser.decode(p) for p in pred_tensors]
