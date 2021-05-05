@@ -25,7 +25,7 @@ def load_ckpt(load_path, model):
     #return state_dict['valid_loss']
 
 # Test given model using dataset
-def test(model, test_loader, tokeniser):
+def test(model, test_loader, tokeniser, save=True):
     y_pred = []
     y_target = []
     # Store each classification
@@ -79,45 +79,46 @@ def test(model, test_loader, tokeniser):
     print('Inorrectly identified as unbiased:')
     print(un_inco[:10])
     
-    if os.path.exists("examples.csv"):
-        os.remove("examples.csv")
-  
-    with open('examples.csv', 'w+', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Correct biased", "Correct unbiased", "Incorrect biased", "Incorrect unbiased"])
-        for n in range(200):
-            try:
-                a = tokeniser.batch_decode(bias_corr[n])
-            except:
-                a = ''
-            try:
-                b = tokeniser.batch_decode(un_corr[n])
-            except:
-                b = ''
-            try:    
-                c = tokeniser.batch_decode(bias_inco[n])
-            except:
-                c = ''
-            try:
-                d = tokeniser.batch_decode(un_inco[n])
-            except:
-                d = ''
-            
-            writer.writerow([a, b , c, d])
-            
-    # Create confusion matrix
-    cm = confusion_matrix(y_target, y_pred, labels=[1,0])
-    fig, ax = plt.subplots()
-
-    sns.heatmap(cm, annot=True, ax = ax, cmap='Blues', fmt="d")
-    ax.set_title('Confusion Matrix')
-    ax.set_xlabel('Predicted')
-    ax.set_ylabel('Target')
-
-    ax.xaxis.set_ticklabels(['0', '1'])
-    ax.yaxis.set_ticklabels(['0', '1'])
+    if save:
+        if os.path.exists("examples.csv"):
+            os.remove("examples.csv")
+      
+        with open('examples.csv', 'w+', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(["Correct biased", "Correct unbiased", "Incorrect biased", "Incorrect unbiased"])
+            for n in range(200):
+                try:
+                    a = tokeniser.batch_decode(bias_corr[n])
+                except:
+                    a = ''
+                try:
+                    b = tokeniser.batch_decode(un_corr[n])
+                except:
+                    b = ''
+                try:    
+                    c = tokeniser.batch_decode(bias_inco[n])
+                except:
+                    c = ''
+                try:
+                    d = tokeniser.batch_decode(un_inco[n])
+                except:
+                    d = ''
+                
+                writer.writerow([a, b , c, d])
+                
+        # Create confusion matrix
+        cm = confusion_matrix(y_target, y_pred, labels=[1,0])
+        fig, ax = plt.subplots()
     
-    plt.savefig('confusion.png')
+        sns.heatmap(cm, annot=True, ax = ax, cmap='Blues', fmt="d")
+        ax.set_title('Confusion Matrix')
+        ax.set_xlabel('Predicted')
+        ax.set_ylabel('Target')
+    
+        ax.xaxis.set_ticklabels(['0', '1'])
+        ax.yaxis.set_ticklabels(['0', '1'])
+        
+        plt.savefig('confusion.png')
     
 # Run the test
 if __name__ == "__main__":
@@ -140,7 +141,7 @@ if __name__ == "__main__":
     fields = [('label', label_field), ('text', text_field)]
     
     # Load in data 
-    test_data = TabularDataset(path=data_path+'datasets/big/test_detection.csv',format='CSV', fields=fields, skip_header=True)
+    test_data = TabularDataset(path=data_path+'datasets/main/test_detection.csv',format='CSV', fields=fields, skip_header=True)
     
     # Test data iterator
     test_iter = BucketIterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
@@ -148,5 +149,5 @@ if __name__ == "__main__":
     # Test model
     mymodel = model.BERT().to(device)
     load_ckpt('../../../cache/taggers/base_model.pt', mymodel)
-    test(mymodel, test_iter, tokeniser)
+    test(mymodel, test_iter, tokeniser, save=False)
     

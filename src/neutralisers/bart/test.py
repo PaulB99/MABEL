@@ -16,6 +16,8 @@ import torch.nn as nn
 import torch.optim as optim
 from datasets import load_dataset, load_metric
 import numpy as np
+from torchtext.data.metrics import bleu_score
+import pandas as pd
 
 data_path = '../../../data/'
 output_path = '../../../output'
@@ -74,37 +76,15 @@ def compute_metrics(eval_preds):
 
 
 def test(model):
-    test_data = load_dataset('csv', data_files=data_path+'datasets/main/test_neutralisation.csv')
-    test_data = test_data["train"]
-    cols = test_data.column_names
-    label_pad_token_id = tokeniser.pad_token_id
-    test_data = test_data.map(
-            prepro,
-            batched=True,
-            num_proc=None,
-            remove_columns=cols,
-        )
+    scores = []
+    test_data = pd.read_csv(data_path+'datasets/main/test_neutralisation.csv')
+    #test_data = load_dataset('csv', data_files=data_path+'datasets/main/test_neutralisation.csv')
+    for index, row in test_data.iterrows():
+        s = row['']
+        inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
+        pred_tensors=model.generate(inp['input_ids']).to(device)
+        pred_list = [tokeniser.decode(p) for p in pred_tensors]
     
-    data_collator = DataCollatorForSeq2Seq(
-            tokeniser,
-            model=model,
-            label_pad_token_id=label_pad_token_id,
-            )
-    
-    trainer = Seq2SeqTrainer(
-        model=model,                                       
-        eval_dataset=test_data,
-        tokenizer = tokeniser,
-        data_collator=data_collator,
-        compute_metrics=compute_metrics,
-        )
-    
-    metrics = trainer.evaluate(
-            max_length=MAX_SEQ_LEN, num_beams=1, metric_key_prefix="eval"
-        )
-    
-    metrics["eval_samples"] = len(test_data)
-    trainer.save_metrics("eval", metrics)
     
     
 if __name__ == "__main__":
