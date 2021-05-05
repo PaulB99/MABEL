@@ -76,15 +76,21 @@ def compute_metrics(eval_preds):
 
 
 def test(model):
-    scores = []
+    running_score = 0
+    counter=0
     test_data = pd.read_csv(data_path+'datasets/main/test_neutralisation.csv')
     #test_data = load_dataset('csv', data_files=data_path+'datasets/main/test_neutralisation.csv')
     for index, row in test_data.iterrows():
-        s = row['']
+        counter+=1
+        s = row['text']
         inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
         pred_tensors=model.generate(inp['input_ids']).to(device)
-        pred_list = [tokeniser.decode(p) for p in pred_tensors]
-    
+        pred_list = [[tokeniser.decode(p) for p in pred_tensors]]
+        split_target = [row['target'].split(' ')]
+        score = bleu_score(pred_list, split_target)
+        running_score+=score
+    final_score = running_score/counter
+    print('Bleu score ' + final_score)
     
     
 if __name__ == "__main__":
