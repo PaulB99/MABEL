@@ -32,7 +32,7 @@ metric = load_metric("sacrebleu")
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 # Model parameters
-MAX_SEQ_LEN = 256
+MAX_SEQ_LEN = 128
 
 # Preprocess data for bart model                            
 def prepro(examples):
@@ -83,16 +83,22 @@ def test(model):
     #test_data = load_dataset('csv', data_files=data_path+'datasets/main/test_neutralisation.csv')
     for index, row in test_data.iterrows():
         counter+=1
-        s = row['text']
-        inp = tokeniser([s], max_length=256, return_tensors='pt').to(device)
-        pred_tensors=model.generate(inp['input_ids']).to(device)
-        pred_list = [tokeniser.decode(p) for p in pred_tensors]
-        pred_list = pred_list[0].split(' ')
+        text = [row['text']]
+        full_preds = []
+        if len(text) > 120:
+            text_new = [text[i:i+120] for i in range(0, len(text), 120)]
+            text = text_new
+        for s in text:
+            inp = tokeniser(s, max_length=128, return_tensors='pt').to(device)
+            pred_tensors=model.generate(inp['input_ids']).to(device)
+            pred_list = [tokeniser.decode(p) for p in pred_tensors]
+            pred_list = pred_list[0].split(' ')
+            full_preds+=pred_list
         split_target = row['target'].split(' ')
-        score = nltk.translate.bleu_score.sentence_bleu([split_target], pred_list)
+        score = nltk.translate.bleu_score.sentence_bleu([split_target], full_preds)
         running_score+=score
         if counter%1000 == 0:
-            print(pred_list)
+            print(full_preds)
             print(split_target)
             print('For BLEU : {}'.format(score))
     final_score = running_score/counter
