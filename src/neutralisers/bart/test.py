@@ -86,9 +86,8 @@ def test(model):
         text = [row['text']]
         full_preds = []
         if len(text[0]) > 120:
-            text_new = [text[i:i+120] for i in range(0, len(text), 120)]
+            text_new = [text[0][i:i+120] for i in range(0, len(text[0]), 120)]
             text = text_new
-            print(text)
         for s in text:
             inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
             pred_tensors=model.generate(inp['input_ids']).to(device)
