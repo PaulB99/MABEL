@@ -90,6 +90,10 @@ def test(model):
         split_target = row['target'].split(' ')
         score = nltk.translate.bleu_score.sentence_bleu([split_target], pred_list)
         running_score+=score
+        if counter%1000 == 0:
+            print(pred_list)
+            print(split_target)
+            print('For BLEU : {}'.format(score))
     final_score = running_score/counter
     print('Bleu score ' + str(final_score) + ' over {} examples'.format(counter))
     
