@@ -18,7 +18,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 MAX_SEQ_LEN = 128
 
 # Helper function to load model checkpoint
-def load_ckpt(self,load_path, model):
+def load_ckpt(load_path, model):
     model.load_state_dict(torch.load(load_path))
 
 def test(model):
