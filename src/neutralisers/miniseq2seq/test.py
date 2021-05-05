@@ -58,5 +58,5 @@ def test(model):
 if __name__ == "__main__":
     neutraliser_path = '../../../cache/neutralisers/miniseq2seq.pt'
     mymodel = model.seq2seq(device, 7630).to(device)
-    load_ckpt(neutraliser_path, model)
+    load_ckpt(neutraliser_path, mymodel)
     test(mymodel)
