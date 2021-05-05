@@ -4,18 +4,16 @@ import time
 sys.path.insert(0, '../')
 from taggers.base_model import model as base_model
 from taggers.large_model import model as large_model
+from tagger.distilBERT import model as distil_model
 from taggers.lexi import model as lexi_model
-from neutralisers.bart import model as bart_model
-from neutralisers.roberta import model as roberta_model
 from neutralisers.parrot import model as parrot_model
 from neutralisers.seq2seq import model as seq2seq_model
 from neutralisers.miniseq2seq import model as miniseq2seq_model
 from neutralisers.lexi_swap import model as lexi_swap_model
-from transformers import BertTokenizer, BartTokenizer, BartForConditionalGeneration, BartConfig
+from transformers import BertTokenizer, BartTokenizer, BartForConditionalGeneration, BartConfig, DistilBertTokenizer
 import transformers
 from torchtext.data import Field, Dataset, BucketIterator, Example
 from simpletransformers.seq2seq import Seq2SeqModel, Seq2SeqArgs
-import pandas as pd
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -46,6 +44,10 @@ class runner():
         elif self.tagger=='large_model':
             self.t_tokeniser = BertTokenizer.from_pretrained('bert-large-uncased')
             self.tagger_model = large_model.BERT().to(self.device)
+            self.bert = True
+        elif self.tagger=='distilbert':
+            self.t_tokeniser = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+            self.tagger_model = distil_model.BERT().to(self.device)
             self.bert = True
         elif self.tagger=='lexi':
             self.tagger_model = lexi_model.lexi()
@@ -191,9 +193,6 @@ class runner():
                 new_split_sent += sp
             split_sent = new_split_sent
                 
-        
-        
-        
         # Lexi is easier
         if not self.bert:
             output_array = []
@@ -295,40 +294,7 @@ class runner():
                     pred = ''.join(pred_list)
                     pred = pred.replace('<s>', '')
                     pred = pred.replace('</s>', '')
-                    output_array.insert(ticker, pred)
-        '''
-        else:
-            # Prepare data for neutralisation
-            # Padding
-            MAX_SEQ_LEN = 128
-            PAD_INDEX = self.n_tokeniser.convert_tokens_to_ids(self.n_tokeniser.pad_token)
-            UNK_INDEX = self.n_tokeniser.convert_tokens_to_ids(self.n_tokeniser.unk_token)
-                
-            # Fields
-            text_field = Field(use_vocab=False, tokenize=self.n_tokeniser.encode, lower=False, include_lengths=False, batch_first=True, fix_length=MAX_SEQ_LEN, pad_token=PAD_INDEX, unk_token=UNK_INDEX)
-            fields = [('text', text_field)]
-                
-            # Populate dataset
-            prov_data = []
-            for x in split_sent:
-                ex = Example.fromlist([x], fields)
-                prov_data.append(ex)
-            sent_data = Dataset(prov_data, fields)
-                
-            iterator = BucketIterator(sent_data, batch_size=1, device=self.device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
-                
-            # Neutralise sentences tagged as biased
-            ticker=-1
-            with torch.no_grad():
-                for (text), _ in iterator:
-                    ticker+=1
-                    if ticker in biased_indices:
-                        text = text.type(torch.LongTensor)  
-                        text = text.to(self.device)
-                        neutraliser_output = self.neutraliser_model.generate(text)
-                        decoded = self.n_tokeniser.decode(neutraliser_output[0], skip_special_tokens=True)
-                        output_array.insert(ticker, decoded)
-                        '''
+        
         output_string = ''
         for s in output_array:
             output_string+=(s+'.')
