@@ -99,7 +99,7 @@ def test(model):
         running_score+=score
         if counter%1000 == 0:
             print(len(text))
-            print(len(''.join(text)))
+            print(len(text[0]))
             print(full_preds)
             print(split_target)
             print('For BLEU : {}'.format(score))
