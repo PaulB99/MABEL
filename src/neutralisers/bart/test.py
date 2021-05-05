@@ -82,27 +82,32 @@ def test(model):
     test_data = pd.read_csv(data_path+'datasets/main/test_neutralisation.csv')
     #test_data = load_dataset('csv', data_files=data_path+'datasets/main/test_neutralisation.csv')
     for index, row in test_data.iterrows():
-        counter+=1
         text = [row['text']]
         full_preds = []
-        if len(text[0]) > 120:
+        '''
+        if len(text[0]) > 128:
             text_new = [text[0][i:i+120] for i in range(0, len(text[0]), 120)]
             text = text_new
-        for s in text:
-            inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
-            pred_tensors=model.generate(inp['input_ids']).to(device)
-            pred_list = [tokeniser.decode(p) for p in pred_tensors]
-            pred_list = pred_list[0].split(' ')
-            full_preds+=pred_list
-        split_target = row['target'].split(' ')
-        score = nltk.translate.bleu_score.sentence_bleu([split_target], full_preds)
-        running_score+=score
-        if counter%1000 == 0:
-            print(len(text))
-            print(len(text[0]))
-            print(full_preds)
-            print(split_target)
-            print('For BLEU : {}'.format(score))
+        '''
+        if len(text[0]) < 128:
+            counter+=1
+            for s in text:
+                inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
+                pred_tensors=model.generate(inp['input_ids']).to(device)
+                pred_list = [tokeniser.decode(p) for p in pred_tensors]
+                pred_list = pred_list.replace('<s>', '')
+                pred_list = pred_list.replace('</s>', '')
+                pred_list = pred_list[0].split(' ')
+                full_preds+=pred_list
+            split_target = row['target'].split(' ')
+            score = nltk.translate.bleu_score.sentence_bleu([split_target], full_preds)
+            running_score+=score
+            if counter%1000 == 0:
+                print(len(text))
+                print(len(text[0]))
+                print(full_preds)
+                print(split_target)
+                print('For BLEU : {}'.format(score))
     final_score = running_score/counter
     print('Bleu score ' + str(final_score) + ' over {} examples'.format(counter))
     
