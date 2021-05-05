@@ -91,7 +91,7 @@ def test(model):
         score = nltk.translate.bleu_score.sentence_bleu([split_target], pred_list)
         running_score+=score
     final_score = running_score/counter
-    print('Bleu score ' + final_score)
+    print('Bleu score ' + str(final_score) + ' over {} examples'.format(counter))
     
     
 if __name__ == "__main__":
