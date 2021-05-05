@@ -86,7 +86,8 @@ def test(model):
         s = row['text']
         inp = tokeniser([s], max_length=256, return_tensors='pt').to(device)
         pred_tensors=model.generate(inp['input_ids']).to(device)
-        pred_list = [tokeniser.decode(p) for p in pred_tensors].split(' ')
+        pred_list = [tokeniser.decode(p) for p in pred_tensors]
+        pred_list = pred_list[0].split(' ')
         split_target = row['target'].split(' ')
         score = nltk.translate.bleu_score.sentence_bleu([split_target], pred_list)
         running_score+=score
