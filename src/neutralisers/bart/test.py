@@ -78,7 +78,8 @@ def compute_metrics(eval_preds):
 
 def test(model):
     running_score = 0
-    counter=0
+    counter = 0
+    correct = 0
     test_data = pd.read_csv(data_path+'datasets/main/test_neutralisation.csv')
     #test_data = load_dataset('csv', data_files=data_path+'datasets/main/test_neutralisation.csv')
     for index, row in test_data.iterrows():
@@ -101,6 +102,8 @@ def test(model):
                 full_preds+=pred_list
             split_target = row['target'].split(' ')
             score = nltk.translate.bleu_score.sentence_bleu([split_target], full_preds)
+            if split_target == full_preds:
+                counter+=1
             running_score+=score
             if counter%1000 == 0:
                 print(len(text))
@@ -109,7 +112,9 @@ def test(model):
                 print(split_target)
                 print('For BLEU : {}'.format(score))
     final_score = running_score/counter
+    accuracy = correct/counter
     print('Bleu score ' + str(final_score) + ' over {} examples'.format(counter))
+    print('Accuracy ' + str(accuracy))
     
     
 if __name__ == "__main__":
