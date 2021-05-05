@@ -98,6 +98,8 @@ def test(model):
         score = nltk.translate.bleu_score.sentence_bleu([split_target], full_preds)
         running_score+=score
         if counter%1000 == 0:
+            print(len(text))
+            print(len(''.join(text)))
             print(full_preds)
             print(split_target)
             print('For BLEU : {}'.format(score))
