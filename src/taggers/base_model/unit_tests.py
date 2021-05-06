@@ -27,7 +27,6 @@ class TestBERT(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
-        TestBERT.set_verbose( True )
         data_path = '../../../data/'
     
         # Tokeniser
@@ -55,14 +54,7 @@ class TestBERT(unittest.TestCase):
         cls.test_iter = BucketIterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
         
         cls.mymodel = model.BERT().to(device)
-        #load_ckpt('../../../cache/taggers/base_model.pt', cls.mymodel)
     
-     
-    # Check the model is set up correctly
-    def test_setup(self):
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        self.assertEqual(device, TestBERT.mymodel.device)
-
     # Check the tokeniser works correctly
     def test_tokeniser(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -103,4 +95,4 @@ class TestBERT(unittest.TestCase):
 
 if __name__ == '__main__':
     
-    unittest.main()
+    unittest.main(verbosity=2)
