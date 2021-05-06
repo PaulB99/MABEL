@@ -61,7 +61,7 @@ class TestBERT(unittest.TestCase):
         string = 'hello world'
         input_tensor = TestBERT.tokeniser.encode(string, return_tensors="pt")[0].to(device)
         output = TestBERT.tokeniser.decode(input_tensor)
-        self.assertEqual(string)
+        self.assertEqual(string, output)
 
     # Check if weights change with training
     def test_training(self):
