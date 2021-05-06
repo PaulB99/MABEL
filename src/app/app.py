@@ -1,8 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
 from gevent.pywsgi import WSGIServer
-import torch 
 import sys
-import time
 import os
 sys.path.insert(0, '../')
 from joint.run import runner
@@ -14,6 +12,7 @@ taggers = ['base_model', 'large_model', 'distilbert', 'lexi']
 neutralisers = ['bart', 'roberta', 'seq2seq', 'miniseq2seq', 'parrot', 'lexi_swap']
 tagger=None
 neutraliser=None
+sneaky=True
 
 @app.route('/', methods=['GET'])
 def main():
@@ -37,6 +36,8 @@ def get_models():
             if error != "":
                 return render_template('index.html', taggers=taggers,neutralisers=neutralisers, error=error)
             else:
+                global sneaky
+                sneaky = False
                 global app_runner
                 app_runner = runner(tagger, neutraliser)
                 return redirect(url_for('get_text'))
@@ -47,7 +48,10 @@ def get_models():
     
 @app.route('/run', methods=['GET'])
 def get_text():
-    return render_template('runner.html', tagger=tagger, neutraliser=neutraliser, out_text='', biased='')
+    if sneaky:
+        return render_template('index.html', taggers=taggers,neutralisers=neutralisers, error = '')
+    else:
+        return render_template('runner.html', tagger=tagger, neutraliser=neutraliser, out_text='', biased='')
 
 
 @app.route('/run', methods=['GET', 'POST'])
@@ -80,10 +84,12 @@ def show_models():
 def return_to_selection():
     if request.method == 'POST':
         return redirect(url_for('main'))
+    
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
-    # app.run(port=5002, threaded=False)
-
     # Serve the app with gevent
     http_server = WSGIServer(('0.0.0.0', 5000), app)
     print('Hosting on localhost:5000 ......')

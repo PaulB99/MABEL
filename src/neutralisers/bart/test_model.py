@@ -1,19 +1,12 @@
 import unittest
 import sys
 sys.path.insert(0, '../')
-import model, train
+import model
 import torch
-from transformers import BertTokenizer
-import torch.nn as nn
+from transformers import BartTokenizer, BartForConditionalGeneration, Seq2SeqTrainingArguments, Seq2SeqTrainer, BartConfig
 import torch.optim as optim
 from torchtext.data import Field, Dataset, BucketIterator, Example
-from transformers import BertTokenizer
-import seaborn as sns
-import matplotlib.pyplot as plt
-import csv
-import os
-import re
-import torch.optim as optim
+
 
 def load_ckpt(load_path, model):
     #state_dict = torch.load(load_path, map_location=device)
@@ -23,14 +16,14 @@ def load_ckpt(load_path, model):
     #return state_dict['valid_loss']
 
 # Test miniseq2seq functions
-class TestBERT(unittest.TestCase):
+class TestBART(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
         data_path = '../../../data/'
     
         # Tokeniser
-        cls.tokeniser = BertTokenizer.from_pretrained('bert-base-uncased')
+        cls.tokeniser = BartTokenizer.from_pretrained("facebook/bart-base")
         
         # Check if GPU is available
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -53,6 +46,17 @@ class TestBERT(unittest.TestCase):
         # Test data iterator
         cls.test_iter = BucketIterator(test_data, batch_size=16, device=device, train=False, shuffle=False, sort=False, sort_key=lambda x: len(x.text))
         
+        config = BartConfig(d_model=512,
+                            encoder_layers=6,
+                            decoder_layers=6,
+                            encoder_attention_heads=8,
+                            decoder_attention_heads=8,
+                            encoder_ffn_dim=2048,
+                            decoder_ffn_dim=2048,
+                            activation_function='gelu'
+                            )
+        cls.mymodel = BartForConditionalGeneration(config=config).to(device)
+        
         cls.mymodel = model.BERT().to(device)
     
     # Check the tokeniser works correctly
@@ -69,30 +73,27 @@ class TestBERT(unittest.TestCase):
     # Check if weights change with training
     def test_training(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        before_param = TestBERT.mymodel.parameters()
-        optimiser = optim.Adam(TestBERT.mymodel.parameters(), lr=0.01)
-        TestBERT.mymodel.train()
-        for (labels, text), _ in TestBERT.test_iter:
-            labels = labels.type(torch.LongTensor) # Biased or not    
-            labels = labels.to(device)
-            text = text.type(torch.LongTensor) # The text
-            text = text.to(device)
-            output = TestBERT.mymodel(labels, text)
-            loss, _ = output
-
-            optimiser.zero_grad()
-            loss.backward()
-            optimiser.step()
-        after_param = TestBERT.mymodel.parameters
+        before_param = TestBART.mymodel.parameters()
+                
+        after_param = TestBART.mymodel.parameters()
         
         self.assertNotEqual(before_param, after_param)
         
     # Check if checkpoints can be loaded correctly
     def test_load(self):
-        before_param = TestBERT.mymodel.parameters()
-        load_ckpt('../../../cache/taggers/base_model.pt', TestBERT.mymodel)
-        after_param = TestBERT.mymodel.parameters()
-        
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+        before_param = TestBART.mymodel.parameters()
+        config = BartConfig(d_model=512,
+                            encoder_layers=6,
+                            decoder_layers=6,
+                            encoder_attention_heads=8,
+                            decoder_attention_heads=8,
+                            encoder_ffn_dim=2048,
+                            decoder_ffn_dim=2048,
+                            activation_function='gelu'
+                            )
+        mymodel = BartForConditionalGeneration(config=config).from_pretrained('../../../cache/neutralisers/bart').to(device)
+        after_param = mymodel.parameters()
         self.assertNotEqual(before_param, after_param)
         
 
