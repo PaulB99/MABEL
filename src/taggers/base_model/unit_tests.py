@@ -27,6 +27,7 @@ class TestBERT(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
+        TestBERT.set_verbose( True )
         data_path = '../../../data/'
     
         # Tokeniser
@@ -65,10 +66,10 @@ class TestBERT(unittest.TestCase):
     # Check the tokeniser works correctly
     def test_tokeniser(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        string = 'Hello world'
+        string = 'hello world'
         input_tensor = TestBERT.tokeniser.encode(string, return_tensors="pt")[0].to(device)
-        output_tensor = TestBERT.tokeniser.decode(input_tensor)
-        self.assertEqual(input_tensor, output_tensor)
+        output = TestBERT.tokeniser.decode(input_tensor)
+        self.assertEqual(string)
 
     # Check if weights change with training
     def test_training(self):
