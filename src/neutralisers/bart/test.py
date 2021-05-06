@@ -41,7 +41,7 @@ def test(model):
     for index, row in test_data.iterrows():
         text = [row['text']]
         full_preds = []
-        if len(text[0]) < 128 and len(row['target']) < 128:
+        if len(text[0]) < 120 and len(row['target']) < 120:
             counter+=1
             for s in text:
                 inp = tokeniser([s], max_length=128, return_tensors='pt').to(device)
