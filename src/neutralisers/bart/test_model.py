@@ -63,8 +63,8 @@ class TestBART(unittest.TestCase):
     def test_tokeniser(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         string = 'hello world'
-        input_tensor = TestBERT.tokeniser.encode(string, return_tensors="pt")[0].to(device)
-        output = TestBERT.tokeniser.decode(input_tensor)
+        input_tensor = TestBART.tokeniser.encode(string, return_tensors="pt")[0].to(device)
+        output = TestBART.tokeniser.decode(input_tensor)
         output = output.replace('[CLS] ', '')
         output = output.replace(' [SEP]', '')
 

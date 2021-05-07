@@ -22,8 +22,10 @@ class TestMiniSeq2Seq(unittest.TestCase):
         tok=BertTokenizer.from_pretrained('bert-base-uncased')
         string = 'Hello world'
         input_tensor = tok.encode(string, return_tensors="pt")[0].to(device)
-        output_tensor = tok.decode(input_tensor)
-        self.assertEqual(input_tensor, output_tensor)
+        output = tok.decode(input_tensor)
+        output = output.replace('[CLS] ', '')
+        output = output.replace(' [SEP]', '')
+        self.assertEqual(string, output)
 
     def test_flow(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
