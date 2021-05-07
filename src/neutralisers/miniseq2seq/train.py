@@ -64,8 +64,6 @@ def main():
             input_tensor = input_tensor.view(-1, 1)
             target_tensor = tok.encode(row['target'], return_tensors="pt")[0].to(device)
             target_tensor = target_tensor.view(-1, 1)
-            #input_tensor = tok.tensorise(row['text'])
-            #target_tensor = tok.tensorise(row['target'])
         
             loss = train_step(model, input_tensor, target_tensor, optimiser, criterion)
         
@@ -84,13 +82,7 @@ def main():
     print('Mini seq2seq model trained in {}'.format(end_time-start_time)) 
     torch.save(model.state_dict(), '../../../cache/neutralisers/miniseq2seq.pt')
     print('Model saved!')
-    
-    print(model.generate('Apples are awful', tok))
-    print(model.generate('I hate Birmingham', tok))
-    print(model.generate('President Biden humiliated', tok))
-    print(model.generate('Paul is the best student in the world',tok))
-    print(model.generate('The vice chancellor is spectacular',tok))
-    
+
     # Save loss graph
     plt.plot(loss_points, loss_vals)
     plt.xlabel('Training steps')
