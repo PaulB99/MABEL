@@ -38,21 +38,16 @@ class seq2seq(nn.Module):
         input_length = text.size(0) #0
         batch_size = 1 #target.shape[1] #1
         target_length = target.size(0) #0
-          
-        # Initialise variable for predictions
-        #encoder_outputs = torch.zeros(max_length, self.encoder.hidden_size, device=self.device)
     
         # Encode each word
         for i in range(input_length):
             encoder_output, encoder_hidden = self.encoder(text[i], encoder_hidden)
-            #encoder_outputs[i] = encoder_output[0,0]
     
         # Use the encoder’s hidden layer as the decoder's hidden
         decoder_hidden = encoder_hidden
       
         # Add start of sequence token
         decoder_input = torch.tensor([SOS_token], device=self.device)
-        #decoder_input= torch.tensor(device=self.device)
     
         outputs = torch.zeros(target_length, 1, self.vocab_size).to(self.device)
         
@@ -97,7 +92,6 @@ class seq2seq(nn.Module):
           
             # Add start of sequence token
             decoder_input = torch.tensor([SOS_token], device=self.device)
-            #decoder_input= torch.tensor(device=self.device)
         
             # For each word, run decoder and make predictions
             for t in range(target_length):   

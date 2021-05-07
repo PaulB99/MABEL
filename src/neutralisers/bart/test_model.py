@@ -9,11 +9,8 @@ from torchtext.data import Field, Dataset, BucketIterator, Example
 
 
 def load_ckpt(load_path, model):
-    #state_dict = torch.load(load_path, map_location=device)
-    #model.load_state_dict(state_dict['model_state_dict'])
     model.load_state_dict(torch.load(load_path))
     print(f'Trained model loaded from <== {load_path}')
-    #return state_dict['valid_loss']
 
 # Test miniseq2seq functions
 class TestBART(unittest.TestCase):

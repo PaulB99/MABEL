@@ -55,9 +55,6 @@ valid_iter = BucketIterator(valid_a, batch_size=32, sort_key=lambda x: len(x.tex
 def prepro(examples):
         inputs = [ex for ex in examples['text']]
         targets = [ex for ex in examples['target']]
-        #inputs = examples['text']
-        #targets = examples['target']
-        #inputs = [inp for inp in inputs]
         model_inputs = tokeniser(inputs, max_length=MAX_SEQ_LEN, padding=False, truncation=True)
 
         # Setup the tokenizer for targets
@@ -266,8 +263,5 @@ if __name__ == "__main__":
                             activation_function='gelu'
                             )
     mymodel = BartForConditionalGeneration(config=config).to(device)
-    #mymodel = model.BART().to(device)
-    #optimiser = optim.Adam(mymodel.parameters(), lr=2e-5)
-    #train(model=mymodel, optimiser=optimiser)
     alt_train(mymodel)
     
