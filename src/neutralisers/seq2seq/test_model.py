@@ -13,8 +13,8 @@ class TestMiniSeq2Seq(unittest.TestCase):
     # Check the model is set up correctly
     def test_setup(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        mod = model.seq2seq(device, 7630)
-        self.assertEqual(mod.vocab_size, 7630)
+        mod = model.seq2seq(device, 30552)
+        self.assertEqual(mod.vocab_size, 30552)
         self.assertEqual(device, mod.device)
 
     def test_tokeniser(self):
@@ -30,7 +30,7 @@ class TestMiniSeq2Seq(unittest.TestCase):
     def test_flow(self):
         device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
         tok=BertTokenizer.from_pretrained('bert-base-uncased')
-        mod = model.seq2seq(device, 7630)
+        mod = model.seq2seq(device, 30552).to(device)
         output1 = mod.generate('Hello world', tok)
         #self.assertEqual(output1, 'Hello world')
         input_tensor = tok.encode('Hello world', return_tensors="pt")[0].to(device)
