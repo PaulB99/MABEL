@@ -28,11 +28,7 @@ if __name__ == "__main__":
         sys.exit()
         
     sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
-    while not sentence == 'Exit':
+    while not (sentence == 'Exit' or sentence == 'exit'):
         output, biased = r.pipeline(sentence)
-        #if biased:
-         #   print('Biased!')
-        #else:
-         #   print('Unbiased!')
         print(output)
         sentence = str(input('Enter the phrase to be neutralised, or Exit to quit\n'))
