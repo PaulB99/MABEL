@@ -34,75 +34,79 @@ def train_step(model, input_tensors, target_tensors, optimiser, criterion):
 
     return epoch_loss
 
-# Load in data
-data_path = '../../../data/datasets/main/train_neutralisation.csv'
-data_df = pd.read_csv(data_path, header=None, skiprows=1, names=['text', 'target'])
-
-# Batch size
-batch_size = 64
-
-#tok = tokeniser.tokeniser(device, data_path)
-tok = BertTokenizer.from_pretrained('bert-base-uncased') 
-lang_size = 30522
-
-print('Tokeniser initialised of size {}'.format(lang_size))
-model = md.seq2seq(device, lang_size).to(device)
-model.train()
-print('Model initialised')
-
-optimiser = optim.Adam(model.parameters(), lr=0.0000003)
-criterion = nn.CrossEntropyLoss()
-total_loss_iterations = 0
-num_epochs = 11
-
-start_time = time.perf_counter()
-loss_vals = []
-loss_points = []
-
-for i in range(num_epochs): #num_epochs
-    j=0
-    input_back = []
-    target_back = []
-    for index, row in data_df.iterrows():
-        input_tensor = tok.encode(row['text'], return_tensors="pt")[0].to(device)
-        input_tensor = input_tensor.view(-1, 1)
-        target_tensor = tok.encode(row['target'], return_tensors="pt")[0].to(device)
-        target_tensor = target_tensor.view(-1, 1)
-        #input_tensor = tok.tensorise(row['text'])
-        #target_tensor = tok.tensorise(row['target'])
-        if j % batch_size == 0:
-            input_back.append(input_tensor)
-            target_back.append(target_tensor)
-            loss = train_step(model, input_back, target_back, optimiser, criterion)
-            total_loss_iterations += loss
-            input_back = []
-            target_back = []
-        else:
-            input_back.append(input_tensor)
-            target_back.append(target_tensor)
+def main():
+    # Load in data
+    data_path = '../../../data/datasets/main/train_neutralisation.csv'
+    data_df = pd.read_csv(data_path, header=None, skiprows=1, names=['text', 'target'])
     
-        if j % 5000 == 0:
-            average_loss= total_loss_iterations / 5000
-            if j != 0:
-                loss_vals.append(average_loss)
-                loss_points.append(j+(70000*i))
-            total_loss_iterations = 0
-            print('%d %.4f' % (j, average_loss))
-        j+=1
+    # Batch size
+    batch_size = 64
+    
+    #tok = tokeniser.tokeniser(device, data_path)
+    tok = BertTokenizer.from_pretrained('bert-base-uncased') 
+    lang_size = 30522
+    
+    print('Tokeniser initialised of size {}'.format(lang_size))
+    model = md.seq2seq(device, lang_size).to(device)
+    model.train()
+    print('Model initialised')
+    
+    optimiser = optim.Adam(model.parameters(), lr=0.0000003)
+    criterion = nn.CrossEntropyLoss()
+    total_loss_iterations = 0
+    num_epochs = 11
+    
+    start_time = time.perf_counter()
+    loss_vals = []
+    loss_points = []
+    
+    for i in range(num_epochs): #num_epochs
+        j=0
+        input_back = []
+        target_back = []
+        for index, row in data_df.iterrows():
+            input_tensor = tok.encode(row['text'], return_tensors="pt")[0].to(device)
+            input_tensor = input_tensor.view(-1, 1)
+            target_tensor = tok.encode(row['target'], return_tensors="pt")[0].to(device)
+            target_tensor = target_tensor.view(-1, 1)
+            #input_tensor = tok.tensorise(row['text'])
+            #target_tensor = tok.tensorise(row['target'])
+            if j % batch_size == 0:
+                input_back.append(input_tensor)
+                target_back.append(target_tensor)
+                loss = train_step(model, input_back, target_back, optimiser, criterion)
+                total_loss_iterations += loss
+                input_back = []
+                target_back = []
+            else:
+                input_back.append(input_tensor)
+                target_back.append(target_tensor)
         
-    if os.path.exists('../../../cache/neutralisers/seq2seq.pt'):  # checking if there is a file with this name
-        os.remove('../../../cache/neutralisers/seq2seq.pt')
+            if j % 5000 == 0:
+                average_loss= total_loss_iterations / 5000
+                if j != 0:
+                    loss_vals.append(average_loss)
+                    loss_points.append(j+(70000*i))
+                total_loss_iterations = 0
+                print('%d %.4f' % (j, average_loss))
+            j+=1
+            
+        if os.path.exists('../../../cache/neutralisers/seq2seq.pt'):  # checking if there is a file with this name
+            os.remove('../../../cache/neutralisers/seq2seq.pt')
+        torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
+        print('Model saved after epoch {}'.format(str(i)))
+          
+    end_time = time.perf_counter()   
+    print('Seq2seq model trained in {}'.format(end_time-start_time)) 
     torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
-    print('Model saved after epoch {}'.format(str(i)))
-      
-end_time = time.perf_counter()   
-print('Seq2seq model trained in {}'.format(end_time-start_time)) 
-torch.save(model.state_dict(), '../../../cache/neutralisers/seq2seq.pt')
-print('Model saved!')
+    print('Model saved!')
+    
+    # Save loss graph
+    plt.plot(loss_points, loss_vals)
+    plt.xlabel('Training steps')
+    plt.ylabel('Training loss')
+    plt.title('Training loss of seq2seq model')
+    plt.savefig('loss_graph.png')    
 
-# Save loss graph
-plt.plot(loss_points, loss_vals)
-plt.xlabel('Training steps')
-plt.ylabel('Training loss')
-plt.title('Training loss of seq2seq model')
-plt.savefig('loss_graph.png')    
+if __name__ == "__main__":
+    main()
