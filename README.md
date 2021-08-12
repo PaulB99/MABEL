@@ -1,22 +1,35 @@
 Welcome to the reposity for my final year project! To get started, ensure you have at least Python 3.6 installed with the following libraries:
+
 for core functionality:
+
 warnings
+
 torch
+
 torchtext
+
 transformers
+
 simpletransformers
 
 for web app:
+
 flask
+
 gevent
 
 for command line app:
+
 simple_term_menu
 
 for testing and training scripts:
+
 matplotlib
+
 pandas
+
 unittest
+
 datasets
 
 
